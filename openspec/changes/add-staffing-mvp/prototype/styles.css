@@ -152,7 +152,7 @@ p { margin: 0; }
 
 /* KPI tiles: number-first, no wasted height */
 .kpi .card-body { padding: 10px 14px; }
-.kpi .score { font-size: 18px; }
+.kpi .stat { font-size: 18px; }
 
 /* recommendation cards and catalog keep a readable width instead of stretching */
 .rec-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 12px; align-items: start; }
@@ -236,15 +236,8 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 }
 .input[disabled] { background: hsl(var(--muted) / .6); color: hsl(var(--muted-foreground)); }
 
-.score { font-size: 19px; font-weight: 640; letter-spacing: -0.02em; }
-.score small { font-size: 11px; color: hsl(var(--muted-foreground)); font-weight: 450; }
-
-.bars { display: flex; flex-direction: column; gap: 5px; min-width: 210px; }
-.bar-line { display: grid; grid-template-columns: 74px 1fr 46px; gap: 8px; align-items: center; font-size: 11.5px; }
-.bar-track { height: 6px; border-radius: 999px; background: hsl(var(--muted)); overflow: hidden; }
-.bar-fill { display: block; height: 100%; border-radius: 999px; background: hsl(var(--primary)); }
-.bar-fill.low { background: hsl(var(--warning)); }
-.bar-line .val { text-align: right; color: hsl(var(--muted-foreground)); font-variant-numeric: tabular-nums; }
+.stat { font-size: 19px; font-weight: 640; letter-spacing: -0.02em; }
+.stat small { font-size: 11px; color: hsl(var(--muted-foreground)); font-weight: 450; }
 
 .gate-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); gap: 8px; }
 .gate-cell { border: 1px solid hsl(var(--border)); border-radius: 9px; padding: 9px 11px; }

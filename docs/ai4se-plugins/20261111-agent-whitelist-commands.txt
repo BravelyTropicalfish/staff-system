@@ -1,0 +1,8 @@
+cd web && npm ci && npm run lint
+cd web && npx tsc --noEmit
+cd backend && ./mvnw -B -DskipTests compile
+cd backend && ./mvnw -B test
+cd web && npm test
+cd backend && ./mvnw -B verify
+cd web && npx playwright install --with-deps chromium && npm run test:e2e
+cd web && npm audit --audit-level=high

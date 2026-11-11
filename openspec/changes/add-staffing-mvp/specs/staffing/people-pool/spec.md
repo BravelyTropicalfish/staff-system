@@ -32,7 +32,7 @@ The system SHALL maintain a skill catalog whose entries carry a stable identity,
 single role whose skill domain the skill belongs to, and an `active` flag, seeded with 后端开发,
 前端开发, 项目管理, 业务分析, 测试 and UI设计.
 
-**Traces:** proposal step 1 and key rule "every skill belongs to exactly one role domain";
+**Traces:** proposal step 1 and key rule "Every skill belongs to exactly one role domain";
 REQ-001 §3, §5, §6 catalog lifecycle; S28.
 
 #### Scenario: Skill picker offers the seeded set
@@ -52,7 +52,7 @@ candidate searches only, and SHALL NOT rewrite any stored person, post, recommen
 snapshot. The domain SHALL feed the cross-role fallback only: it SHALL NOT widen G4, and holding
 a skill never grants a person a second role.
 
-**Traces:** proposal key rules "every skill belongs to exactly one role domain" and "cross-role
+**Traces:** proposal key rules "Every skill belongs to exactly one role domain" and "Cross-role
 fallback is a lower tier"; REQ-001 §5 vocabulary (role skill domain), §6 catalog lifecycle, §6.1.
 
 #### Scenario: The seeded mapping is readable per role
@@ -67,7 +67,7 @@ fallback is a lower tier"; REQ-001 §5 vocabulary (role skill domain), §6 catal
 
 - **GIVEN** person `E100` is a `DEV` holding 测试 at `Expert`
 - **WHEN** the profile is read and a post of role `QA` is searched
-- **THEN** `E100` still holds exactly one role, `DEV`, and is absent from the `QA` ranked list
+- **THEN** `E100` still holds exactly one role, `DEV`, and is absent from the `QA` suitable list
 - **AND** `E100` can surface for that post only through the cross-role section
 
 #### Scenario: A role added later has an empty domain
@@ -93,7 +93,7 @@ rewrite any stored reference: existing people, posts and recommendation reasons 
 the item, while new posts and new imports SHALL NOT select it. Maintaining the catalogs —
 adding, renaming, deactivating and reactivating — SHALL be offered to the coordinator only.
 
-**Traces:** proposal step 1 and key rule "catalog items are deactivated, never deleted";
+**Traces:** proposal step 1 and key rule "Catalog items are deactivated, never deleted";
 REQ-001 §6 catalog lifecycle; S28.
 
 #### Scenario: Delete and rename are both refused on a referenced skill
@@ -126,7 +126,7 @@ one catalog role, held as a single reference: a person never holds two roles, an
 the system MAY add a second one. The system SHALL NOT offer any in-app path that creates or
 changes a person's master data; every such change SHALL originate from an import batch.
 
-**Traces:** proposal steps 1–2 and key rule "person master data comes from a report";
+**Traces:** proposal steps 1–2 and key rule "Person master data comes from a report";
 REQ-001 §3, §5.1, §9; S13, S17.
 
 #### Scenario: A person holds exactly one role
@@ -151,7 +151,7 @@ The system SHALL compare the three scales by band rank, never by a free number: 
 `Practitioner` < `Proficient` < `Expert`, travel willingness `none` < `limited` < `full`.
 The system SHALL display the band name wherever a band is shown.
 
-**Traces:** proposal key rule "three ordered band scales";
+**Traces:** proposal key rule "Three ordered band scales";
 REQ-001 §5 vocabulary, B18.
 
 #### Scenario: A band is displayed, never a number
@@ -188,12 +188,15 @@ overwrite that band and SHALL NOT delete one.
 ### Requirement: Person profile is readable by the coordinator
 
 The system SHALL show, for one person, the master data, every skill with its band, and every
-allocation whose end date is today or later, with project and dates.
+allocation, current or past, each with its project, start date and end date, marking the ones
+that have already ended.
 
 **Traces:** REQ-001 §8 display contract; proposal step 8.
 
 #### Scenario: Profile lists a person's occupancy
 
-- **GIVEN** `E100` has an allocation on project `Atlas` from 2027-01-01 to 2027-03-31
-- **WHEN** the coordinator opens the profile on 2026-12-01
-- **THEN** the profile lists that allocation with project, start and end
+- **GIVEN** `E100` is staffed on project `Atlas` from 2027-02-01 to 2027-06-30 and holds an
+  earlier `Borealis` allocation from 2026-01-01 to 2026-03-31
+- **WHEN** the coordinator opens the profile
+- **THEN** the profile lists both allocations with their project, start and end date
+- **AND** the ended `Borealis` allocation is marked as ended

@@ -1,5 +1,9 @@
 # G1 decision — add-staffing-mvp
 
+> This file holds two records: the **rev 8** decision from 2026-11-10 (below, unchanged) and the
+> **rev 11** decision from 2026-11-11 (at the end). The header block and every section down to
+> rev 8's `## Next` belong to rev 8 only.
+
 - **Gate:** G1 (Align)
 - **Change id:** `add-staffing-mvp`
 - **Decision:** **Pass**
@@ -75,3 +79,96 @@ None. The decision is Pass, so no remediation is owed at this gate.
 
 P3 — ATDD design and task planning (`design.md`, `tasks.md`). Delta specs are now the agreed
 contract and are not to be rewritten without a new G1 record.
+
+---
+
+## G1 record — rev 11 (2026-11-11)
+
+- **Gate:** G1 (Align)
+- **Change id:** `add-staffing-mvp`
+- **Revision under decision:** REQ-001 **rev 11**, including the review fixes applied inside rev 11
+  (no new revision number)
+- **Decision:** **Pass**
+- **Approvers:** IO = raylen; SA = kyrie
+- **Timestamp:** 2026-11-11
+
+The decision belongs to the two named approvers; the agent recorded it on their instruction and
+issues no approval of its own. The rev 8 record above is left unchanged and still covers rev 8
+only.
+
+### Input artifacts
+
+| Artifact | Path | Result |
+|---|---|---|
+| Proposal (English / Chinese) | `proposal.md`, `proposal.zh.md` | 8 What-Changes steps, 6 new capabilities, D1–D8 carried forward |
+| Delta spec — `people-pool` | `specs/staffing/people-pool/spec.md` + `spec.zh.md` | 8 requirements / 17 scenarios |
+| Delta spec — `people-import` | `specs/staffing/people-import/spec.md` + `spec.zh.md` | 5 requirements / 15 scenarios |
+| Delta spec — `allocation` | `specs/staffing/allocation/spec.md` + `spec.zh.md` | 5 requirements / 11 scenarios |
+| Delta spec — `post-requirement` | `specs/staffing/post-requirement/spec.md` + `spec.zh.md` | 8 requirements / 14 scenarios |
+| Delta spec — `candidate-matching` | `specs/staffing/candidate-matching/spec.md` + `spec.zh.md` | 5 requirements / 15 scenarios |
+| Delta spec — `staffing-confirmation` | `specs/staffing/staffing-confirmation/spec.md` + `spec.zh.md` | 9 requirements / 18 scenarios |
+| AC / DoV review | `dov-ac-review.md` | AC-1–AC-4 and DoV-1–DoV-5 all Pass after the rev 11 rewrite; verdict "fit to go to a new G1" |
+| Consistency lint (p2) | `consistency-lint.md` | **Partial** — 0 BLOCKER, 0 WARNING, 1 SUGGESTION open (L3, the capability name); capped by the absent `openspec` CLI |
+| Source requirement | `requirement-workspace/requirements/REQ-001-staffing-mvp.md` (rev 11) | S1–S40 covered by the union of the trace lists |
+| Review aid | `prototype/` | Unchanged; confirming only raises a toast, so it holds no voiding logic to reconcile |
+
+Totals counted immediately before this decision: **40 requirements / 90 scenarios** in each
+language, 40/40 `**Traces:**` lines, 90/90 scenarios carrying GIVEN, WHEN and THEN, 90 distinct
+scenario titles, and 11/11 quoted key rules present in `proposal.md` under a case-sensitive match.
+
+### Findings
+
+- **Scope.** The six delta capabilities still map one to one onto the six "New capabilities" rows;
+  no `MODIFIED` or `REMOVED` section, because `openspec/specs/` is empty. Since rev 9 the scope
+  excludes the fit score, the weights and the score-ordered ranking; since rev 10 it includes the
+  terminal project end; rev 11 returns the dates to the exclusion rule, so an allocation is
+  person × project × an inclusive range and only a range intersecting `[post.start, post.end]`
+  blocks a person.
+- **Ambiguity.** REQ-001 §11 B1–B18 stay resolved. D1–D6 remain deferred inside REQ-001 and
+  D7–D8 in `proposal.md`; D8 now reads "active status and date overlap", so the cross-role cap is
+  still open with its MVP default (no cap, no extra approval). No unresolved ambiguity changes a
+  rule in the delta.
+- **Conflict.** The seventh pass found three contradictions that appear only where the rev 11
+  dates meet actions written for rev 10, and all three were fixed before this gate. Removing a
+  confirmation-written allocation would have left its assignment standing and let G6 admit the
+  person again on the same day, so such an allocation is now removable only by a release or by the
+  project end **(L20)**. Voiding every pending recommendation regardless of dates would have
+  cancelled a proposal on a later, disjoint post, so `person taken` is now scoped to intersecting
+  post dates **(L21)**. Requiring an active catalog role on every save would have frozen a post
+  whose role was deactivated afterwards, so the check now runs on creation and on a role change
+  only **(L22)**. Five warnings and four suggestions were resolved in the same pass **(L23–L31)**.
+- **Traceability.** Each capability names its proposal step and its REQ-001 section, and the union
+  of the trace lists covers S1–S40.
+
+### Conditions + owners
+
+None. The decision is Pass, so no remediation is owed at this gate.
+
+### Open risks accepted with this decision
+
+1. **Lint is Partial, not machine-validated.** No `openspec` CLI was available, so the tree is
+   hand-authored to the documented layout and a capability-directory typo would surface first when
+   the CLI runs at archive time.
+2. **L3 stays open.** The capability name is a suggestion, not a rule; renaming it later touches
+   every spec path and the proposal.
+3. **D8 stays open with its default.** A later "cap it" is a `candidate-matching` change; a later
+   "require approval" adds a pending-approval state and touches `staffing-confirmation` and
+   REQ-001 §6.
+4. **Hand-entered overlaps are stored, not refused.** Two hand-entered ranges for the same person
+   may overlap by design, so the only double-booking guard is G6 against a post's own dates; the
+   coordinator sees the overlap on the profile and corrects it if it was a mistake.
+5. **The project end is coarse and final.** It cancels every post of the project, filled ones
+   included, and cannot be undone; a partial close or a reopen path would be a later change.
+6. **The prototype is a review aid only.** It was not updated for the rev 11 rules — its confirm
+   action only raises a toast — so it is not evidence of behaviour.
+7. **Standing concerns for P3, re-scoped.** The snapshot-time display, the renormalisation rule and
+   the five frozen weights are retired with the score in rev 9. What carries: a storage-level
+   guarantee for the date intersection under concurrent confirmations; presenting the cross-role
+   fallback as "another role, one band higher, this domain skill" and never as a role change; the
+   empty-domain guard rail, since a role with no skill domain would let the fallback match anyone;
+   and showing the domain on the catalog surface before a skill is moved to another one.
+
+### Next
+
+P3 — ATDD design and task planning (`design.md`, `tasks.md`). The rev 11 delta specs are the
+agreed contract and are not to be rewritten without a new G1 record.

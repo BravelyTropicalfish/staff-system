@@ -1,6 +1,6 @@
 # staffing/allocation — delta spec
 
-Scope: projects and allocation records — the occupancy data the date gate reads.
+Scope: projects and allocation records — the person × project date range that G6 reads.
 
 ## ADDED Requirements
 
@@ -10,7 +10,7 @@ The system SHALL store a project with name, lead, start date and end date, where
 one identified user. The coordinator SHALL be able to create and edit a project; a lead SHALL
 NOT create a project. A project whose end date precedes its start date SHALL be refused.
 
-**Traces:** proposal step 3; REQ-001 §3, §5; S22, S24.
+**Traces:** proposal step 3; REQ-001 §3, §5; S1, S39.
 
 #### Scenario: A lead cannot create a project
 
@@ -24,49 +24,81 @@ NOT create a project. A project whose end date precedes its start date SHALL be 
 - **WHEN** the coordinator submits end date 2027-03-31 with start date 2027-06-01
 - **THEN** the save is refused and nothing is stored
 
-### Requirement: Project status is informational
+### Requirement: Ending a project is terminal and releases its whole team
 
-The system SHALL let the coordinator move a project between `planned`, `running` and
-`closed`. The status SHALL NOT gate matching or editing: an allocation on a closed project
-stays editable and removable, and a closed project never changes a gate result.
+The system SHALL let the lead of a project end it exactly once. Ending SHALL be one atomic
+change: the project becomes `closed`, each of its posts becomes `cancelled`, every pending
+recommendation on those posts is voided with reason `post cancelled`, and every allocation of
+the project is deleted. A `closed` project SHALL NOT be reopened, edited or given a new post.
+The coordinator SHALL NOT end a project.
 
-**Traces:** REQ-001 §5, §6; proposal step 3.
+**Traces:** proposal step 9 and key rule "Ending a project"; REQ-001 §5, §6, §7 S39, S40; S39,
+S40.
 
-#### Scenario: Closing a project blocks nothing
+#### Scenario: The end releases everyone and cancels the posts
 
-- **GIVEN** a project whose status is `closed` and one allocation on it
-- **WHEN** the coordinator shortens that allocation and a post on the project is searched
-- **THEN** both succeed and no gate result changes because of the status
+- **GIVEN** an `Atlas` project with two confirmed people, one `open` post and one pending
+  recommendation
+- **WHEN** the project's lead ends the project
+- **THEN** the project is `closed`, both of its posts are `cancelled`, the pending
+  recommendation is `voided` with reason `post cancelled`
+- **AND** both people hold no allocation and pass G6 for a post in another project
 
-### Requirement: Allocation records a person on a project for a date range
+#### Scenario: Only the project's lead may end it
 
-The system SHALL store an allocation as person × project × inclusive date range. It SHALL
-create one on every confirmed assignment and SHALL let the coordinator record one by hand for
-a person who is busy elsewhere. The coordinator SHALL be able to change or remove any
-allocation at any time, including after the project's end date.
+- **GIVEN** a project whose lead is 陈立
+- **WHEN** the coordinator sends the end request
+- **THEN** the request is refused and the project stays `running`
 
-**Traces:** proposal step 3 and key rule "schedule conflict is an inclusive date-range
-intersection"; REQ-001 §5, §6; S9, S19, S22.
+#### Scenario: A closed project cannot be reopened
+
+- **GIVEN** a project already `closed`
+- **WHEN** its lead tries to reopen it or add a post to it
+- **THEN** both attempts are refused and nothing changes
+
+### Requirement: An allocation records a person on a project for an inclusive date range
+
+The system SHALL store an allocation as person × project × inclusive start and end date. It
+SHALL create one on every confirmed assignment, covering the post's dates, and SHALL let the
+coordinator record one by hand for a person staffed outside the app. The coordinator SHALL be
+able to change or remove a hand-entered allocation at any time; removing one deletes the record
+without touching the project or its posts. An allocation written by a confirmation SHALL NOT be
+changed or removed by hand: it goes away only when the person is released or the project ends,
+which also remove the assignment it backs.
+
+**Traces:** proposal step 3 and step 7, key rule "An allocation occupies its dates";
+REQ-001 §5, §6; S4, S24, S39.
+
+#### Scenario: Confirmation writes one allocation for the post's dates
+
+- **GIVEN** a `proposed` recommendation on an `open` post of `Atlas` running 2027-02-01 to
+  2027-06-30
+- **WHEN** the lead confirms it
+- **THEN** the person holds one allocation of `Atlas` from 2027-02-01 to 2027-06-30, with the
+  source `confirmation`
 
 #### Scenario: A hand-recorded allocation is stored
 
-- **GIVEN** person `E100` has no allocation
+- **GIVEN** person `E100` holds no allocation
 - **WHEN** the coordinator records `E100` on `Atlas` from 2027-02-01 to 2027-04-30
 - **THEN** the profile lists that allocation with project, start and end
 
-#### Scenario: An allocation is editable and removable at any time
+#### Scenario: A confirmed allocation cannot be removed by hand
 
-- **GIVEN** an allocation ending 2026-06-30 on a project that closed in 2026
-- **WHEN** the coordinator shortens the range, then removes the allocation
-- **THEN** both changes are accepted and the person's occupancy shrinks accordingly
+- **GIVEN** a person confirmed on an `Atlas` post, holding one allocation with source
+  `confirmation`
+- **WHEN** the coordinator tries to remove that allocation
+- **THEN** the removal is refused with the release-first reason
+- **AND** the assignment, the allocation and the post's remaining headcount are unchanged
 
 ### Requirement: Overlapping allocations are accepted at entry
 
-The system SHALL store two allocations for the same person whose ranges intersect, without an
-error or a warning that blocks the save. Overlap SHALL be reported as a fact — the person is
-occupied — not as a data error.
+The system SHALL store two hand-entered allocations for the same person whose ranges intersect,
+without an error or a warning that blocks the save. Overlap SHALL be reported as a fact — the person is
+occupied on those days — not as a data error, and the coordinator SHALL be able to correct
+either record afterwards.
 
-**Traces:** proposal step 3; REQ-001 §6 note on overlaps; S9.
+**Traces:** proposal step 3; REQ-001 §5, §6; S9.
 
 #### Scenario: Two overlapping allocations coexist
 
@@ -78,10 +110,11 @@ occupied — not as a data error.
 
 For any post, a person SHALL be unavailable when at least one allocation of that person
 intersects `[post.start, post.end]`, the intersection being inclusive on both ends: an
-allocation ending on `post.start` and one starting on `post.end` both block the person.
+allocation ending on `post.start` and one starting on `post.end` both block the person. A post
+whose range does not intersect any allocation SHALL stay open to the person.
 
-**Traces:** proposal key rule "schedule conflict is an inclusive date-range intersection";
-REQ-001 §6 G6; S9.
+**Traces:** proposal key rule "An allocation occupies its dates"; REQ-001 §6 G6, §7 S5, S9;
+S5, S9.
 
 #### Scenario: A boundary day still blocks
 
@@ -89,8 +122,8 @@ REQ-001 §6 G6; S9.
 - **WHEN** a post runs from 2027-01-01 to 2027-03-31
 - **THEN** `E100` is unavailable, with the reason that the person is already allocated
 
-#### Scenario: A release frees the dates immediately
+#### Scenario: A later post stays open
 
-- **GIVEN** the allocation above has been removed
-- **WHEN** the same post is searched again
-- **THEN** `E100` passes the date gate
+- **GIVEN** the same allocation ending 2027-01-01
+- **WHEN** a post runs from 2027-02-01 to 2027-04-30
+- **THEN** `E100` passes G6 and appears in the suitable list

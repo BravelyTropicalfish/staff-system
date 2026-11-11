@@ -109,24 +109,25 @@ const data = {
     { no: 'E1042', name: '顾然', role: 'DEV', level: 'Lead', travel: 'full', active: true,
       skills: { '后端开发': 'Practitioner', '测试': 'Proficient' }, alloc: [] }
   ],
-  ranked: {
+  /* everyone who passes every gate, ordered by name ascending (then employee number) */
+  suitable: {
     'P-1042': [
-      { no: 'E1002', name: '李婷', level: 'Senior', total: 94.8,
-        c: { fit: 29.75, bonus: 15, level: 20, head: 20, travel: 10 },
-        why: '必备技能各高出 1 档；加分技能达标；排期前后 30 天无占用' },
-      { no: 'E1011', name: '赵敏', level: 'Lead', total: 79.8,
-        c: { fit: 29.75, bonus: 15, level: 15, head: 10, travel: 10 },
-        why: '职级高出 1 档；上一项目在开始前 10 天结束，排期余量减半' },
-      { no: 'E1005', name: '张伟', level: 'Senior', total: 71.5,
-        c: { fit: 24.5, bonus: 0, level: 20, head: 20, travel: 7 },
-        why: '必备技能刚好达标；加分技能未达目标；差旅接受度高于要求' }
+      { no: 'E1002', name: '李婷', role: 'DEV', level: 'Senior', travel: 'limited',
+        req: [['后端开发', 'Proficient', 'Practitioner'], ['前端开发', 'Practitioner', 'Advanced beginner']],
+        bonus: [['测试', 'Practitioner', 'Practitioner']] },
+      { no: 'E1005', name: '张伟', role: 'DEV', level: 'Senior', travel: 'full',
+        req: [['后端开发', 'Practitioner', 'Practitioner'], ['前端开发', 'Advanced beginner', 'Advanced beginner']],
+        bonus: [['测试', 'Novice', 'Practitioner']] },
+      { no: 'E1011', name: '赵敏', role: 'DEV', level: 'Lead', travel: 'limited',
+        req: [['后端开发', 'Proficient', 'Practitioner'], ['前端开发', 'Practitioner', 'Advanced beginner']],
+        bonus: [['测试', 'Proficient', 'Practitioner']] }
     ],
     'P-1043': [],
     'P-1044': [],
     'P-1051': [
-      { no: 'E1002', name: '李婷', level: 'Senior', total: 89.5,
-        c: { fit: 24.5, bonus: 15, level: 20, head: 20, travel: 10 },
-        why: '必备技能刚好达标；加分技能达标；排期无占用' }
+      { no: 'E1002', name: '李婷', role: 'DEV', level: 'Senior', travel: 'limited',
+        req: [['后端开发', 'Proficient', 'Proficient']],
+        bonus: [['测试', 'Practitioner', 'Practitioner']] }
     ]
   },
   excluded: {
@@ -137,9 +138,9 @@ const data = {
       { no: 'E1021', name: '吴澄', gate: 'G4 必备技能', why: '后端开发为 Novice，低于 Practitioner' },
       { no: 'E1042', name: '顾然', gate: 'G4 必备技能', why: '未持有 前端开发（required ≥ Advanced beginner）' },
       { no: 'E1024', name: '郑楠', gate: 'G5 差旅', why: '岗位要求 limited，本人仅接受 none' },
-      { no: 'E1001', name: '王宇', gate: 'G6 排期', why: '2027-02-01 ~ 2027-06-30 已被本项目占用' }
+      { no: 'E1001', name: '王宇', gate: 'G6 占用', why: 'Atlas 占用 2027-02-01 ~ 2027-06-30，与本岗位日期相交' }
     ],
-    /* ranked list is empty, so the same people are explained by the fallback gates */
+    /* the suitable list is empty, so the same people are explained by the fallback gates */
     'P-1043': [
       { no: 'E1030', name: '钱进', gate: 'G5 差旅', why: '本角色 QA；岗位要求 full，本人仅接受 limited' },
       { no: 'E1034', name: '冯磊', gate: 'G5 差旅', why: '本角色 QA；岗位要求 full，本人仅接受 limited' },
@@ -147,35 +148,41 @@ const data = {
       { no: 'E1015', name: '孙浩', gate: 'X1 职级未高一级', why: 'PM · Senior，与要求同级，兜底要求至少 Lead' },
       { no: 'E1036', name: '李默', gate: 'X2 域内无 3 分技能', why: 'BA · Lead，但 QA 技能域（测试）内没有 Practitioner 及以上' },
       { no: 'E1011', name: '赵敏', gate: 'G5 差旅', why: 'DEV · Lead 且 测试 Proficient，但仅接受 limited；差旅门槛兜底同样生效' },
-      { no: 'E1001', name: '王宇', gate: 'G6 排期', why: 'DEV · Lead 且 测试 Practitioner，但 2027-02-01 ~ 06-30 已占用' }
+      { no: 'E1001', name: '王宇', gate: 'G6 占用', why: 'DEV · Lead 且 测试 Practitioner，但 Atlas 占用 2027-02-01 ~ 06-30 与本岗位 2027-03-01 ~ 08-31 相交' }
     ],
     'P-1044': [],
     'P-1051': []
   },
-  /* cross-role fallback: filled only when the post role has no ranked candidate */
+  /* cross-role fallback: filled only when the post role has no suitable person */
   fallback: {
     'P-1042': [],
     'P-1043': [
       { no: 'E1042', name: '顾然', role: 'DEV', level: 'Lead', gap: 1, skill: '测试', band: 'Proficient',
-        total: 89.8, c: { fit: 29.75, bonus: 15, level: 15, head: 20, travel: 10 },
+        gates: ['G1 在职', 'X1 职级 +1', 'X2 域内技能', 'G5 差旅', 'G6 占用'],
         why: 'QA 无人通过门槛；职级高 1 档，QA 技能域内 测试 = Proficient' }
     ],
     'P-1044': [],
     'P-1051': []
   },
   recs: [
-    { id: 'R-301', post: 'P-1042', no: 'E1002', name: '李婷', state: 'proposed', score: 94.8,
-      at: '2026-11-08 10:12', by: '刘敏（协调员）', why: '必备技能各高出 1 档；加分技能达标' },
-    { id: 'R-302', post: 'P-1042', no: 'E1011', name: '赵敏', state: 'proposed', score: 79.8,
-      at: '2026-11-08 10:14', by: '刘敏（协调员）', why: '职级高出 1 档；排期余量减半' },
-    { id: 'R-303', post: 'P-1051', no: 'E1002', name: '李婷', state: 'proposed', score: 89.5,
-      at: '2026-11-08 11:03', by: '刘敏（协调员）', why: '必备技能刚好达标；加分技能达标' },
-    { id: 'R-304', post: 'P-1043', no: 'E1042', name: '顾然', state: 'proposed', score: 89.8,
+    { id: 'R-301', post: 'P-1042', no: 'E1002', name: '李婷', state: 'proposed',
+      snap: '通过 G1–G6 · 后端开发 Proficient · 前端开发 Practitioner · 测试 Practitioner',
+      at: '2026-11-08 10:12', by: '刘敏（协调员）', why: '在按姓名排序的合适清单中挑选' },
+    { id: 'R-302', post: 'P-1042', no: 'E1011', name: '赵敏', state: 'proposed',
+      snap: '通过 G1–G6 · 职级 Lead · 后端开发 Proficient · 前端开发 Practitioner',
+      at: '2026-11-08 10:14', by: '刘敏（协调员）', why: '职级高 1 档，同样通过全部门槛' },
+    { id: 'R-303', post: 'P-1051', no: 'E1002', name: '李婷', state: 'proposed',
+      snap: '通过 G1–G6 · 后端开发 Proficient · 测试 Practitioner',
+      at: '2026-11-08 11:03', by: '刘敏（协调员）', why: '该岗位唯一合适的人' },
+    { id: 'R-304', post: 'P-1043', no: 'E1042', name: '顾然', state: 'proposed',
+      snap: 'QA 无人 · 跨角色 DEV +1 档 · 测试 Proficient',
       cross: { role: 'DEV', gap: 1, skill: '测试', band: 'Proficient' },
       at: '2026-11-08 11:20', by: '刘敏（协调员）', why: 'QA 无人通过门槛；跨角色兜底：职级高 1 档，QA 域内 测试 = Proficient' },
-    { id: 'R-298', post: 'P-1042', no: 'E1005', name: '张伟', state: 'rejected', score: 71.5,
-      at: '2026-11-04 15:40', by: '刘敏（协调员）', why: '职级与加分技能未达，项目经理决定先不面' },
-    { id: 'R-295', post: 'P-1042', no: 'E1002', name: '李婷', state: 'voided', score: 94.8,
+    { id: 'R-298', post: 'P-1042', no: 'E1005', name: '张伟', state: 'rejected',
+      snap: '通过 G1–G6 · 测试 Novice（目标 Practitioner，仅供参考）',
+      at: '2026-11-04 15:40', by: '刘敏（协调员）', why: '加分技能未达目标，但仍属合适；项目经理决定先不面' },
+    { id: 'R-295', post: 'P-1042', no: 'E1002', name: '李婷', state: 'voided',
+      snap: '通过 G1–G6 · 后端开发 Proficient · 前端开发 Practitioner · 测试 Practitioner',
       at: '2026-11-06 09:05', by: '刘敏（协调员）', why: '岗位门槛字段被修改，原推荐作废；修改后已重新推荐' }
   ],
   notices: [
@@ -328,17 +335,18 @@ function pageHead(title, lede, tag, actions = '') {
   </div>`;
 }
 
-function scoreBars(c) {
-  const rows = [
-    ['必备技能', c.fit, 35], ['加分技能', c.bonus, 15], ['职级', c.level, 20],
-    ['排期余量', c.head, 20], ['差旅', c.travel, 10]
-  ];
-  return `<div class="bars">${rows.map(([label, v, max]) => {
-    const pct = Math.round((v / max) * 100);
-    return `<div class="bar-line"><span class="muted">${label}</span>
-      <span class="bar-track"><span class="bar-fill${pct < 50 ? ' low' : ''}" style="width:${pct}%"></span></span>
-      <span class="val">${v}/${max}</span></div>`;
-  }).join('')}</div>`;
+function gateChips(gates) {
+  return `<div class="row" style="gap:4px;flex-wrap:wrap">${gates.map((g) =>
+    `<span class="badge badge-outline-primary">${esc(g)}</span>`).join('')}</div>`;
+}
+
+/* the gates already decided the row; the skills only explain why it is here */
+function skillCells(r) {
+  const req = (r.req || []).map(([name, band, need]) =>
+    `<div class="note"><strong>${esc(name)}</strong> ${esc(band)} <span class="muted">≥ ${esc(need)}</span></div>`).join('');
+  const bonus = (r.bonus || []).map(([name, band, target]) =>
+    `<div class="note"><strong>${esc(name)}</strong> ${esc(band)} <span class="muted">目标 ${esc(target)} · 仅供参考</span></div>`).join('');
+  return `${req}${bonus}`;
 }
 
 /* ---------- view: posts + gap ---------- */
@@ -395,7 +403,7 @@ function viewPosts() {
           <thead><tr><th>技能</th><th>类型</th><th>最低 / 目标档位</th></tr></thead>
           <tbody>${p.skills.map((s) => `<tr>
             <td>${esc(s.name)}</td>
-            <td>${s.kind === 'required' ? '<span class="badge badge-solid">required 必备</span>' : '<span class="badge">bonus 加分 · 只影响排序</span>'}</td>
+            <td>${s.kind === 'required' ? '<span class="badge badge-solid">required 必备</span>' : '<span class="badge">bonus 加分 · 仅供参考</span>'}</td>
             <td>${s.band}</td></tr>`).join('')}
           </tbody></table>
       </div>
@@ -411,12 +419,35 @@ function viewPosts() {
       </div>
 
       <div class="btn-row">
-        <button class="btn btn-primary" data-act="goto-match" ${state.role === 'lead' ? 'disabled title="排名只对协调员开放"' : ''}>搜索候选人</button>
+        <button class="btn btn-primary" data-act="goto-match" ${state.role === 'lead' ? 'disabled title="合适清单只对协调员开放"' : ''}>搜索候选人</button>
         <button class="btn" data-act="${state.role === 'lead' ? 'edit-post' : 'noop'}" ${state.role === 'coordinator' ? 'disabled' : ''}>编辑岗位</button>
         <button class="btn btn-danger" data-act="cancel-post" ${state.role === 'coordinator' ? 'disabled' : ''}>取消岗位</button>
       </div>
     </div>
   </div>`;
+
+  const projectRows = visibleProjects().map((id) => project(id));
+  const projectBar = `<div class="card">
+    <div class="card-head"><div><h2>项目</h2>
+      <div class="note">结束项目是终态动作：项目变为 closed，全部岗位变为 cancelled，未决推荐以 post cancelled 作废，该项目的占用全部删除，且不可重开。</div></div>
+      <span class="badge badge-outline-primary">${projectRows.length} 个</span></div>
+    <div class="card-body tight">
+      <table>
+        <thead><tr><th>项目</th><th>项目经理</th><th>起止日期</th><th>状态</th><th>操作</th></tr></thead>
+        <tbody>${projectRows.map((pj) => {
+          const closed = pj.status === 'closed';
+          return `<tr>
+            <td><strong>${esc(pj.name)}</strong><div class="note mono">${esc(pj.id)}</div></td>
+            <td>${esc(pj.lead)}</td>
+            <td class="mono note">${pj.start} ~ ${pj.end}</td>
+            <td>${closed ? '<span class="badge badge-muted">closed 已结束</span>' : '<span class="badge badge-success">running 进行中</span>'}</td>
+            <td>${closed
+              ? '<span class="note">已结束 · 不可重开</span>'
+              : `<button class="btn btn-sm btn-danger" data-act="end-project" data-id="${esc(pj.id)}" ${state.role === 'coordinator' ? 'disabled title="只有本项目的项目经理可以结束"' : ''}>结束项目</button>`}</td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table>
+    </div></div>`;
 
   return pageHead(
     state.role === 'lead' ? '我的岗位' : '岗位与缺口',
@@ -425,10 +456,11 @@ function viewPosts() {
     `<button class="btn btn-primary" data-act="new-post" ${state.role === 'coordinator' ? 'disabled title="岗位由项目经理创建"' : ''}>新建岗位</button>`
   ) + `<div class="stack">
     <div class="grid-3">
-      <div class="card kpi"><div class="card-body"><div class="muted small">仍缺人岗位</div><div class="score mono">${short.length}</div></div></div>
-      <div class="card kpi"><div class="card-body"><div class="muted small">已确认人员</div><div class="score mono">${confirmed}</div></div></div>
-      <div class="card kpi"><div class="card-body"><div class="muted small">待决策推荐</div><div class="score mono">${visibleRecs().filter((r) => r.state === 'proposed').length}</div></div></div>
+      <div class="card kpi"><div class="card-body"><div class="muted small">仍缺人岗位</div><div class="stat mono">${short.length}</div></div></div>
+      <div class="card kpi"><div class="card-body"><div class="muted small">已确认人员</div><div class="stat mono">${confirmed}</div></div></div>
+      <div class="card kpi"><div class="card-body"><div class="muted small">待决策推荐</div><div class="stat mono">${visibleRecs().filter((r) => r.state === 'proposed').length}</div></div></div>
     </div>
+    ${projectBar}
     <div class="grid-kpi">
       <div class="card"><div class="card-body tight">${table}</div></div>
       ${detail}
@@ -438,15 +470,15 @@ function viewPosts() {
 
 /* ---------- view: candidate matching ---------- */
 function viewMatch() {
-  if (state.role === 'lead') return `<div class="banner danger"><span class="ico">×</span><div>项目经理看不到完整候选池与排名，只能看到推荐给你的人。（S23）</div></div>`;
+  if (state.role === 'lead') return `<div class="banner danger"><span class="ico">×</span><div>项目经理看不到完整候选池与合适清单，只能看到推荐给你的人。（S23）</div></div>`;
 
   const p = post(state.post);
-  const ranked = data.ranked[p.id] || [];
+  const suitable = data.suitable[p.id] || [];
   const excluded = data.excluded[p.id] || [];
   const counts = excluded.reduce((m, e) => { m[e.gate] = (m[e.gate] || 0) + 1; return m; }, {});
   const fallback = data.fallback[p.id] || [];
-  /* the fallback opens only when the post role has nobody: empty ranked list */
-  const fallbackOpen = ranked.length === 0;
+  /* the fallback opens only when the post role has nobody: empty suitable list */
+  const fallbackOpen = suitable.length === 0;
   const domain = domainOf(p.role);
   const domainText = domain.length ? domain.join('、') : '空域';
 
@@ -454,15 +486,14 @@ function viewMatch() {
     `<button class="chip${state.post === x.id ? ' active' : ''}" data-act="chip-post" data-id="${x.id}">${x.id} · ${esc(x.title)}</button>`
   ).join('');
 
-  const rankedTable = ranked.length ? `<table>
-    <thead><tr><th>#</th><th>候选人</th><th>职级</th><th class="num">契合度</th><th>分项得分</th><th>理由</th><th></th></tr></thead>
-    <tbody>${ranked.map((r, i) => `<tr>
-      <td class="mono">${i + 1}</td>
+  const suitableTable = suitable.length ? `<table>
+    <thead><tr><th>候选人</th><th>角色 / 职级</th><th>差旅</th><th>通过门槛</th><th>达标技能</th><th></th></tr></thead>
+    <tbody>${suitable.map((r) => `<tr>
       <td><strong>${esc(r.name)}</strong><div class="note mono">${r.no}</div></td>
-      <td>${r.level}</td>
-      <td class="num"><span class="score mono">${r.total}</span></td>
-      <td>${scoreBars(r.c)}</td>
-      <td class="note" style="max-width:220px">${esc(r.why)}</td>
+      <td><span class="badge badge-outline-primary">${esc(r.role)}</span> ${esc(r.level)}</td>
+      <td>${esc(r.travel)}</td>
+      <td>${gateChips(['G1', 'G2', 'G3', 'G4', 'G5', 'G6'])}</td>
+      <td>${skillCells(r)}</td>
       <td><button class="btn btn-sm btn-primary" data-act="recommend" data-no="${r.no}" data-post="${p.id}">推荐</button></td>
     </tr>`).join('')}</tbody></table>`
     : `<div class="empty">没有同角色候选人通过全部门槛。<br>排除原因见下方统计；兜底名单见下方的“跨角色兜底”。</div>`;
@@ -477,26 +508,24 @@ function viewMatch() {
       <div class="banner info"><span class="ico">i</span><div>
         <strong>本角色没有任何人通过门槛。</strong>下面的候选人来自其他角色：职级至少高 1 档（X1），
         且在 ${p.role} 的技能域 <code>${esc(domainText)}</code> 内至少有一项达到 <code>Practitioner</code>
-        及以上（X2）。G1 在职、G5 差旅、G6 排期仍然生效；岗位的 required 技能不是他们的门槛，缺少的那项只计 0 分。
+        及以上（X2）。G1 在职、G5 差旅、G6 占用仍然生效；岗位的 required 技能不是他们的门槛。
       </div></div>
       ${fallback.length ? `<table>
-        <thead><tr><th>#</th><th>候选人</th><th>职级差</th><th class="num">契合度</th><th>分项得分</th><th>达标技能与理由</th><th></th></tr></thead>
-        <tbody>${fallback.map((r, i) => `<tr>
-          <td class="mono">${i + 1}</td>
+        <thead><tr><th>候选人</th><th>角色 / 职级差</th><th>通过门槛</th><th>达标技能</th><th></th></tr></thead>
+        <tbody>${fallback.map((r) => `<tr>
           <td><strong>${esc(r.name)}</strong> <span class="badge badge-outline-primary">${esc(r.role)}</span>
             <div class="note mono">${r.no}</div></td>
           <td class="mono">+${r.gap} 档<div class="note">${esc(r.level)}</div></td>
-          <td class="num"><span class="score mono">${r.total}</span></td>
-          <td>${scoreBars(r.c)}</td>
+          <td>${gateChips(r.gates)}</td>
           <td class="note" style="max-width:230px"><strong>${esc(r.skill)} · ${esc(r.band)}</strong><br>${esc(r.why)}</td>
           <td><button class="btn btn-sm btn-primary" data-act="recommend-cross" data-no="${r.no}" data-post="${p.id}">推荐</button></td>
         </tr>`).join('')}</tbody></table>`
         : `<div class="empty">没有跨角色候选人：没有人职级高于要求，或技能域内没有 Practitioner 及以上的人。<br>驳回数量见下方 X1 / X2 统计。</div>`}
-      <div class="note">两栏分数同为 0–100，但永不跨栏比较；确认、占用与作废规则与同角色推荐完全一致，推荐快照会带上职级差与达标技能。</div>
+      <div class="note">兜底段与主清单一样按姓名排序，永不与主清单混排；确认、占用与作废规则完全一致，推荐快照会带上职级差与达标技能。</div>
     </div></div>` : '';
 
   return pageHead('候选人搜索',
-    '六道硬门槛按顺序判定，第一个不满足的门槛就是排除理由；通过者按五维加权 0–100 排序。本角色无人时，另给一份跨角色兜底名单。',
+    '六道硬门槛按顺序判定，第一个不满足的门槛就是排除理由；通过者全部列出，按姓名升序（同名再按工号），不评分、不排序。本角色无人时，另给一份跨角色兜底名单。',
     'candidate-matching') +
   `<div class="stack">
     <div class="chips">${chips}</div>
@@ -506,13 +535,13 @@ function viewMatch() {
         <div class="row">
           ${p.skills.map((s) => `<span class="badge ${s.kind === 'required' ? '' : 'badge-muted'}">${esc(s.name)} ≥ ${s.band}${s.kind === 'bonus' ? ' · bonus' : ''}</span>`).join('')}
         </div></div>
-      <div class="card-body tight">${rankedTable}</div>
+      <div class="card-body tight">${suitableTable}</div>
     </div>
 
     ${crossRole}
 
     <div class="card">
-      <div class="card-head"><h2>被排除的人</h2><span class="note">不计入排名，只解释原因</span></div>
+      <div class="card-head"><h2>被排除的人</h2><span class="note">不在合适清单里，只解释原因；上方按门槛给出排除计数</span></div>
       <div class="card-body stack">
         <div class="gate-grid">${Object.entries(counts).map(([g, n]) =>
           `<div class="gate-cell"><div class="n mono">${n}</div><div class="l">${esc(g)}</div></div>`).join('')}</div>
@@ -522,7 +551,7 @@ function viewMatch() {
           <td class="note">${esc(e.why)}</td></tr>`).join('')}</tbody></table>
       </div>
     </div>
-    <div class="note">排序并列时先比必备技能得分，再按姓名；同分同富余只是展示顺序不同。</div>
+    <div class="note">顺序只来自姓名：按姓名升序，同名时再按工号。技能更强不会让谁排到前面，清单本身不带偏好。</div>
   </div>`;
 }
 
@@ -546,8 +575,8 @@ function viewRecs() {
         ${badge(r.state)}
       </div>
       <div class="row" style="gap:16px">
-        <div><div class="note">推荐时快照</div><div class="score mono">${r.score}</div></div>
-        <div class="note" style="max-width:520px">${esc(r.why)}${r.cross ? `<br>兜底证据：${esc(r.cross.role)} · 职级 +${r.cross.gap} 档 · ${esc(r.cross.skill)} = ${esc(r.cross.band)}（快照随行，确认规则不变）` : ''}<br>快照是推荐那一刻的分数与理由，之后数据变化不会改写它。</div>
+        <div style="max-width:520px"><div class="note">推荐时快照 · 门槛结果与达标技能</div><div>${esc(r.snap)}</div></div>
+        <div class="note" style="max-width:420px">${esc(r.why)}${r.cross ? `<br>兜底证据：${esc(r.cross.role)} · 职级 +${r.cross.gap} 档 · ${esc(r.cross.skill)} = ${esc(r.cross.band)}（快照随行，确认规则不变）` : ''}<br>快照是推荐那一刻的门槛结果与技能档位，之后数据变化不会改写它，也不含任何分数。</div>
       </div>
       <div class="btn-row">
         ${state.role === 'lead' && r.state === 'proposed' ? `
@@ -570,7 +599,7 @@ function viewRecs() {
 
   return pageHead(state.role === 'lead' ? '推荐给我的人' : '推荐与确认',
     state.role === 'lead'
-      ? '只有推荐到本项目的候选人才可见，带分数与理由；确认前系统会重跑「在职」与「排期」两条门槛。'
+      ? '只有推荐到本项目的候选人才可见，带推荐时的门槛结果与达标技能；确认前系统会重跑「在职」与「占用」两条门槛。'
       : '推荐由协调员发起，确认或驳回由项目经理执行；确认后写入指派与占用。',
     'staffing-confirmation') +
   `<div class="stack">
@@ -764,13 +793,32 @@ document.addEventListener('click', (e) => {
     case 'person': state.person = el.dataset.no; break;
     case 'catalog-tab': state.catalogTab = el.dataset.tab; break;
     case 'batch': state.batch = el.dataset.id; break;
-    case 'recommend': toast('已生成推荐：分数快照与理由快照已记录（原型不落库）'); break;
+    case 'recommend': toast('已生成推荐：门槛结果与达标技能已记为推荐快照（原型不落库）'); break;
     case 'recommend-cross': toast('已生成跨角色推荐：快照带上角色、职级差与达标技能（原型不落库）'); break;
     case 'change-domain': toast('已改技能域：只影响之后的搜索，不改写已存人员、岗位与推荐快照（原型不落库）'); break;
     case 'confirm': toast('已确认：写入指派与占用，剩余名额 −1（原型不落库）'); break;
     case 'reject': toast('已驳回：人员恢复可用（原型不落库）'); break;
     case 'withdraw': toast('已撤回推荐（原型不落库）'); break;
     case 'release': toast('已解除：指派与占用删除，名额重新开放（原型不落库）'); break;
+    case 'end-project': {
+      const pj = project(el.dataset.id);
+      const posts = data.posts.filter((x) => x.project === pj.id);
+      const released = posts.reduce((n, x) => n + x.confirmed.length, 0);
+      if (!window.confirm(`结束 ${pj.name}？\n项目变为 closed，${posts.length} 个岗位取消，${released} 名已确认人员释放，未决推荐作废，且不可重开。`)) return;
+      pj.status = 'closed';
+      posts.forEach((x) => {
+        x.cancelled = true;
+        (x.confirmed || []).forEach((c) => {
+          const per = person(c.no);
+          if (per) per.alloc = per.alloc.filter((al) => al.project !== pj.id);
+        });
+        x.confirmed = [];
+      });
+      data.recs.filter((r) => r.state === 'proposed' && posts.some((x) => x.id === r.post))
+        .forEach((r) => { r.state = 'voided'; r.why = '项目结束，岗位取消（post cancelled）'; });
+      toast('项目已结束：岗位取消、人员释放、项目不可重开');
+      break;
+    }
     case 'toggle-catalog': toast('已切换启用状态：不影响已存数据（原型不落库）'); break;
     case 'cancel-post': toast('无法取消：请先解除已确认人员（原型）'); break;
     case 'new-post': state.view = 'posts'; toast('新建岗位（原型仅示意）'); break;

@@ -17,7 +17,8 @@ Finding people for a project has to weigh:
 
 1. whether the employee's role, level and skills meet the post requirement;
 2. whether the employee's existing and future project arrangements fit this
-   project's dates;
+   project's dates — an allocation covers an inclusive range, so a later
+   arrangement that does not overlap stays open (restored at rev 11);
 3. whether the employee accepts the travel the project requires.
 
 Follow-up facts stated by the product owner:
@@ -30,19 +31,19 @@ Follow-up facts stated by the product owner:
 
 | # | Question | Answer |
 |---|---|---|
-| 1 | How does the system "weigh" fit? | Ranked scoring with reasons; coordinator still decides. |
+| 1 | How does the system "weigh" fit? | No scoring: everyone who passes the gates is listed by name with the gate and skill reasons; the coordinator still decides. |
 | 2 | Where do people, skills, travel and schedule data live? | Maintained inside the Staffing system for the MVP; no external sync. |
-| 3 | Does confirmation write back the employee's schedule? | Yes — a confirmed person is occupied for the post dates and blocks later matches. |
+| 3 | Does confirmation write back the employee's schedule? | Yes — a confirmed person is occupied for the post's inclusive dates, and any post whose dates intersect that range is closed to them (rev 11); the project end still releases the whole team. |
 | 4 | How many OpenSpec changes for this MVP? | One end-to-end change. |
 | 5 | Which fields arrive by report? | Full person master data: employee number, name, email, role, job level, travel willingness, active flag, skills with levels. |
 | 6 | Merge or full snapshot on import? | Incremental merge; a skill missing from the report keeps its stored level; nothing is deleted. |
 | 7 | What happens to invalid rows? | All-or-nothing (reversed at rev 6): one invalid row rejects the whole batch, nothing is written, and every bad row is listed. |
 | 8 | Unknown employee / unknown skill? | An unknown employee number in `people` creates the person; an unknown skill is an error that rejects the batch. |
 | 9 | Person key in the report? | Employee number, unique; a blank or duplicated number rejects the batch. |
-| 10 | Are all post skills hard gates? | No — skills are `required` (gate) or `bonus` (score only). |
+| 10 | Are all post skills hard gates? | No — skills are `required` (gate) or `bonus` (informational only). |
 | 11 | Can one person be pending on several posts? | Yes; the first confirmation wins and the other pending recommendations are voided. |
 | 12 | What may change after a post has candidates? | Pending recommendations are voided on edit; confirmed assignments stay; cancelling needs a release first. |
-| 13 | How much can a project lead see? | Only the candidates recommended to them, with score and reasons; never the full pool or ranking. |
+| 13 | How much can a project lead see? | Only the candidates recommended to them, with the reason snapshot; never the full pool or suitable list. |
 | 14 | May a post's dates change while someone is confirmed? | No — the confirmed people must be released first. The same lock covers role, required job level, `required` skill rows and travel. |
 | 15 | May a post's headcount change while someone is confirmed? | It may rise (and the post returns to `partially filled`); it may not fall below the confirmed count. |
 | 16 | May a referenced role or skill be renamed or deleted? | No. The name freezes once referenced and the item is deactivated instead of deleted. |
@@ -71,8 +72,10 @@ are split into `required` and `bonus`; a person may be pending on several posts 
 first-confirmation-wins; editing or cancelling a post voids pending recommendations
 while confirmed assignments stay; and a project lead sees only the candidates
 recommended to them. Defaults recorded without a question: the coordinator owns
-projects and their lead; allocations may overlap when entered by hand; confirmation
-re-runs the active and schedule gates.
+projects and their lead; hand-entered allocations may overlap; confirmation re-runs the
+active and schedule gates. Both defaults were dropped at rev 10 and restored at rev 11:
+hand-entered allocations may overlap as a fact, and confirmation re-runs the active and schedule
+gates.
 
 ## Requirement change — rev 4 (2026-11-10)
 
@@ -102,7 +105,7 @@ consequences worth naming:
 - The role wording changes: what the first brief called "product" is now `BA`, and
   "design" is now `UX`. The count stays five; only the labels move.
 - Both scales switch from anonymous numbers to named bands — four job levels and five
-  proficiency bands — so every gate, score and import rule becomes a rank comparison
+  proficiency bands — so every gate and import rule becomes a band comparison
   over band names, and the UI never shows a number.
 
 The skill catalog is seeded with six items; the catalog stays extensible, and the role
@@ -144,12 +147,12 @@ no person of that role qualifies, also be shown people of other roles whose job 
 least one band above the requirement and who hold at least one skill of the post role's skill
 domain at `Practitioner` or above. Three answers pinned its shape:
 
-- It opens only when the same-role ranked list is empty, and is not shown at all as soon as one
-  same-role candidate qualifies; the two lists are never merged or re-sorted together.
+- It opens only when the same-role suitable list is empty, and is not shown at all as soon as
+  one same-role candidate qualifies; the two lists are never merged or re-sorted together.
 - Both conditions are hard: a person level with the requirement is not above it, and a skill
   outside the post role's domain never admits anyone.
-- Cross-role people get their own section, are scored on the same five criteria, and never rank
-  above a same-role candidate.
+- Cross-role people get their own section, ordered by name like the main list, and are never
+  mixed into it.
 
 Consequences: the skill catalog gains one **role skill domain** per skill (`DEV` → 后端开发,
 前端开发; `QA` → 测试; `BA` → 业务分析; `PM` → 项目管理; `UX` → UI设计; a role added later
@@ -160,6 +163,9 @@ untouched, so "one person, one role" still holds. REQ-001 is at revision 8; scen
 S1–S38. Open item **D8** records that the MVP caps neither the section nor the confirmation.
 
 ## Spec alignment — P2 (2026-11-10)
+
+> Superseded at rev 9. The scoring values and the criterion formula below were deleted with the
+> fit score itself; the notice-list and wording corrections still stand.
 
 P2 added no new product requirement. Four numbers that rev 6 left loose were pinned so the
 delta could be tested, and one scoring criterion changed shape after a testable AC exposed a
@@ -183,12 +189,29 @@ Two wording corrections went with them: the write-back is specified as "every ef
 none" instead of "in one transaction", and project status became explicitly informational
 in `proposal.md` step 3 so the delta does not read as a silent scope addition.
 
-The result lives in `openspec/changes/add-staffing-mvp/specs/staffing/*/spec.md` — six
-capabilities, 41 requirements, 89 scenarios — with `dov-ac-review.md` (all Pass) and
-`consistency-lint.md` (Partial, capped by the absent `openspec` CLI). G1 is still open.
-Revision 8 added one requirement each to `people-pool` (the role skill domain) and
-`candidate-matching` (the fallback tier) plus one scenario to `staffing-confirmation` (the
-evidence carried into the snapshot), which is where the 39 / 78 grew to 41 / 89.
+The result lived in `openspec/changes/add-staffing-mvp/specs/staffing/*/spec.md` — six
+capabilities, 41 requirements, 89 scenarios at rev 8 — with `dov-ac-review.md` (all Pass) and
+`consistency-lint.md` (Partial, capped by the absent `openspec` CLI). G1 was signed at rev 8
+(2026-11-10, IO raylen, SA kyrie).
+
+## Requirement change — rev 9 (2026-11-11)
+
+*No scoring: passing the gates is the whole definition of suitable.* The product owner removed
+the five-criterion 0–100 fit score, its weights and the score-ordered ranking. Everyone who
+passes the gates appears in one list, ordered by name ascending and then by employee number, and
+every row shows the gates passed and the skills that qualify the person with their bands; a
+`bonus` shortfall is informational and affects neither eligibility nor order.
+
+Consequences: `candidate-matching` loses its score requirement and its ranking requirement and
+gains one "suitable people are listed by name, never scored" requirement with three scenarios,
+so the capability goes from 6/18 to 5/14. The recommendation snapshot becomes the gates passed
+plus the qualifying skills, and the coordinator's gap view shows that snapshot instead of a
+score. The fallback tier is unchanged in shape — it still opens only when the same-role list is
+empty and still applies X1 (one band higher) and X2 (a domain skill at `Practitioner` or above)
+— but its section is now ordered by name like the main list. Counts: **40 requirements / 85
+scenarios**, with the Chinese translations updated in step. REQ-001 is at revision 9; scenarios
+remain S1–S38. The rev 8 G1 record is untouched and does not cover rev 9, so a new G1 record is
+required. Rev 10 raised the set to 40 / 89 with S1–S40.
 
 ### Added after the prototype review (2026-11-10)
 
@@ -198,6 +221,63 @@ outcome. The delta now says the role is a single reference that is never a set, 
 scenario "A person holds exactly one role", and rejects a multi-role cell as a row error rather
 than splitting it. This is a clarification that matches the agreed vocabulary, not a new
 capability.
+
+## Requirement change — rev 10 (2026-11-11)
+
+*Dates do not schedule a person; the project does.* The product owner replaced the date-range
+occupancy with a project-wide lock. The imported report already carries every skill, so travel
+stays a willingness band and matching never compares dates; once a person is staffed on a
+project they are locked for every other post, whatever the dates. The project lead ends the
+project when it is over, which releases the whole team. Three answers pinned the shape: the lock
+covers the whole project and ignores dates; release happens at the project end, with a
+single-person release kept as the narrower path; the end is terminal and a closed project never
+reopens.
+
+Consequences: `allocation` becomes person × project with no start or end date, at most one
+active allocation per person, and gains the terminal project end — the project becomes `closed`,
+its posts become `cancelled`, pending recommendations are voided with `post cancelled`, and its
+allocations are deleted in one step; only the project's lead may do it and the coordinator may
+not. G6 now reads "no active allocation in a project that has not ended".
+`staffing-confirmation` replaces "Sequential postings stay allowed" with "A second confirmation
+waits for the project to end"; `post-requirement` names the project end as the one exception to
+its cancel refusal; `people-pool` lists the current allocation without dates and `people-import`
+keeps allocations unchanged. Counts: **40 requirements / 89 scenarios** (`allocation` 5/11,
+`candidate-matching` 5/15, `staffing-confirmation` 9/18, the rest unchanged), Chinese
+translations updated in step. REQ-001 is at revision 10; scenarios now run S1–S40. The rev 8 G1
+record is untouched and covers neither rev 9 nor rev 10, so a new G1 record is required.
+
+## Requirement change — rev 11 (2026-11-11)
+
+*The dates matter after all — but only where they overlap.* After discussion the product owner
+restored the date-range allocation inside the rev 10 model: an allocation is person × project ×
+an inclusive start and end date, written by confirmation for the post's dates or entered by the
+coordinator for someone staffed outside the app. G6 blocks only a range that intersects
+`[post.start, post.end]`, closed at both ends, so a person can follow one project with another
+and a later post stays open. Two answers pinned the shape: the dates are back in matching rather
+than display-only, and the project end stays as agreed at rev 10 — the lead ends it once, the
+project becomes terminal, and the whole team is released.
+
+Consequences: `allocation` returns to a date range (5 requirements / 10 scenarios) and keeps the
+terminal project end; `candidate-matching` G6 becomes an intersection test; `staffing-confirmation`
+replaces "A second confirmation waits for the project to end" with "No two assignments cover the
+same day", allowing disjoint assignments and refusing an intersecting one with `person taken`;
+`post-requirement` states that the post's dates become the range of the allocation it writes;
+`people-pool` lists every allocation whose end date is today or later with project, start and end;
+`people-import` keeps allocations unchanged. Counts at the end of the review fixes: **40
+requirements / 90 scenarios** (`allocation` 5/11, `candidate-matching` 5/15, `people-import`
+5/15, `people-pool` 8/17, `post-requirement` 8/14, `staffing-confirmation` 9/18), Chinese
+translations updated in step. REQ-001 is at revision 11; scenarios run S1–S40. The rev 8 G1
+record stayed untouched; rev 11 carries its own G1 record, signed 2026-11-11 by IO raylen and SA
+kyrie, so P3 can start.
+
+Review fixes inside rev 11 (no new revision number): the seventh lint pass found three
+contradictions that appear only when the rev 11 dates meet actions written for rev 10. Voiding
+is now scoped to recommendations whose post dates intersect the new allocation, so a proposal
+on a disjoint post survives a confirmation; the allocation behind a confirmation can no longer
+be removed by hand, only by releasing the person or ending the project; the active-role check
+runs on creation and on a role change, so a post whose role was deactivated still saves its
+title; a cancelled post is read-only; and the profile shows past allocations as well as current
+ones. Two scenarios were added and one grew a disjoint case.
 
 ## Not yet decided (deferred, non-blocking)
 

@@ -10,8 +10,11 @@ and the rules that protect an already-confirmed person.
 The system SHALL store a post as project, optional title, role, required job level band,
 headcount, start date, end date and travel requirement. A save SHALL be refused unless
 headcount is a whole number of at least 1, the date range is not inverted, and the role is an
-active catalog role. A refused save SHALL store nothing. The post carries its own dates; the
+active catalog role — checked on creation and whenever the role itself changes; a post whose
+stored role was deactivated afterwards SHALL keep saving with that same role. A refused save SHALL store nothing. The post carries its own dates; the
 spec does not require them to sit inside the project's dates (open item D7 in the proposal).
+The dates place the post on the calendar and, once the post is confirmed, become the range
+of the allocation it writes. The post itself creates no allocation while it stays unfilled.
 
 **Traces:** proposal step 4; REQ-001 §3, §5; S1.
 
@@ -28,12 +31,19 @@ spec does not require them to sit inside the project's dates (open item D7 in th
 - **WHEN** the lead submits headcount 1.5
 - **THEN** the save is refused with a reason naming the whole-number rule
 
+#### Scenario: A deactivated role does not block the title
+
+- **GIVEN** a post whose role was deactivated after its last person was released
+- **WHEN** the lead changes the post's title and saves
+- **THEN** the save succeeds and the stored role is unchanged
+- **AND** switching the role to another deactivated role is refused
+
 ### Requirement: Skill requirements are typed and banded
 
 The system SHALL store zero or more skill requirements per post, each with a catalog skill, a
 kind (`required` or `bonus`) and a minimum or target proficiency band. A `required` row SHALL
-gate eligibility; a `bonus` row SHALL only contribute to the fit score. A post SHALL be
-savable with no skill requirement at all.
+gate eligibility; a `bonus` row SHALL be informational only and SHALL NOT affect eligibility
+or list order. A post SHALL be savable with no skill requirement at all.
 
 **Traces:** proposal step 4; REQ-001 §3, §5; S1, S18.
 
@@ -43,7 +53,7 @@ savable with no skill requirement at all.
   `Practitioner`
 - **WHEN** the post is saved and shown
 - **THEN** the two rows carry their own kind and band, and the bonus row is labelled as
-  ranking only
+  informational
 
 #### Scenario: A post without skills is valid
 
@@ -80,7 +90,7 @@ required job level, `required` skill rows, start date, end date or travel requir
 refusal SHALL name the confirmed people and require their release first, and SHALL change
 nothing — neither the post nor its pending recommendations nor its assignments.
 
-**Traces:** proposal step 7 and key rule "post lifecycle"; REQ-001 §6
+**Traces:** proposal step 7 and key rule "Post lifecycle"; REQ-001 §6
 post lifecycle; S20.
 
 #### Scenario: Dates cannot move under a confirmed person
@@ -139,7 +149,9 @@ recommendation in the coordinator's notice list.
 
 The system SHALL refuse to cancel a post that has an active assignment and SHALL name the
 people to release first. Once no assignment remains, a cancellation SHALL be accepted and
-SHALL void every pending recommendation with reason `post cancelled`.
+SHALL void every pending recommendation with reason `post cancelled`. Ending the project is
+the one exception, cancelling its posts without a release first (see the allocation spec). A
+`cancelled` post SHALL be read-only: no field, headcount or skill row may change.
 
 **Traces:** proposal step 7; REQ-001 §6; S21.
 

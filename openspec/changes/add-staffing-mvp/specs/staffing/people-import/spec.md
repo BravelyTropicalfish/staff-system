@@ -26,13 +26,13 @@ data row in either sheet SHALL be rejected.
 
 - **GIVEN** a workbook holding only a `people` sheet
 - **WHEN** the coordinator uploads it
-- **THEN** the upload is refused and no batch is recorded as applied
+- **THEN** the upload is refused and no batch is recorded at all
 
 #### Scenario: An empty workbook is refused
 
 - **GIVEN** a workbook whose two sheets carry headers only
 - **WHEN** the coordinator uploads it
-- **THEN** the upload is refused with a reason naming the empty file
+- **THEN** the upload is refused with a reason naming the empty file, and no batch is recorded
 
 ### Requirement: An import is atomic
 
@@ -42,7 +42,7 @@ flag flipped — SHALL record the batch as `rejected`, and SHALL list every fail
 sheet, row number, key value and reason. A batch whose rows all validate SHALL be recorded as
 `applied`.
 
-**Traces:** proposal step 2 and key rule "an import is all-or-nothing"; REQ-001 §5.1; S12,
+**Traces:** proposal step 2 and key rule "An import is all-or-nothing"; REQ-001 §5.1; S12,
 S14, S29, S31.
 
 #### Scenario: One bad row blocks the whole file
