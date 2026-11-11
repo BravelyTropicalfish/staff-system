@@ -162,9 +162,9 @@ recommendation 或 project 行。真实 HR 报表的列名映射（D4）集中�
 
 ## 8. 前端
 
-路由：`/imports`、`/people`、`/people/:employeeNo`、`/projects`、`/projects/:projectId`、
+路由：`/login`、`/imports`、`/people`、`/people/:employeeNo`、`/projects`、`/projects/:projectId`、
 `/projects/:projectId/posts/new`、`/posts/:postId`、`/posts/:id/candidates`、`/catalogs`、`/notices`。
-登录即 `/` 处的壳页。协调员可见目录、导入与全量人员池；
+登录就是 `/login`：需求把登录定义为「带角色的轻量种子账号」，所以这一屏提交 `POST /api/session` 后回到壳页——它在 G2 之后补上，因为在那之前唯一的入口是手工调用那条路由。协调员可见目录、导入与全量人员池；
 lead 只看自己的项目、岗位、被推荐的候选与缺口视图。隐藏控件只是便利——**服务端守卫才是权威**
 （`security-baseline` 1）。档位一律显示名称，任何地方都不出现数字熟练度。
 

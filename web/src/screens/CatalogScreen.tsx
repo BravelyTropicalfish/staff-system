@@ -84,7 +84,7 @@ export default function CatalogScreen() {
       <section className="mt-6 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
         <h2 className="text-base font-semibold text-slate-900">Roles</h2>
         {roles === null ? (
-          <p className="mt-2 text-sm text-slate-600">Reading the roles…</p>
+          error === null ? <p className="mt-2 text-sm text-slate-600">Reading the roles…</p> : null
         ) : (
           <table className="mt-2 w-full text-left text-sm">
             <thead className="text-slate-500">
@@ -141,7 +141,7 @@ export default function CatalogScreen() {
       <section className="mt-6 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
         <h2 className="text-base font-semibold text-slate-900">Skills</h2>
         {skills === null ? (
-          <p className="mt-2 text-sm text-slate-600">Reading the skills…</p>
+          error === null ? <p className="mt-2 text-sm text-slate-600">Reading the skills…</p> : null
         ) : (
           <table className="mt-2 w-full text-left text-sm">
             <thead className="text-slate-500">

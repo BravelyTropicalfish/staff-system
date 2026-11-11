@@ -54,7 +54,7 @@ export default function NoticesScreen() {
         </p>
       ) : null}
       {notices === null ? (
-        <p className="mt-2 text-sm text-slate-600">Reading the notices…</p>
+        error === null ? <p className="mt-2 text-sm text-slate-600">Reading the notices…</p> : null
       ) : notices.length === 0 ? (
         <p className="mt-4 text-sm text-slate-600">Nothing was lost.</p>
       ) : (

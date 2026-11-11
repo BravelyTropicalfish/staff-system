@@ -191,9 +191,11 @@ recorded in `docs/knowledge/architecture/adr-002-import-workbook.md`.
 
 ## 8. Front end
 
-Routes: `/imports`, `/people`, `/people/:employeeNo`, `/projects`, `/projects/:projectId`,
+Routes: `/login`, `/imports`, `/people`, `/people/:employeeNo`, `/projects`, `/projects/:projectId`,
 `/projects/:projectId/posts/new`, `/posts/:postId`, `/posts/:id/candidates`, `/catalogs`, `/notices`.
-Signing in is the shell at `/`. The coordinator sees catalogs, import and the full pool; a lead sees
+Signing in is `/login`: the requirement calls sign-in "a lightweight seeded account with a role", so
+the screen posts `POST /api/session` and goes to the shell — added after G2, because without it the
+only way in was posting that route by hand. The coordinator sees catalogs, import and the full pool; a lead sees
 only their own projects, the posts, the recommended candidates and the gap view. Hiding a control is convenience only — the server guard is the
 authority (`security-baseline` 1). Bands render as names; no numeric proficiency appears anywhere.
 

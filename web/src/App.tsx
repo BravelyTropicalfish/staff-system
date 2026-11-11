@@ -2,6 +2,7 @@ import { Link, Navigate, Route, Routes } from 'react-router-dom';
 import CandidatesScreen from './screens/CandidatesScreen';
 import CatalogScreen from './screens/CatalogScreen';
 import ImportScreen from './screens/ImportScreen';
+import LoginScreen from './screens/LoginScreen';
 import NoticesScreen from './screens/NoticesScreen';
 import PeopleScreen from './screens/PeopleScreen';
 import PersonScreen from './screens/PersonScreen';
@@ -19,6 +20,11 @@ function Shell() {
         from here.
       </p>
       <ul className="mt-4 space-y-1 text-sm">
+        <li>
+          <Link className="text-slate-800 underline" to="/login">
+            Sign in (or switch account)
+          </Link>
+        </li>
         <li>
           <Link className="text-slate-800 underline" to="/imports">
             Import the workbook
@@ -53,6 +59,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Shell />} />
+      <Route path="/login" element={<LoginScreen />} />
       <Route path="/imports" element={<ImportScreen />} />
       <Route path="/people" element={<PeopleScreen />} />
       <Route path="/people/:employeeNo" element={<PersonScreen />} />

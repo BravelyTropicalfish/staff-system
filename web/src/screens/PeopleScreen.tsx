@@ -52,7 +52,7 @@ export default function PeopleScreen() {
 
       <section className="mt-6 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
         {people === null ? (
-          <p className="text-sm text-slate-600">Reading the pool…</p>
+          error === null ? <p className="text-sm text-slate-600">Reading the pool…</p> : null
         ) : people.length === 0 ? (
           <p className="text-sm text-slate-600">No person has been imported yet.</p>
         ) : (

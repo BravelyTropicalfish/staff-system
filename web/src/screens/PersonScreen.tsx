@@ -52,7 +52,7 @@ export default function PersonScreen() {
         </p>
       ) : null}
       {person === null ? (
-        <p className="mt-4 text-sm text-slate-600">Reading the profile…</p>
+        error === null ? <p className="mt-4 text-sm text-slate-600">Reading the profile…</p> : null
       ) : (
         <>
           <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900">

@@ -52,7 +52,7 @@ export default function ProjectsScreen() {
 
       <section className="mt-6 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
         {projects === null ? (
-          <p className="text-sm text-slate-600">Reading the projects…</p>
+          error === null ? <p className="text-sm text-slate-600">Reading the projects…</p> : null
         ) : projects.length === 0 ? (
           <p className="text-sm text-slate-600">No project has been created yet.</p>
         ) : (
