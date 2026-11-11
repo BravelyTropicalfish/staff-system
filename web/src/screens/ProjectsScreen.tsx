@@ -38,9 +38,9 @@ export default function ProjectsScreen() {
   useEffect(() => load(), [load]);
 
   return (
-    <main className="mx-auto max-w-4xl p-8">
-      <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Projects</h1>
-      <p className="mt-1 text-sm text-slate-600">
+    <div>
+      <h1>Projects</h1>
+      <p className="lede">
         A lead sees its own projects; the coordinator sees all of them. Nothing here ends a project
         — that is its own screen's one terminal action.
       </p>
@@ -50,11 +50,11 @@ export default function ProjectsScreen() {
         </p>
       ) : null}
 
-      <section className="mt-6 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+      <section className="card">
         {projects === null ? (
-          error === null ? <p className="text-sm text-slate-600">Reading the projects…</p> : null
+          error === null ? <p className="note">Reading the projects…</p> : null
         ) : projects.length === 0 ? (
-          <p className="text-sm text-slate-600">No project has been created yet.</p>
+          <p className="note">No project has been created yet.</p>
         ) : (
           <table className="w-full text-left text-sm">
             <thead className="text-slate-500">
@@ -84,6 +84,6 @@ export default function ProjectsScreen() {
           </table>
         )}
       </section>
-    </main>
+    </div>
   );
 }

@@ -171,7 +171,7 @@ export default function PostForm({
       <fieldset className="rounded border border-slate-200 p-3">
         <legend className={`${LABEL} px-1`}>Skills</legend>
         {value.skills.length === 0 ? (
-          <p className="text-sm text-slate-600">No skill requirement.</p>
+          <p className="note">No skill requirement.</p>
         ) : (
           <ul className="space-y-2">
             {value.skills.map((row, index) => (

@@ -38,9 +38,9 @@ export default function PeopleScreen() {
   useEffect(() => load(), [load]);
 
   return (
-    <main className="mx-auto max-w-4xl p-8">
-      <h1 className="text-2xl font-semibold tracking-tight text-slate-900">People</h1>
-      <p className="mt-1 text-sm text-slate-600">
+    <div>
+      <h1>People</h1>
+      <p className="lede">
         Everyone the last applied workbook left in the pool. The list is read-only: person data
         arrives by import.
       </p>
@@ -50,11 +50,11 @@ export default function PeopleScreen() {
         </p>
       ) : null}
 
-      <section className="mt-6 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+      <section className="card">
         {people === null ? (
-          error === null ? <p className="text-sm text-slate-600">Reading the pool…</p> : null
+          error === null ? <p className="note">Reading the pool…</p> : null
         ) : people.length === 0 ? (
-          <p className="text-sm text-slate-600">No person has been imported yet.</p>
+          <p className="note">No person has been imported yet.</p>
         ) : (
           <table className="w-full text-left text-sm">
             <thead className="text-slate-500">
@@ -89,6 +89,6 @@ export default function PeopleScreen() {
           </table>
         )}
       </section>
-    </main>
+    </div>
   );
 }

@@ -43,9 +43,9 @@ export default function NoticesScreen() {
   };
 
   return (
-    <main className="mx-auto max-w-3xl p-8">
-      <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Notices</h1>
-      <p className="mt-1 text-sm text-slate-600">
+    <div>
+      <h1>Notices</h1>
+      <p className="lede">
         Every proposal that was lost, and why. An entry stays until it is dismissed.
       </p>
       {error ? (
@@ -77,6 +77,6 @@ export default function NoticesScreen() {
           ))}
         </ul>
       )}
-    </main>
+    </div>
   );
 }

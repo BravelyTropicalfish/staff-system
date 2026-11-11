@@ -164,7 +164,7 @@ recommendation 或 project 行。真实 HR 报表的列名映射（D4）集中�
 
 路由：`/login`、`/imports`、`/people`、`/people/:employeeNo`、`/projects`、`/projects/:projectId`、
 `/projects/:projectId/posts/new`、`/posts/:postId`、`/posts/:id/candidates`、`/catalogs`、`/notices`。
-登录就是 `/login`：需求把登录定义为「带角色的轻量种子账号」，所以这一屏提交 `POST /api/session` 后回到壳页——它在 G2 之后补上，因为在那之前唯一的入口是手工调用那条路由。协调员可见目录、导入与全量人员池；
+登录就是 `/login`：需求把登录定义为「带角色的轻量种子账号」，所以这一屏提交 `POST /api/session` 后回到壳页——它在 G2 之后补上，因为在那之前唯一的入口是手工调用那条路由。外壳来自原型而不是新设计：232px 侧边栏（分组链接按角色过滤）、56px 顶栏（面包屑 + 账号）、无 max-width 的满宽视图，各屏直接用原型自己的类名（`.card`、`.kpi`、`.gate-grid`、`.grid-2`、`.grid-3`）。写本节时并没有要求二者一致，偏差就是这样发生的；T32 把它收口，现在每屏都在外壳内。协调员可见目录、导入与全量人员池；
 lead 只看自己的项目、岗位、被推荐的候选与缺口视图。隐藏控件只是便利——**服务端守卫才是权威**
 （`security-baseline` 1）。档位一律显示名称，任何地方都不出现数字熟练度。
 

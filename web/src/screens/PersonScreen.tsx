@@ -40,7 +40,7 @@ export default function PersonScreen() {
   useEffect(() => load(), [load]);
 
   return (
-    <main className="mx-auto max-w-4xl p-8">
+    <div>
       <p className="text-sm">
         <Link className="text-slate-700 underline" to="/people">
           People
@@ -58,10 +58,10 @@ export default function PersonScreen() {
           <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900">
             {person.name}
           </h1>
-          <p className="mt-1 text-sm text-slate-600">{profileNote(person)}</p>
+          <p className="lede">{profileNote(person)}</p>
 
-          <section className="mt-6 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-            <h2 className="text-base font-semibold text-slate-900">Master data</h2>
+          <section className="card">
+            <h2>Master data</h2>
             <dl className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
               <dt className="text-slate-500">Employee</dt>
               <dd className="text-slate-800">{person.employeeNo}</dd>
@@ -76,8 +76,8 @@ export default function PersonScreen() {
             </dl>
           </section>
 
-          <section className="mt-6 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-            <h2 className="text-base font-semibold text-slate-900">Skills</h2>
+          <section className="card">
+            <h2>Skills</h2>
             {person.skills.length === 0 ? (
               <p className="mt-2 text-sm text-slate-600">No skill is recorded for this person.</p>
             ) : (
@@ -89,8 +89,8 @@ export default function PersonScreen() {
             )}
           </section>
 
-          <section className="mt-6 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-            <h2 className="text-base font-semibold text-slate-900">Occupancy</h2>
+          <section className="card">
+            <h2>Occupancy</h2>
             {person.allocations.length === 0 ? (
               <p className="mt-2 text-sm text-slate-600">
                 No allocation is recorded for this person.
@@ -105,6 +105,6 @@ export default function PersonScreen() {
           </section>
         </>
       )}
-    </main>
+    </div>
   );
 }

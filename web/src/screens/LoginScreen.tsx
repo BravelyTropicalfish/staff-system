@@ -33,54 +33,61 @@ export default function LoginScreen() {
   };
 
   return (
-    <main className="mx-auto max-w-md p-8">
-      <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Sign in</h1>
-      <p className="mt-1 text-sm text-slate-600">
-        The three seeded accounts share the demo password; the role decides what the screens offer.
-      </p>
-
-      {problem === null ? null : (
-        <p className="mt-4 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
-          {problem}
+    <div className="login-wrap">
+      <div className="login-card">
+        <div className="login-head">
+          <span className="brand-mark">S</span>
+          <div>
+            <div className="login-title">Sign in to Staffing</div>
+            <div className="note">One account, one person, one role</div>
+          </div>
+        </div>
+        <p className="login-sub">
+          The seeded accounts are the sign-in mechanism: the workbook holds people, the catalog holds
+          roles, and the role of the account decides which screens the server lets you use.
         </p>
-      )}
 
-      <form className="mt-6 space-y-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm" onSubmit={submit}>
-        <label className="block text-sm">
-          <span className="text-slate-700">Account</span>
-          <input
-            className="mt-1 w-full rounded border border-slate-300 px-3 py-2"
-            name="username"
-            autoComplete="username"
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
-          />
-        </label>
-        <label className="block text-sm">
-          <span className="text-slate-700">Password</span>
-          <input
-            className="mt-1 w-full rounded border border-slate-300 px-3 py-2"
-            name="password"
-            type="password"
-            autoComplete="current-password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-          />
-        </label>
-        <button
-          className="rounded bg-slate-900 px-3 py-2 text-sm font-medium text-white disabled:opacity-50"
-          type="submit"
-          disabled={busy}
-        >
-          {busy ? 'Signing in…' : 'Sign in'}
-        </button>
-      </form>
+        {problem === null ? null : (
+          <div className="banner danger">
+            <span className="ico">!</span>
+            <span>{problem}</span>
+          </div>
+        )}
 
-      <p className="mt-4 text-sm text-slate-600">
-        Seeded accounts: <code className="text-slate-800">coordinator</code>,{' '}
-        <code className="text-slate-800">lead.one</code>, <code className="text-slate-800">lead.two</code>{' '}
-        — password <code className="text-slate-800">staffing-demo</code>.
-      </p>
-    </main>
+        <form className="stack" onSubmit={submit}>
+          <div className="field">
+            <label htmlFor="username">Account</label>
+            <input
+              className="input"
+              id="username"
+              name="username"
+              autoComplete="username"
+              value={username}
+              onChange={(event) => setUsername(event.target.value)}
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="password">Password</label>
+            <input
+              className="input"
+              id="password"
+              name="password"
+              type="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+            />
+          </div>
+          <button className="btn btn-primary" type="submit" disabled={busy}>
+            {busy ? 'Signing in…' : 'Sign in'}
+          </button>
+        </form>
+
+        <div className="login-foot">
+          Seeded accounts: <code>coordinator</code>, <code>lead.one</code>, <code>lead.two</code> —
+          password <code>staffing-demo</code>. Signing in again switches the account.
+        </div>
+      </div>
+    </div>
   );
 }

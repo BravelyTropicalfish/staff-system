@@ -71,8 +71,8 @@ export default function PostFormScreen() {
   };
 
   return (
-    <main className="mx-auto max-w-3xl p-8">
-      <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
+    <div>
+      <h1>
         A new post on project {projectId}
       </h1>
       {loadError ? (
@@ -99,6 +99,6 @@ export default function PostFormScreen() {
       ) : loadError ? null : (
         <p className="mt-2 text-sm text-slate-600">Reading the catalogs…</p>
       )}
-    </main>
+    </div>
   );
 }

@@ -25,11 +25,14 @@ test.describe('the harness', () => {
 test.describe('the shell', () => {
   test.use({ storageState: LEAD_ONE });
 
-  test('a signed-in lead opens it with the links to the screens', async ({ page }) => {
+  test('a signed-in lead opens it with the links the role can use', async ({ page }) => {
     await page.goto('/');
 
     await expect(page.getByRole('heading', { name: 'Staffing' })).toBeVisible();
+    // The sidebar is the prototype's: grouped, and filtered by the role the server named, so a lead
+    // is offered the projects and nothing a lead would be refused on.
     await expect(page.getByRole('link', { name: 'Projects and their posts' })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'The people pool' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'The people pool' })).toHaveCount(0);
+    await expect(page.getByRole('navigation').getByText('Delivery', { exact: true })).toBeVisible();
   });
 });

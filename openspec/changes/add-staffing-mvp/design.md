@@ -195,7 +195,12 @@ Routes: `/login`, `/imports`, `/people`, `/people/:employeeNo`, `/projects`, `/p
 `/projects/:projectId/posts/new`, `/posts/:postId`, `/posts/:id/candidates`, `/catalogs`, `/notices`.
 Signing in is `/login`: the requirement calls sign-in "a lightweight seeded account with a role", so
 the screen posts `POST /api/session` and goes to the shell — added after G2, because without it the
-only way in was posting that route by hand. The coordinator sees catalogs, import and the full pool; a lead sees
+only way in was posting that route by hand. The chrome is the prototype's, not a fresh design: a
+232px sidebar with the grouped links filtered by the role, a 56px top bar with the breadcrumb and the
+account, and a full-width view with no max-width, with the screens using the prototype's own class
+names (`.card`, `.kpi`, `.gate-grid`, `.grid-2`, `.grid-3`). `design.md` did not require that match
+when this section was written, which is how the drift happened; T32 closes it and every screen now
+lives inside the shell. The coordinator sees catalogs, import and the full pool; a lead sees
 only their own projects, the posts, the recommended candidates and the gap view. Hiding a control is convenience only — the server guard is the
 authority (`security-baseline` 1). Bands render as names; no numeric proficiency appears anywhere.
 

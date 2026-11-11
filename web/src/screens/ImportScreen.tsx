@@ -82,16 +82,16 @@ export default function ImportScreen() {
   const writable = viewer !== null && canImport(viewer.role);
 
   return (
-    <main className="mx-auto max-w-4xl p-8">
-      <h1 className="text-2xl font-semibold tracking-tight text-slate-900">People import</h1>
-      <p className="mt-1 text-sm text-slate-600">
+    <div>
+      <h1>People import</h1>
+      <p className="lede">
         One workbook, two sheets — <code>people</code> and <code>skills</code>. A file whose shape
         is wrong is refused and leaves no batch behind; a file with bad rows is recorded as a
         rejected batch, writes nothing and lists every row to fix.
       </p>
 
-      <section className="mt-6 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-        <h2 className="text-base font-semibold text-slate-900">Upload</h2>
+      <section className="card">
+        <h2>Upload</h2>
         <div className="mt-2 flex items-center gap-2">
           <input
             ref={picker}
@@ -127,8 +127,8 @@ export default function ImportScreen() {
         ) : null}
       </section>
 
-      <section className="mt-6 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-        <h2 className="text-base font-semibold text-slate-900">Batch history</h2>
+      <section className="card">
+        <h2>Batch history</h2>
         {batches === null ? (
           <p className="mt-2 text-sm text-slate-600">Reading the batches…</p>
         ) : batches.length === 0 ? (
@@ -158,6 +158,6 @@ export default function ImportScreen() {
           </ul>
         )}
       </section>
-    </main>
+    </div>
   );
 }

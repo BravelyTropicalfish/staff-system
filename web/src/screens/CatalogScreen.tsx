@@ -69,9 +69,9 @@ export default function CatalogScreen() {
   const editable = viewer !== null && canEditCatalogs(viewer.role);
 
   return (
-    <main className="mx-auto max-w-4xl p-8">
-      <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Catalogs</h1>
-      <p className="mt-1 text-sm text-slate-600">
+    <div>
+      <h1>Catalogs</h1>
+      <p className="lede">
         A role or a skill that a person or a post already points at can neither be renamed nor
         removed; deactivation is the only way back, and it hides the item from new work only.
       </p>
@@ -81,8 +81,8 @@ export default function CatalogScreen() {
         </p>
       ) : null}
 
-      <section className="mt-6 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-        <h2 className="text-base font-semibold text-slate-900">Roles</h2>
+      <section className="card">
+        <h2>Roles</h2>
         {roles === null ? (
           error === null ? <p className="mt-2 text-sm text-slate-600">Reading the roles…</p> : null
         ) : (
@@ -138,8 +138,8 @@ export default function CatalogScreen() {
         )}
       </section>
 
-      <section className="mt-6 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-        <h2 className="text-base font-semibold text-slate-900">Skills</h2>
+      <section className="card">
+        <h2>Skills</h2>
         {skills === null ? (
           error === null ? <p className="mt-2 text-sm text-slate-600">Reading the skills…</p> : null
         ) : (
@@ -202,6 +202,6 @@ export default function CatalogScreen() {
           Signed in as {viewer.displayName}; only the coordinator writes a catalog.
         </p>
       ) : null}
-    </main>
+    </div>
   );
 }

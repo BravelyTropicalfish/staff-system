@@ -106,3 +106,37 @@ five required CI checks are still the merge condition.
 the dev-only advisories are still moderate, the Playwright HTML report is still not produced, the
 action runtimes are still deprecated, and the candidate screen still cannot post a recommendation
 from the UI.
+
+## Addendum 2 — 2026-11-11, the UI never followed the prototype
+
+**What prompted it.** A reviewer asked why the running application does not look like
+`prototype/` — the clickable mock that P2 produced. Measured, the gap was total: the prototype draws a
+232px sidebar, a 56px top bar with the breadcrumb and the account chip, a full-width view with no
+max-width, `radius 0.6rem` cards, KPI tiles and an eight-cell gate strip; the application rendered a
+centred `max-w-4xl` column per screen with no chrome at all.
+
+**Root cause, stated plainly.** `design.md` §8 fixed the routes and the wording each screen shows and
+never required visual parity, and no task in `tasks.md` carried it as an acceptance criterion, so
+every screen was built to be functionally correct and nothing else. Worse, at T26 the missing `/login` route
+was used to *correct* the prototype's route list — the direction is backwards: a design artifact is
+the visual contract, and a missing screen is a defect to fix, not a reason to rewrite the design.
+
+**What changed.** T32: the prototype's tokens and class names now live in `web/src/index.css`, the
+chrome in `web/src/components/AppShell.tsx` (a layout route around every screen), the grouped and
+role-filtered links plus the breadcrumb rule in `web/src/lib/nav.ts`, KPI tiles on the project screen
+and the gate strip on the candidate screen, and the sign-in screen restyled as the prototype's
+centred card. No requirement, spec or wording asserted by a test changed — the shell spec was only
+tightened to assert that a lead is offered the projects and *not* the pool.
+
+**Re-verification.** `npm test` 46/46 (five new readings in `tests/nav.test.ts`), `npx playwright test`
+18/18, `npm run lint` 0 problems, `npx tsc --noEmit` clean, `npm run build` green. Geometry measured
+rather than eyeballed: at a 1574px viewport `.sidebar` is 232px, `.topbar` 56px, `.view` 1342px with
+`padding: 14px 24px`, `scrollWidth === clientWidth` on all six screens, eight `.gate-cell` nodes with
+the first reading `1 / G1 active`, and zero console errors.
+
+**Decision: unchanged — Pass.** Additive presentation work, proven at unit, browser and measurement
+level.
+
+**Risks updated.** R7 (new): the overview at `/` shows three descriptive cards rather than numeric
+KPI tiles, and the breadcrumb names the area (`Delivery / Project`) instead of the entity
+(`Projects / Atlas`) — both cosmetic, both open.

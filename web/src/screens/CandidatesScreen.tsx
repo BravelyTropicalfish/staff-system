@@ -48,12 +48,12 @@ function Section({
   children: ReactNode;
 }) {
   return (
-    <section className="mt-6 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <h2 className="text-base font-semibold text-slate-900">{title}</h2>
-        {note ? <p className="text-xs text-slate-500">{note}</p> : null}
+    <section className="card">
+      <div className="card-head">
+        <h2>{title}</h2>
+        {note ? <p className="note">{note}</p> : null}
       </div>
-      {children}
+      <div className="card-body tight">{children}</div>
     </section>
   );
 }
@@ -174,52 +174,71 @@ function Ready({ postId, search }: { postId: string; search: CandidateSearch }) 
   const chips = gateChips(search);
 
   return (
-    <main className="mx-auto max-w-5xl p-8">
-      <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
-        Candidates for post {postId}
-      </h1>
-      <p className="mt-1 text-sm text-slate-600">
-        {search.suitable.length} suitable · {search.excluded.length} excluded
-      </p>
+    <div>
+      <div className="page-head">
+        <div>
+          <h1>Candidates for post {postId}</h1>
+          <div className="lede">
+            {search.suitable.length} suitable · {search.excluded.length} excluded
+          </div>
+        </div>
+      </div>
 
-      <Section
-        title="Suitable people"
-        note="Everyone who passes every gate, by name. No score, no ranking."
-      >
-        {search.suitable.length === 0 ? (
-          <p className="mt-3 text-sm text-slate-600">Nobody of the post's role passes the gates.</p>
-        ) : (
-          <SuitableTable rows={search.suitable} />
-        )}
-      </Section>
+      <section className="card" style={{ marginBottom: 12 }}>
+        <div className="card-head">
+          <h2>Gate counts</h2>
+          <p className="note">How many people each gate turned away, in the spec's order.</p>
+        </div>
+        <div className="card-body">
+          <div className="gate-grid">
+            {chips.map((chip) => (
+              <div className="gate-cell" key={chip.code}>
+                <div className="n mono">{chip.count}</div>
+                <div className="l">
+                  {chip.code} {chip.name}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-      {cross.shown ? (
-        <Section title="Cross-role fallback" note={cross.reason}>
-          {cross.rows.length === 0 ? (
-            <p className="mt-3 text-sm text-slate-600">
-              Nobody of another role qualifies either — the exclusion list says why.
-            </p>
+      <div className="stack">
+        <Section
+          title="Suitable people"
+          note="Everyone who passes every gate, by name. No score, no ranking."
+        >
+          {search.suitable.length === 0 ? (
+            <p className="empty">Nobody of the post's role passes the gates.</p>
           ) : (
-            <FallbackTable rows={cross.rows} />
+            <SuitableTable rows={search.suitable} />
           )}
         </Section>
-      ) : null}
 
-      <Section title="Excluded people" note="Each person's first failing gate, and how many failed each gate.">
-        <div className="mt-2 flex flex-wrap gap-1">
-          {chips.map((chip) => (
-            <Chip key={chip.code} muted={chip.count === 0}>
-              {chip.code} {chip.name} × {chip.count}
-            </Chip>
-          ))}
-        </div>
-        {search.excluded.length === 0 ? (
-          <p className="mt-3 text-sm text-slate-600">Nobody was excluded.</p>
-        ) : (
-          <ExclusionTable rows={search.excluded} />
-        )}
-      </Section>
-    </main>
+        {cross.shown ? (
+          <Section title="Cross-role fallback" note={cross.reason}>
+            {cross.rows.length === 0 ? (
+              <p className="empty">
+                Nobody of another role qualifies either — the exclusion list says why.
+              </p>
+            ) : (
+              <FallbackTable rows={cross.rows} />
+            )}
+          </Section>
+        ) : null}
+
+        <Section
+          title="Excluded people"
+          note="Each person's first failing gate, and how many failed each gate."
+        >
+          {search.excluded.length === 0 ? (
+            <p className="empty">Nobody was excluded.</p>
+          ) : (
+            <ExclusionTable rows={search.excluded} />
+          )}
+        </Section>
+      </div>
+    </div>
   );
 }
 
@@ -259,19 +278,19 @@ export default function CandidatesScreen() {
 
   if (state.kind === 'loading') {
     return (
-      <main className="mx-auto max-w-5xl p-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
+      <div>
+        <h1>
           Candidates for post {postId}
         </h1>
         <p className="mt-2 text-sm text-slate-600">Searching the pool…</p>
-      </main>
+      </div>
     );
   }
 
   if (state.kind === 'failed') {
     return (
-      <main className="mx-auto max-w-5xl p-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
+      <div>
+        <h1>
           Candidates for post {postId}
         </h1>
         <div className="mt-4 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800">
@@ -280,7 +299,7 @@ export default function CandidatesScreen() {
             {state.code}: {state.message}
           </p>
         </div>
-      </main>
+      </div>
     );
   }
 
