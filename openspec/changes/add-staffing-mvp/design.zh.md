@@ -197,7 +197,7 @@ coordinator、lead.one、lead.two 登录——任务写的是两个账号，测�
 失败来看见。当前一次运行在 280 条测试上读到行 1489/1489、分支 537/537。
 
 CI 跑 `pipeline-gates` 要求的五项检查；`.github/workflows/ci.yml` 由本次变更创建，
-`docs/feedback/verification-commands.md` 在同一变更内填好（规则 7）。工作流不含部署作业。仓库原先没有
+`docs/feedback/verification-commands.md` 在同一变更内填好（规则 7）。工作流不含部署作业。有两条环境事实是第一次运行后才确认、而不是假定出来的：`web/package-lock.json` 必须解析到 `registry.npmjs.org`，因为 runner 访问不到开发机所用的内网 Artifactory（npm 会把公网主机换回配置的镜像源，所以本地安装照旧可用）；`dependency-review-action` 只在公开仓库上运行，因为私有库未开 Advanced Security 时 GitHub 会直接回「Dependency review is not supported on this repository」，那里仍以 `npm audit --audit-level=high` 作为强制扫描。仓库原先没有
 linter，因此 lint 检查引入的是 ESLint 9（配 `typescript-eslint`），而不是一条恒过的命令；
 `web/playwright.config.ts` 在 Windows 用 `mvnw.cmd`、其余平台用 `./mvnw`，好让验收作业能在 Linux 上拉起后端。
 

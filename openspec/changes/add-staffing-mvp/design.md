@@ -232,7 +232,13 @@ reads 1489/1489 lines and 537/537 branches across 280 tests.
 
 CI runs the five required checks from `pipeline-gates`; `.github/workflows/ci.yml` is created by
 this change and `docs/feedback/verification-commands.md` is filled in the same change (rule 7). The
-workflow holds no deploy job. The repository had no linter, so ESLint 9 (with `typescript-eslint`)
+workflow holds no deploy job. Two environment facts were learned from the first run rather than
+assumed: `web/package-lock.json` has to resolve from `registry.npmjs.org`, because a runner cannot
+reach the internal Artifactory that the developer machine uses (npm rewrites the public host back to
+the configured mirror, so a local install keeps working); and `dependency-review-action` runs only on
+a public repository, because GitHub answers "Dependency review is not supported on this repository"
+for a private one without Advanced Security, so `npm audit --audit-level=high` stays the enforced
+scan there. The repository had no linter, so ESLint 9 (with `typescript-eslint`)
 was added for the lint check instead of a command that always passes; `web/playwright.config.ts`
 picks `mvnw.cmd` on Windows and `./mvnw` elsewhere, so the acceptance job starts the backend on
 Linux.
