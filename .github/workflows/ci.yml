@@ -76,7 +76,10 @@ jobs:
 
   acceptance:
     name: acceptance tests
-    runs-on: ubuntu-latest
+    # Pinned to the image Playwright 1.65 documents its system dependencies for. `ubuntu-latest`
+    # began migrating to Ubuntu 26 on 2026-10-19, and `playwright install --with-deps` fails there
+    # after ~12 minutes of apt work (runs #9 and #10), while the same suite is green on 24.04.
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       # The API scenarios and the JaCoCo 100% line/branch gate on `domain/` and `api/`.
