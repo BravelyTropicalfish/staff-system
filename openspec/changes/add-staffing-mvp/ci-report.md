@@ -100,3 +100,21 @@ None in the in-scope run.
 - ✅ E1 全绿 → `/sdd:g2-decision-record` (G2 still needs the human sign-off; the agent does not sign).
 - `/sdd:deploy-artifacts` does not apply: the change's Non-Goal 10 rules out a deployment pipeline,
   so there is no CD phase to report.
+
+## Update — 2026-11-11, an API-verified run
+
+The unauthenticated REST quota reset later the same evening, so the run above was re-read through the
+API instead of the page. `GET /repos/BravelyTropicalfish/staff-system/actions/runs?per_page=1` answers
+run **#7** (`id=43014284135`) on `842feff`, `conclusion: success`, and its jobs endpoint gives:
+
+| Job | Conclusion | Duration |
+|---|---|---|
+| lint | success | 49s |
+| type check | success | 49s |
+| unit tests | success | 110s |
+| acceptance tests | success | 142s |
+| dependency and security scan | success | 47s |
+
+Runs #5 (`56c96b9`) and #6 (`36b37d4`) are `success` as well, and #2 (`5cd17a0`) and #4 (`452680c`) are
+the `failure` runs the history section above explains. With this update E1 is API-queried for the head
+commit rather than page-read; the human confirmation stands as the record for the run #5 snapshot.
