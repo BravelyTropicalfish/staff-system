@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import HeadcountSection from '../components/HeadcountSection';
 import Modal from '../components/Modal';
 import { ApiError, getJson } from '../lib/api';
 import type { PersonProfile, PersonSummary } from '../lib/people';
 import { occupancyLabel, profileNote } from '../lib/people';
+import type { SignedIn } from '../lib/session';
 
 function failure(error: unknown): string {
   return error instanceof ApiError ? `${error.code}: ${error.message}` : String(error);
@@ -83,8 +85,10 @@ function PersonDetail({ profile }: { profile: PersonProfile }) {
 }
 
 /**
- * 人员池：一张整宽的人员表。点一行打开该人的档案弹窗 —— 人员数据只由报表导入，所以表与弹窗
- * 都只读，界面上没有任何写入口。
+ * 人员池：顶上是人数报表（只对协调员），下面是一张整宽的人员表。点一行打开该人的档案弹窗 ——
+ * 人员数据只由报表导入，所以表与弹窗都只读，界面上没有任何写入口。
+ *
+ * <p>报表区块只在角色确认为协调员之后才挂载：项目经理这一页不应该发出报表请求。
  */
 export default function PeopleScreen() {
   const [people, setPeople] = useState<PersonSummary[] | null>(null);
@@ -92,6 +96,23 @@ export default function PeopleScreen() {
   const [open, setOpen] = useState<string | null>(null);
   const [profile, setProfile] = useState<PersonProfile | null>(null);
   const [profileError, setProfileError] = useState<string | null>(null);
+  const [role, setRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    getJson<SignedIn>('/api/session')
+      .then((me) => {
+        if (!cancelled) {
+          setRole(me.role);
+        }
+      })
+      .catch(() => {
+        // 没有会话时页面本来就会在下面报 401，这里不必再画一条。
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const load = useCallback(() => {
     let cancelled = false;
@@ -148,6 +169,8 @@ export default function PeopleScreen() {
         </div>
       </div>
       {error ? <div className="banner danger">{error}</div> : null}
+
+      {role === 'COORDINATOR' ? <HeadcountSection /> : null}
 
       <section className="card">
         <div className="card-body tight">

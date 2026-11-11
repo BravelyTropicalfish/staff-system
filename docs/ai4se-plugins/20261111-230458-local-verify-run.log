@@ -1,0 +1,1288 @@
+===== CMD: cd web && npm run lint =====
+cwd: /c/Users/ZENGKY/Desktop/New folder/baseline
+started: 2026-11-11T23:04:58+0800
+
+> staffing-web@0.0.1 lint
+> eslint src tests e2e
+
+exit: 0
+ended: 2026-11-11T23:05:04+0800
+
+===== CMD: cd web && npx tsc --noEmit =====
+cwd: /c/Users/ZENGKY/Desktop/New folder/baseline
+started: 2026-11-11T23:05:05+0800
+exit: 0
+ended: 2026-11-11T23:05:12+0800
+
+===== CMD: cd backend && ./mvnw -B -DskipTests compile =====
+cwd: /c/Users/ZENGKY/Desktop/New folder/baseline
+started: 2026-11-11T23:05:13+0800
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------< com.example:staffing >------------------------
+[INFO] Building staffing 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (prepare-agent) @ staffing ---
+[INFO] argLine set to "-javaagent:C:\\Users\\ZENGKY\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\ZENGKY\\Desktop\\New folder\\baseline\\backend\\target\\jacoco.exec"
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ staffing ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ staffing ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.897 s
+[INFO] Finished at: 2026-11-11T23:05:29+08:00
+[INFO] ------------------------------------------------------------------------
+exit: 0
+ended: 2026-11-11T23:05:30+0800
+
+===== CMD: cd backend && ./mvnw -B verify =====
+cwd: /c/Users/ZENGKY/Desktop/New folder/baseline
+started: 2026-11-11T23:05:31+0800
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------< com.example:staffing >------------------------
+[INFO] Building staffing 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (prepare-agent) @ staffing ---
+[INFO] argLine set to "-javaagent:C:\\Users\\ZENGKY\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=C:\\Users\\ZENGKY\\Desktop\\New folder\\baseline\\backend\\target\\jacoco.exec"
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ staffing ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ staffing ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ staffing ---
+[INFO] Copying 1 resource from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ staffing ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ staffing ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.example.staffing.api.AllocationApiTest
+23:05:49.368 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.example.staffing.api.AllocationApiTest]: AllocationApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+23:05:49.603 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.example.staffing.StaffingApplication for test class com.example.staffing.api.AllocationApiTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.5)
+
+2026-11-11T23:05:50.066+08:00  INFO 31468 --- [           main] c.e.staffing.api.AllocationApiTest       : Starting AllocationApiTest using Java 21.0.11 with PID 31468 (started by zengky in C:\Users\ZENGKY\Desktop\New folder\baseline\backend)
+2026-11-11T23:05:50.068+08:00  INFO 31468 --- [           main] c.e.staffing.api.AllocationApiTest       : No active profile set, falling back to 1 default profile: "default"
+2026-11-11T23:05:50.947+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-11T23:05:50.977+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 21 ms. Found 0 JPA repository interfaces.
+2026-11-11T23:05:51.639+08:00  INFO 31468 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
+2026-11-11T23:05:51.654+08:00  INFO 31468 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-11-11T23:05:51.655+08:00  INFO 31468 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-11-11T23:05:51.725+08:00  INFO 31468 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-11-11T23:05:51.726+08:00  INFO 31468 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1637 ms
+2026-11-11T23:05:51.820+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-11-11T23:05:52.099+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:staffing-83fe9a7b-ab1f-47cb-b8cd-132199783191 user=SA
+2026-11-11T23:05:52.101+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-11-11T23:05:52.302+08:00  INFO 31468 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-11T23:05:52.370+08:00  INFO 31468 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.13.Final
+2026-11-11T23:05:52.408+08:00  INFO 31468 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-11-11T23:05:52.679+08:00  INFO 31468 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-11T23:05:52.755+08:00  INFO 31468 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-11T23:05:53.094+08:00  INFO 31468 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-11T23:05:53.099+08:00  INFO 31468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T23:05:53.410+08:00  WARN 31468 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-11-11T23:05:53.438+08:00  WARN 31468 --- [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 4f830472-32bf-4e02-8bb8-4b7476fc7837
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-11-11T23:05:53.446+08:00  INFO 31468 --- [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-11-11T23:05:54.241+08:00  INFO 31468 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 62056 (http) with context path '/'
+2026-11-11T23:05:54.248+08:00  INFO 31468 --- [           main] c.e.staffing.api.AllocationApiTest       : Started AllocationApiTest in 4.463 seconds (process running for 6.474)
+Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build what is described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (C:\Users\ZENGKY\.m2\repository\net\bytebuddy\byte-buddy-agent\1.15.11\byte-buddy-agent-1.15.11.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+2026-11-11T23:05:55.220+08:00  INFO 31468 --- [o-auto-1-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-11-11T23:05:55.220+08:00  INFO 31468 --- [o-auto-1-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-11-11T23:05:55.221+08:00  INFO 31468 --- [o-auto-1-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-11-11T23:05:56.329+08:00  INFO 31468 --- [           main] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-11-11T23:05:56.339+08:00  INFO 31468 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-11-11T23:05:56.342+08:00  INFO 31468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T23:05:56.344+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-11-11T23:05:56.346+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.273 s -- in com.example.staffing.api.AllocationApiTest
+[INFO] Running com.example.staffing.api.AuthTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in com.example.staffing.api.AuthTest
+[INFO] Running com.example.staffing.api.CandidateApiTest
+2026-11-11T23:05:56.358+08:00  INFO 31468 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.staffing.api.CandidateApiTest]: CandidateApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:05:56.359+08:00  INFO 31468 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.staffing.StaffingApplication for test class com.example.staffing.api.CandidateApiTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.5)
+
+2026-11-11T23:05:56.382+08:00  INFO 31468 --- [           main] c.example.staffing.api.CandidateApiTest  : Starting CandidateApiTest using Java 21.0.11 with PID 31468 (started by zengky in C:\Users\ZENGKY\Desktop\New folder\baseline\backend)
+2026-11-11T23:05:56.382+08:00  INFO 31468 --- [           main] c.example.staffing.api.CandidateApiTest  : No active profile set, falling back to 1 default profile: "default"
+2026-11-11T23:05:56.623+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-11T23:05:56.631+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 6 ms. Found 0 JPA repository interfaces.
+2026-11-11T23:05:56.679+08:00  INFO 31468 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
+2026-11-11T23:05:56.679+08:00  INFO 31468 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-11-11T23:05:56.680+08:00  INFO 31468 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-11-11T23:05:56.711+08:00  INFO 31468 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-11-11T23:05:56.711+08:00  INFO 31468 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 328 ms
+2026-11-11T23:05:56.724+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2026-11-11T23:05:56.726+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection conn10: url=jdbc:h2:mem:staffing-3cdb92b5-45dc-4b1a-a619-6e041f6c3a6e user=SA
+2026-11-11T23:05:56.726+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2026-11-11T23:05:56.749+08:00  INFO 31468 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-11T23:05:56.751+08:00  INFO 31468 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-11-11T23:05:56.758+08:00  INFO 31468 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-11T23:05:56.759+08:00  INFO 31468 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-2)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-11T23:05:56.771+08:00  INFO 31468 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-11T23:05:56.771+08:00  INFO 31468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T23:05:56.807+08:00  WARN 31468 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-11-11T23:05:56.810+08:00  WARN 31468 --- [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 1796d9f3-9d3b-488f-b002-618d94e42bda
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-11-11T23:05:56.810+08:00  INFO 31468 --- [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-11-11T23:05:56.888+08:00  INFO 31468 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 50391 (http) with context path '/'
+2026-11-11T23:05:56.890+08:00  INFO 31468 --- [           main] c.example.staffing.api.CandidateApiTest  : Started CandidateApiTest in 0.528 seconds (process running for 9.116)
+2026-11-11T23:05:56.910+08:00  INFO 31468 --- [o-auto-2-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-11-11T23:05:56.910+08:00  INFO 31468 --- [o-auto-2-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-11-11T23:05:56.911+08:00  INFO 31468 --- [o-auto-2-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-11-11T23:05:58.149+08:00  INFO 31468 --- [           main] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-11-11T23:05:58.156+08:00  INFO 31468 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-11-11T23:05:58.157+08:00  INFO 31468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T23:05:58.157+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown initiated...
+2026-11-11T23:05:58.158+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown completed.
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.802 s -- in com.example.staffing.api.CandidateApiTest
+[INFO] Running com.example.staffing.api.CatalogApiTest
+2026-11-11T23:05:58.162+08:00  INFO 31468 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.staffing.api.CatalogApiTest]: CatalogApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:05:58.163+08:00  INFO 31468 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.staffing.StaffingApplication for test class com.example.staffing.api.CatalogApiTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.5)
+
+2026-11-11T23:05:58.180+08:00  INFO 31468 --- [           main] c.example.staffing.api.CatalogApiTest    : Starting CatalogApiTest using Java 21.0.11 with PID 31468 (started by zengky in C:\Users\ZENGKY\Desktop\New folder\baseline\backend)
+2026-11-11T23:05:58.181+08:00  INFO 31468 --- [           main] c.example.staffing.api.CatalogApiTest    : No active profile set, falling back to 1 default profile: "default"
+2026-11-11T23:05:58.354+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-11T23:05:58.360+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 5 ms. Found 0 JPA repository interfaces.
+2026-11-11T23:05:58.392+08:00  INFO 31468 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
+2026-11-11T23:05:58.392+08:00  INFO 31468 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-11-11T23:05:58.392+08:00  INFO 31468 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-11-11T23:05:58.419+08:00  INFO 31468 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-11-11T23:05:58.419+08:00  INFO 31468 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 238 ms
+2026-11-11T23:05:58.433+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Starting...
+2026-11-11T23:05:58.435+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-3 - Added connection conn20: url=jdbc:h2:mem:staffing-54438655-a14c-4dbd-8c3b-bac228f886e6 user=SA
+2026-11-11T23:05:58.435+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Start completed.
+2026-11-11T23:05:58.449+08:00  INFO 31468 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-11T23:05:58.452+08:00  INFO 31468 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-11-11T23:05:58.460+08:00  INFO 31468 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-11T23:05:58.462+08:00  INFO 31468 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-3)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-11T23:05:58.471+08:00  INFO 31468 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-11T23:05:58.472+08:00  INFO 31468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T23:05:58.504+08:00  WARN 31468 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-11-11T23:05:58.506+08:00  WARN 31468 --- [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: eef6db3b-1805-433f-9773-68b331654e1c
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-11-11T23:05:58.507+08:00  INFO 31468 --- [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-11-11T23:05:58.567+08:00  INFO 31468 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 64830 (http) with context path '/'
+2026-11-11T23:05:58.568+08:00  INFO 31468 --- [           main] c.example.staffing.api.CatalogApiTest    : Started CatalogApiTest in 0.403 seconds (process running for 10.795)
+2026-11-11T23:05:58.588+08:00  INFO 31468 --- [o-auto-3-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-11-11T23:05:58.588+08:00  INFO 31468 --- [o-auto-3-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-11-11T23:05:58.589+08:00  INFO 31468 --- [o-auto-3-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-11-11T23:06:00.276+08:00  INFO 31468 --- [           main] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-11-11T23:06:00.283+08:00  INFO 31468 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-11-11T23:06:00.284+08:00  INFO 31468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T23:06:00.285+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Shutdown initiated...
+2026-11-11T23:06:00.286+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Shutdown completed.
+[INFO] Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.126 s -- in com.example.staffing.api.CatalogApiTest
+[INFO] Running com.example.staffing.api.ConfirmationApiTest
+2026-11-11T23:06:00.290+08:00  INFO 31468 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.staffing.api.ConfirmationApiTest]: ConfirmationApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:06:00.291+08:00  INFO 31468 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.staffing.StaffingApplication for test class com.example.staffing.api.ConfirmationApiTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.5)
+
+2026-11-11T23:06:00.309+08:00  INFO 31468 --- [           main] c.e.staffing.api.ConfirmationApiTest     : Starting ConfirmationApiTest using Java 21.0.11 with PID 31468 (started by zengky in C:\Users\ZENGKY\Desktop\New folder\baseline\backend)
+2026-11-11T23:06:00.309+08:00  INFO 31468 --- [           main] c.e.staffing.api.ConfirmationApiTest     : No active profile set, falling back to 1 default profile: "default"
+2026-11-11T23:06:00.524+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-11T23:06:00.532+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 6 ms. Found 0 JPA repository interfaces.
+2026-11-11T23:06:00.566+08:00  INFO 31468 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
+2026-11-11T23:06:00.567+08:00  INFO 31468 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-11-11T23:06:00.567+08:00  INFO 31468 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-11-11T23:06:00.597+08:00  INFO 31468 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-11-11T23:06:00.597+08:00  INFO 31468 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 287 ms
+2026-11-11T23:06:00.618+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Starting...
+2026-11-11T23:06:00.620+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-4 - Added connection conn30: url=jdbc:h2:mem:staffing-506d4247-6af0-4074-a62a-d8da0759cb64 user=SA
+2026-11-11T23:06:00.620+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Start completed.
+2026-11-11T23:06:00.644+08:00  INFO 31468 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-11T23:06:00.649+08:00  INFO 31468 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-11-11T23:06:00.660+08:00  INFO 31468 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-11T23:06:00.661+08:00  INFO 31468 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-4)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-11T23:06:00.675+08:00  INFO 31468 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-11T23:06:00.677+08:00  INFO 31468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T23:06:00.706+08:00  WARN 31468 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-11-11T23:06:00.710+08:00  WARN 31468 --- [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 2f4da29e-02dd-4b2c-ac45-b11c2e3df4c0
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-11-11T23:06:00.712+08:00  INFO 31468 --- [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-11-11T23:06:00.788+08:00  INFO 31468 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 53190 (http) with context path '/'
+2026-11-11T23:06:00.789+08:00  INFO 31468 --- [           main] c.e.staffing.api.ConfirmationApiTest     : Started ConfirmationApiTest in 0.496 seconds (process running for 13.016)
+2026-11-11T23:06:00.806+08:00  INFO 31468 --- [o-auto-4-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-11-11T23:06:00.806+08:00  INFO 31468 --- [o-auto-4-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-11-11T23:06:00.807+08:00  INFO 31468 --- [o-auto-4-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-11-11T23:06:03.168+08:00  INFO 31468 --- [           main] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-11-11T23:06:03.178+08:00  INFO 31468 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-11-11T23:06:03.179+08:00  INFO 31468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T23:06:03.180+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Shutdown initiated...
+2026-11-11T23:06:03.180+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Shutdown completed.
+[INFO] Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.894 s -- in com.example.staffing.api.ConfirmationApiTest
+[INFO] Running com.example.staffing.api.CrossRoleApiTest
+2026-11-11T23:06:03.184+08:00  INFO 31468 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.staffing.api.CrossRoleApiTest]: CrossRoleApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:06:03.185+08:00  INFO 31468 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.staffing.StaffingApplication for test class com.example.staffing.api.CrossRoleApiTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.5)
+
+2026-11-11T23:06:03.198+08:00  INFO 31468 --- [           main] c.example.staffing.api.CrossRoleApiTest  : Starting CrossRoleApiTest using Java 21.0.11 with PID 31468 (started by zengky in C:\Users\ZENGKY\Desktop\New folder\baseline\backend)
+2026-11-11T23:06:03.198+08:00  INFO 31468 --- [           main] c.example.staffing.api.CrossRoleApiTest  : No active profile set, falling back to 1 default profile: "default"
+2026-11-11T23:06:03.370+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-11T23:06:03.376+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 5 ms. Found 0 JPA repository interfaces.
+2026-11-11T23:06:03.406+08:00  INFO 31468 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
+2026-11-11T23:06:03.407+08:00  INFO 31468 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-11-11T23:06:03.407+08:00  INFO 31468 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-11-11T23:06:03.435+08:00  INFO 31468 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-11-11T23:06:03.435+08:00  INFO 31468 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 236 ms
+2026-11-11T23:06:03.447+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Starting...
+2026-11-11T23:06:03.448+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-5 - Added connection conn40: url=jdbc:h2:mem:staffing-b0637ef2-4387-44f1-b225-d706d94b77c5 user=SA
+2026-11-11T23:06:03.448+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Start completed.
+2026-11-11T23:06:03.464+08:00  INFO 31468 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-11T23:06:03.465+08:00  INFO 31468 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-11-11T23:06:03.470+08:00  INFO 31468 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-11T23:06:03.471+08:00  INFO 31468 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-5)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-11T23:06:03.481+08:00  INFO 31468 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-11T23:06:03.481+08:00  INFO 31468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T23:06:03.506+08:00  WARN 31468 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-11-11T23:06:03.509+08:00  WARN 31468 --- [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: daef581b-bea3-4ed5-9065-c33437f8d425
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-11-11T23:06:03.509+08:00  INFO 31468 --- [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-11-11T23:06:03.568+08:00  INFO 31468 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 65317 (http) with context path '/'
+2026-11-11T23:06:03.569+08:00  INFO 31468 --- [           main] c.example.staffing.api.CrossRoleApiTest  : Started CrossRoleApiTest in 0.382 seconds (process running for 15.796)
+2026-11-11T23:06:03.581+08:00  INFO 31468 --- [o-auto-5-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-11-11T23:06:03.582+08:00  INFO 31468 --- [o-auto-5-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-11-11T23:06:03.582+08:00  INFO 31468 --- [o-auto-5-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2026-11-11T23:06:03.966+08:00  INFO 31468 --- [           main] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-11-11T23:06:03.973+08:00  INFO 31468 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-11-11T23:06:03.974+08:00  INFO 31468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T23:06:03.974+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Shutdown initiated...
+2026-11-11T23:06:03.975+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Shutdown completed.
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.793 s -- in com.example.staffing.api.CrossRoleApiTest
+[INFO] Running com.example.staffing.api.HeadcountApiTest
+2026-11-11T23:06:03.978+08:00  INFO 31468 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.staffing.api.HeadcountApiTest]: HeadcountApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:06:03.978+08:00  INFO 31468 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.staffing.StaffingApplication for test class com.example.staffing.api.HeadcountApiTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.5)
+
+2026-11-11T23:06:03.992+08:00  INFO 31468 --- [           main] c.example.staffing.api.HeadcountApiTest  : Starting HeadcountApiTest using Java 21.0.11 with PID 31468 (started by zengky in C:\Users\ZENGKY\Desktop\New folder\baseline\backend)
+2026-11-11T23:06:03.992+08:00  INFO 31468 --- [           main] c.example.staffing.api.HeadcountApiTest  : No active profile set, falling back to 1 default profile: "default"
+2026-11-11T23:06:04.149+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-11T23:06:04.155+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 5 ms. Found 0 JPA repository interfaces.
+2026-11-11T23:06:04.183+08:00  INFO 31468 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
+2026-11-11T23:06:04.183+08:00  INFO 31468 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-11-11T23:06:04.184+08:00  INFO 31468 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-11-11T23:06:04.209+08:00  INFO 31468 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-11-11T23:06:04.210+08:00  INFO 31468 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 216 ms
+2026-11-11T23:06:04.220+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-6 - Starting...
+2026-11-11T23:06:04.222+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-6 - Added connection conn50: url=jdbc:h2:mem:staffing-8ed9a8de-1913-41e7-a338-11c5060078f9 user=SA
+2026-11-11T23:06:04.222+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-6 - Start completed.
+2026-11-11T23:06:04.234+08:00  INFO 31468 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-11T23:06:04.235+08:00  INFO 31468 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-11-11T23:06:04.242+08:00  INFO 31468 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-11T23:06:04.243+08:00  INFO 31468 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-6)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-11T23:06:04.252+08:00  INFO 31468 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-11T23:06:04.252+08:00  INFO 31468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T23:06:04.273+08:00  WARN 31468 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-11-11T23:06:04.276+08:00  WARN 31468 --- [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 358d9db1-c583-4c70-a8d4-421d1675b71a
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-11-11T23:06:04.276+08:00  INFO 31468 --- [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-11-11T23:06:04.332+08:00  INFO 31468 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 65323 (http) with context path '/'
+2026-11-11T23:06:04.333+08:00  INFO 31468 --- [           main] c.example.staffing.api.HeadcountApiTest  : Started HeadcountApiTest in 0.353 seconds (process running for 16.56)
+2026-11-11T23:06:04.346+08:00  INFO 31468 --- [o-auto-6-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-11-11T23:06:04.347+08:00  INFO 31468 --- [o-auto-6-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-11-11T23:06:04.347+08:00  INFO 31468 --- [o-auto-6-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2026-11-11T23:06:05.868+08:00  WARN 31468 --- [o-auto-6-exec-4] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' is not supported]
+2026-11-11T23:06:05.878+08:00  WARN 31468 --- [o-auto-6-exec-5] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'PATCH' is not supported]
+2026-11-11T23:06:05.881+08:00  WARN 31468 --- [o-auto-6-exec-6] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'DELETE' is not supported]
+2026-11-11T23:06:05.883+08:00  INFO 31468 --- [           main] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-11-11T23:06:05.891+08:00  INFO 31468 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-11-11T23:06:05.892+08:00  INFO 31468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T23:06:05.893+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-6 - Shutdown initiated...
+2026-11-11T23:06:05.894+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-6 - Shutdown completed.
+[INFO] Tests run: 15, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.919 s -- in com.example.staffing.api.HeadcountApiTest
+[INFO] Running com.example.staffing.api.HealthApiTest
+2026-11-11T23:06:05.898+08:00  INFO 31468 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.staffing.api.HealthApiTest]: HealthApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:06:05.899+08:00  INFO 31468 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.staffing.StaffingApplication for test class com.example.staffing.api.HealthApiTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.5)
+
+2026-11-11T23:06:05.910+08:00  INFO 31468 --- [           main] com.example.staffing.api.HealthApiTest   : Starting HealthApiTest using Java 21.0.11 with PID 31468 (started by zengky in C:\Users\ZENGKY\Desktop\New folder\baseline\backend)
+2026-11-11T23:06:05.910+08:00  INFO 31468 --- [           main] com.example.staffing.api.HealthApiTest   : No active profile set, falling back to 1 default profile: "default"
+2026-11-11T23:06:06.098+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-11T23:06:06.105+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 6 ms. Found 0 JPA repository interfaces.
+2026-11-11T23:06:06.141+08:00  INFO 31468 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
+2026-11-11T23:06:06.141+08:00  INFO 31468 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-11-11T23:06:06.142+08:00  INFO 31468 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-11-11T23:06:06.176+08:00  INFO 31468 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-11-11T23:06:06.176+08:00  INFO 31468 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 265 ms
+2026-11-11T23:06:06.189+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-7 - Starting...
+2026-11-11T23:06:06.191+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-7 - Added connection conn60: url=jdbc:h2:mem:staffing-314a6a52-9775-441b-962f-63ab4699e2b8 user=SA
+2026-11-11T23:06:06.191+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-7 - Start completed.
+2026-11-11T23:06:06.204+08:00  INFO 31468 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-11T23:06:06.206+08:00  INFO 31468 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-11-11T23:06:06.212+08:00  INFO 31468 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-11T23:06:06.213+08:00  INFO 31468 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-7)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-11T23:06:06.224+08:00  INFO 31468 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-11T23:06:06.224+08:00  INFO 31468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T23:06:06.248+08:00  WARN 31468 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-11-11T23:06:06.250+08:00  WARN 31468 --- [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: fae87157-b493-440b-8762-e9a6b8a4be74
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-11-11T23:06:06.251+08:00  INFO 31468 --- [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-11-11T23:06:06.303+08:00  INFO 31468 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 65392 (http) with context path '/'
+2026-11-11T23:06:06.305+08:00  INFO 31468 --- [           main] com.example.staffing.api.HealthApiTest   : Started HealthApiTest in 0.404 seconds (process running for 18.531)
+2026-11-11T23:06:06.313+08:00  INFO 31468 --- [o-auto-7-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-11-11T23:06:06.313+08:00  INFO 31468 --- [o-auto-7-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-11-11T23:06:06.313+08:00  INFO 31468 --- [o-auto-7-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.425 s -- in com.example.staffing.api.HealthApiTest
+[INFO] Running com.example.staffing.api.IdempotencyApiTest
+2026-11-11T23:06:06.323+08:00  INFO 31468 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.staffing.api.IdempotencyApiTest]: IdempotencyApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:06:06.324+08:00  INFO 31468 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.staffing.StaffingApplication for test class com.example.staffing.api.IdempotencyApiTest
+2026-11-11T23:06:06.942+08:00  INFO 31468 --- [           main] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-11-11T23:06:06.948+08:00  INFO 31468 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-11-11T23:06:06.950+08:00  INFO 31468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T23:06:06.950+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-7 - Shutdown initiated...
+2026-11-11T23:06:06.950+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-7 - Shutdown completed.
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.630 s -- in com.example.staffing.api.IdempotencyApiTest
+[INFO] Running com.example.staffing.api.ImportApiTest
+2026-11-11T23:06:06.954+08:00  INFO 31468 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.staffing.api.ImportApiTest]: ImportApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:06:06.955+08:00  INFO 31468 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.staffing.StaffingApplication for test class com.example.staffing.api.ImportApiTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.5)
+
+2026-11-11T23:06:06.968+08:00  INFO 31468 --- [           main] com.example.staffing.api.ImportApiTest   : Starting ImportApiTest using Java 21.0.11 with PID 31468 (started by zengky in C:\Users\ZENGKY\Desktop\New folder\baseline\backend)
+2026-11-11T23:06:06.968+08:00  INFO 31468 --- [           main] com.example.staffing.api.ImportApiTest   : No active profile set, falling back to 1 default profile: "default"
+2026-11-11T23:06:07.128+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-11T23:06:07.133+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 5 ms. Found 0 JPA repository interfaces.
+2026-11-11T23:06:07.160+08:00  INFO 31468 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
+2026-11-11T23:06:07.161+08:00  INFO 31468 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-11-11T23:06:07.161+08:00  INFO 31468 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-11-11T23:06:07.189+08:00  INFO 31468 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-11-11T23:06:07.189+08:00  INFO 31468 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 219 ms
+2026-11-11T23:06:07.198+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-8 - Starting...
+2026-11-11T23:06:07.199+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-8 - Added connection conn70: url=jdbc:h2:mem:staffing-1651988b-7408-4aab-9fec-eca2473b0ac0 user=SA
+2026-11-11T23:06:07.199+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-8 - Start completed.
+2026-11-11T23:06:07.213+08:00  INFO 31468 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-11T23:06:07.215+08:00  INFO 31468 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-11-11T23:06:07.219+08:00  INFO 31468 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-11T23:06:07.220+08:00  INFO 31468 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-8)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-11T23:06:07.229+08:00  INFO 31468 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-11T23:06:07.229+08:00  INFO 31468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T23:06:07.252+08:00  WARN 31468 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-11-11T23:06:07.255+08:00  WARN 31468 --- [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: c7754fe1-03d2-4efc-a36b-8ba05fdb8cc9
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-11-11T23:06:07.256+08:00  INFO 31468 --- [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-11-11T23:06:07.312+08:00  INFO 31468 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 57878 (http) with context path '/'
+2026-11-11T23:06:07.313+08:00  INFO 31468 --- [           main] com.example.staffing.api.ImportApiTest   : Started ImportApiTest in 0.356 seconds (process running for 19.54)
+2026-11-11T23:06:07.325+08:00  INFO 31468 --- [o-auto-8-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-11-11T23:06:07.325+08:00  INFO 31468 --- [o-auto-8-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-11-11T23:06:07.325+08:00  INFO 31468 --- [o-auto-8-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2026-11-11T23:06:09.030+08:00  INFO 31468 --- [           main] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-11-11T23:06:09.037+08:00  INFO 31468 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-11-11T23:06:09.038+08:00  INFO 31468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T23:06:09.038+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-8 - Shutdown initiated...
+2026-11-11T23:06:09.039+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-8 - Shutdown completed.
+[INFO] Tests run: 18, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.088 s -- in com.example.staffing.api.ImportApiTest
+[INFO] Running com.example.staffing.api.NonGoalApiTest
+2026-11-11T23:06:09.042+08:00  INFO 31468 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.staffing.api.NonGoalApiTest]: NonGoalApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:06:09.043+08:00  INFO 31468 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.staffing.StaffingApplication for test class com.example.staffing.api.NonGoalApiTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.5)
+
+2026-11-11T23:06:09.056+08:00  INFO 31468 --- [           main] c.example.staffing.api.NonGoalApiTest    : Starting NonGoalApiTest using Java 21.0.11 with PID 31468 (started by zengky in C:\Users\ZENGKY\Desktop\New folder\baseline\backend)
+2026-11-11T23:06:09.056+08:00  INFO 31468 --- [           main] c.example.staffing.api.NonGoalApiTest    : No active profile set, falling back to 1 default profile: "default"
+2026-11-11T23:06:09.204+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-11T23:06:09.212+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 6 ms. Found 0 JPA repository interfaces.
+2026-11-11T23:06:09.237+08:00  INFO 31468 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
+2026-11-11T23:06:09.237+08:00  INFO 31468 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-11-11T23:06:09.238+08:00  INFO 31468 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-11-11T23:06:09.263+08:00  INFO 31468 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-11-11T23:06:09.263+08:00  INFO 31468 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 206 ms
+2026-11-11T23:06:09.273+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-9 - Starting...
+2026-11-11T23:06:09.275+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-9 - Added connection conn80: url=jdbc:h2:mem:staffing-a1b3d287-5c3e-4196-8ce0-7f247278a4e9 user=SA
+2026-11-11T23:06:09.275+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-9 - Start completed.
+2026-11-11T23:06:09.287+08:00  INFO 31468 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-11T23:06:09.288+08:00  INFO 31468 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-11-11T23:06:09.292+08:00  INFO 31468 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-11T23:06:09.293+08:00  INFO 31468 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-9)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-11T23:06:09.303+08:00  INFO 31468 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-11T23:06:09.303+08:00  INFO 31468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T23:06:09.325+08:00  WARN 31468 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-11-11T23:06:09.328+08:00  WARN 31468 --- [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: aeb5a5c1-4d5d-4277-b528-a97169ee90e9
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-11-11T23:06:09.328+08:00  INFO 31468 --- [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-11-11T23:06:09.392+08:00  INFO 31468 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 50882 (http) with context path '/'
+2026-11-11T23:06:09.394+08:00  INFO 31468 --- [           main] c.example.staffing.api.NonGoalApiTest    : Started NonGoalApiTest in 0.35 seconds (process running for 21.62)
+2026-11-11T23:06:09.409+08:00  INFO 31468 --- [o-auto-9-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-11-11T23:06:09.409+08:00  INFO 31468 --- [o-auto-9-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-11-11T23:06:09.409+08:00  INFO 31468 --- [o-auto-9-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2026-11-11T23:06:09.516+08:00  WARN 31468 --- [o-auto-9-exec-3] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'PATCH' is not supported]
+2026-11-11T23:06:09.715+08:00  WARN 31468 --- [o-auto-9-exec-8] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'PATCH' is not supported]
+2026-11-11T23:06:09.719+08:00  WARN 31468 --- [o-auto-9-exec-9] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' is not supported]
+2026-11-11T23:06:09.720+08:00  WARN 31468 --- [-auto-9-exec-10] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'DELETE' is not supported]
+2026-11-11T23:06:10.504+08:00  WARN 31468 --- [o-auto-9-exec-5] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'PATCH' is not supported]
+2026-11-11T23:06:10.507+08:00  INFO 31468 --- [           main] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-11-11T23:06:10.513+08:00  INFO 31468 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-11-11T23:06:10.515+08:00  INFO 31468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T23:06:10.515+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-9 - Shutdown initiated...
+2026-11-11T23:06:10.515+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-9 - Shutdown completed.
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.477 s -- in com.example.staffing.api.NonGoalApiTest
+[INFO] Running com.example.staffing.api.NoticeApiTest
+2026-11-11T23:06:10.520+08:00  INFO 31468 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.staffing.api.NoticeApiTest]: NoticeApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:06:10.521+08:00  INFO 31468 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.staffing.StaffingApplication for test class com.example.staffing.api.NoticeApiTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.5)
+
+2026-11-11T23:06:10.536+08:00  INFO 31468 --- [           main] com.example.staffing.api.NoticeApiTest   : Starting NoticeApiTest using Java 21.0.11 with PID 31468 (started by zengky in C:\Users\ZENGKY\Desktop\New folder\baseline\backend)
+2026-11-11T23:06:10.536+08:00  INFO 31468 --- [           main] com.example.staffing.api.NoticeApiTest   : No active profile set, falling back to 1 default profile: "default"
+2026-11-11T23:06:10.690+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-11T23:06:10.696+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 5 ms. Found 0 JPA repository interfaces.
+2026-11-11T23:06:10.721+08:00  INFO 31468 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
+2026-11-11T23:06:10.722+08:00  INFO 31468 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-11-11T23:06:10.722+08:00  INFO 31468 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-11-11T23:06:10.746+08:00  INFO 31468 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-11-11T23:06:10.746+08:00  INFO 31468 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 210 ms
+2026-11-11T23:06:10.755+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-10 - Starting...
+2026-11-11T23:06:10.756+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-10 - Added connection conn90: url=jdbc:h2:mem:staffing-29b03a6c-647f-4333-8036-d8b49baf2ea0 user=SA
+2026-11-11T23:06:10.756+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-10 - Start completed.
+2026-11-11T23:06:10.768+08:00  INFO 31468 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-11T23:06:10.770+08:00  INFO 31468 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-11-11T23:06:10.775+08:00  INFO 31468 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-11T23:06:10.776+08:00  INFO 31468 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-10)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-11T23:06:10.784+08:00  INFO 31468 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-11T23:06:10.784+08:00  INFO 31468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T23:06:10.803+08:00  WARN 31468 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-11-11T23:06:10.806+08:00  WARN 31468 --- [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: a1cbed11-0276-421f-bd02-ba60746d37bb
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-11-11T23:06:10.806+08:00  INFO 31468 --- [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-11-11T23:06:10.854+08:00  INFO 31468 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 49795 (http) with context path '/'
+2026-11-11T23:06:10.855+08:00  INFO 31468 --- [           main] com.example.staffing.api.NoticeApiTest   : Started NoticeApiTest in 0.332 seconds (process running for 23.08)
+2026-11-11T23:06:10.866+08:00  INFO 31468 --- [-auto-10-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-11-11T23:06:10.867+08:00  INFO 31468 --- [-auto-10-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-11-11T23:06:10.867+08:00  INFO 31468 --- [-auto-10-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2026-11-11T23:06:11.345+08:00  INFO 31468 --- [           main] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-11-11T23:06:11.352+08:00  INFO 31468 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-11-11T23:06:11.354+08:00  INFO 31468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T23:06:11.354+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-10 - Shutdown initiated...
+2026-11-11T23:06:11.355+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-10 - Shutdown completed.
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.838 s -- in com.example.staffing.api.NoticeApiTest
+[INFO] Running com.example.staffing.api.PeopleApiTest
+2026-11-11T23:06:11.357+08:00  INFO 31468 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.staffing.api.PeopleApiTest]: PeopleApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:06:11.358+08:00  INFO 31468 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.staffing.StaffingApplication for test class com.example.staffing.api.PeopleApiTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.5)
+
+2026-11-11T23:06:11.372+08:00  INFO 31468 --- [           main] com.example.staffing.api.PeopleApiTest   : Starting PeopleApiTest using Java 21.0.11 with PID 31468 (started by zengky in C:\Users\ZENGKY\Desktop\New folder\baseline\backend)
+2026-11-11T23:06:11.372+08:00  INFO 31468 --- [           main] com.example.staffing.api.PeopleApiTest   : No active profile set, falling back to 1 default profile: "default"
+2026-11-11T23:06:11.515+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-11T23:06:11.521+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 6 ms. Found 0 JPA repository interfaces.
+2026-11-11T23:06:11.543+08:00  INFO 31468 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
+2026-11-11T23:06:11.543+08:00  INFO 31468 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-11-11T23:06:11.543+08:00  INFO 31468 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-11-11T23:06:11.568+08:00  INFO 31468 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-11-11T23:06:11.568+08:00  INFO 31468 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 195 ms
+2026-11-11T23:06:11.578+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-11 - Starting...
+2026-11-11T23:06:11.578+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-11 - Added connection conn100: url=jdbc:h2:mem:staffing-54201bb4-2e3f-430d-965e-56cb0fbe73bc user=SA
+2026-11-11T23:06:11.578+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-11 - Start completed.
+2026-11-11T23:06:11.591+08:00  INFO 31468 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-11T23:06:11.592+08:00  INFO 31468 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-11-11T23:06:11.597+08:00  INFO 31468 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-11T23:06:11.598+08:00  INFO 31468 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-11)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-11T23:06:11.607+08:00  INFO 31468 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-11T23:06:11.607+08:00  INFO 31468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T23:06:11.626+08:00  WARN 31468 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-11-11T23:06:11.628+08:00  WARN 31468 --- [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 1ccd330e-c814-47ea-8788-2f474e90a037
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-11-11T23:06:11.628+08:00  INFO 31468 --- [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-11-11T23:06:11.679+08:00  INFO 31468 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 57096 (http) with context path '/'
+2026-11-11T23:06:11.680+08:00  INFO 31468 --- [           main] com.example.staffing.api.PeopleApiTest   : Started PeopleApiTest in 0.32 seconds (process running for 23.906)
+2026-11-11T23:06:11.689+08:00  INFO 31468 --- [-auto-11-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-11-11T23:06:11.691+08:00  INFO 31468 --- [-auto-11-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-11-11T23:06:11.691+08:00  INFO 31468 --- [-auto-11-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2026-11-11T23:06:11.992+08:00  WARN 31468 --- [auto-11-exec-10] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' is not supported]
+2026-11-11T23:06:11.997+08:00  WARN 31468 --- [-auto-11-exec-1] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'PATCH' is not supported]
+2026-11-11T23:06:12.000+08:00  WARN 31468 --- [-auto-11-exec-2] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'DELETE' is not supported]
+2026-11-11T23:06:12.372+08:00  INFO 31468 --- [           main] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-11-11T23:06:12.380+08:00  INFO 31468 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-11-11T23:06:12.382+08:00  INFO 31468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T23:06:12.382+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-11 - Shutdown initiated...
+2026-11-11T23:06:12.383+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-11 - Shutdown completed.
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.028 s -- in com.example.staffing.api.PeopleApiTest
+[INFO] Running com.example.staffing.api.PostApiTest
+2026-11-11T23:06:12.386+08:00  INFO 31468 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.staffing.api.PostApiTest]: PostApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:06:12.388+08:00  INFO 31468 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.staffing.StaffingApplication for test class com.example.staffing.api.PostApiTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.5)
+
+2026-11-11T23:06:12.402+08:00  INFO 31468 --- [           main] com.example.staffing.api.PostApiTest     : Starting PostApiTest using Java 21.0.11 with PID 31468 (started by zengky in C:\Users\ZENGKY\Desktop\New folder\baseline\backend)
+2026-11-11T23:06:12.402+08:00  INFO 31468 --- [           main] com.example.staffing.api.PostApiTest     : No active profile set, falling back to 1 default profile: "default"
+2026-11-11T23:06:12.570+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-11T23:06:12.576+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 5 ms. Found 0 JPA repository interfaces.
+2026-11-11T23:06:12.601+08:00  INFO 31468 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
+2026-11-11T23:06:12.602+08:00  INFO 31468 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-11-11T23:06:12.602+08:00  INFO 31468 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-11-11T23:06:12.667+08:00  INFO 31468 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-11-11T23:06:12.667+08:00  INFO 31468 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 264 ms
+2026-11-11T23:06:12.679+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-12 - Starting...
+2026-11-11T23:06:12.681+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-12 - Added connection conn110: url=jdbc:h2:mem:staffing-fea4da9c-2639-45e4-b7eb-0ce6f2d307e8 user=SA
+2026-11-11T23:06:12.681+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-12 - Start completed.
+2026-11-11T23:06:12.693+08:00  INFO 31468 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-11T23:06:12.695+08:00  INFO 31468 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-11-11T23:06:12.699+08:00  INFO 31468 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-11T23:06:12.699+08:00  INFO 31468 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-12)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-11T23:06:12.710+08:00  INFO 31468 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-11T23:06:12.710+08:00  INFO 31468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T23:06:12.729+08:00  WARN 31468 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-11-11T23:06:12.730+08:00  WARN 31468 --- [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 7295882e-f2f9-4751-b283-3790dc4163fb
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-11-11T23:06:12.730+08:00  INFO 31468 --- [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-11-11T23:06:12.783+08:00  INFO 31468 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 61749 (http) with context path '/'
+2026-11-11T23:06:12.784+08:00  INFO 31468 --- [           main] com.example.staffing.api.PostApiTest     : Started PostApiTest in 0.395 seconds (process running for 25.01)
+2026-11-11T23:06:12.796+08:00  INFO 31468 --- [-auto-12-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-11-11T23:06:12.796+08:00  INFO 31468 --- [-auto-12-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-11-11T23:06:12.796+08:00  INFO 31468 --- [-auto-12-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2026-11-11T23:06:16.017+08:00  INFO 31468 --- [           main] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-11-11T23:06:16.025+08:00  INFO 31468 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-11-11T23:06:16.027+08:00  INFO 31468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T23:06:16.027+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-12 - Shutdown initiated...
+2026-11-11T23:06:16.028+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-12 - Shutdown completed.
+[INFO] Tests run: 27, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.644 s -- in com.example.staffing.api.PostApiTest
+[INFO] Running com.example.staffing.api.ProjectApiTest
+2026-11-11T23:06:16.032+08:00  INFO 31468 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.staffing.api.ProjectApiTest]: ProjectApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:06:16.033+08:00  INFO 31468 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.staffing.StaffingApplication for test class com.example.staffing.api.ProjectApiTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.5)
+
+2026-11-11T23:06:16.046+08:00  INFO 31468 --- [           main] c.example.staffing.api.ProjectApiTest    : Starting ProjectApiTest using Java 21.0.11 with PID 31468 (started by zengky in C:\Users\ZENGKY\Desktop\New folder\baseline\backend)
+2026-11-11T23:06:16.046+08:00  INFO 31468 --- [           main] c.example.staffing.api.ProjectApiTest    : No active profile set, falling back to 1 default profile: "default"
+2026-11-11T23:06:16.215+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-11T23:06:16.222+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 6 ms. Found 0 JPA repository interfaces.
+2026-11-11T23:06:16.247+08:00  INFO 31468 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
+2026-11-11T23:06:16.248+08:00  INFO 31468 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-11-11T23:06:16.248+08:00  INFO 31468 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-11-11T23:06:16.274+08:00  INFO 31468 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-11-11T23:06:16.274+08:00  INFO 31468 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 228 ms
+2026-11-11T23:06:16.287+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-13 - Starting...
+2026-11-11T23:06:16.289+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-13 - Added connection conn120: url=jdbc:h2:mem:staffing-7997497e-b56c-47a3-a804-acc205c2e358 user=SA
+2026-11-11T23:06:16.289+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-13 - Start completed.
+2026-11-11T23:06:16.334+08:00  INFO 31468 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-11T23:06:16.336+08:00  INFO 31468 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-11-11T23:06:16.342+08:00  INFO 31468 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-11T23:06:16.343+08:00  INFO 31468 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-13)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-11T23:06:16.352+08:00  INFO 31468 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-11T23:06:16.352+08:00  INFO 31468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T23:06:16.373+08:00  WARN 31468 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-11-11T23:06:16.375+08:00  WARN 31468 --- [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 14cd0e81-9614-4307-ac7b-20c725167e0c
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-11-11T23:06:16.376+08:00  INFO 31468 --- [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-11-11T23:06:16.432+08:00  INFO 31468 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 58434 (http) with context path '/'
+2026-11-11T23:06:16.433+08:00  INFO 31468 --- [           main] c.example.staffing.api.ProjectApiTest    : Started ProjectApiTest in 0.399 seconds (process running for 28.66)
+2026-11-11T23:06:16.445+08:00  INFO 31468 --- [-auto-13-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-11-11T23:06:16.445+08:00  INFO 31468 --- [-auto-13-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-11-11T23:06:16.446+08:00  INFO 31468 --- [-auto-13-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-11-11T23:06:16.902+08:00  WARN 31468 --- [-auto-13-exec-4] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'PATCH' is not supported]
+2026-11-11T23:06:17.632+08:00  INFO 31468 --- [           main] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-11-11T23:06:17.639+08:00  INFO 31468 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-11-11T23:06:17.640+08:00  INFO 31468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T23:06:17.640+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-13 - Shutdown initiated...
+2026-11-11T23:06:17.641+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-13 - Shutdown completed.
+[INFO] Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.611 s -- in com.example.staffing.api.ProjectApiTest
+[INFO] Running com.example.staffing.api.RecommendationApiTest
+2026-11-11T23:06:17.644+08:00  INFO 31468 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.staffing.api.RecommendationApiTest]: RecommendationApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:06:17.645+08:00  INFO 31468 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.staffing.StaffingApplication for test class com.example.staffing.api.RecommendationApiTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.5)
+
+2026-11-11T23:06:17.657+08:00  INFO 31468 --- [           main] c.e.staffing.api.RecommendationApiTest   : Starting RecommendationApiTest using Java 21.0.11 with PID 31468 (started by zengky in C:\Users\ZENGKY\Desktop\New folder\baseline\backend)
+2026-11-11T23:06:17.657+08:00  INFO 31468 --- [           main] c.e.staffing.api.RecommendationApiTest   : No active profile set, falling back to 1 default profile: "default"
+2026-11-11T23:06:17.814+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-11T23:06:17.820+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 5 ms. Found 0 JPA repository interfaces.
+2026-11-11T23:06:17.848+08:00  INFO 31468 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
+2026-11-11T23:06:17.849+08:00  INFO 31468 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-11-11T23:06:17.849+08:00  INFO 31468 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-11-11T23:06:17.878+08:00  INFO 31468 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-11-11T23:06:17.878+08:00  INFO 31468 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 221 ms
+2026-11-11T23:06:17.888+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-14 - Starting...
+2026-11-11T23:06:17.888+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-14 - Added connection conn130: url=jdbc:h2:mem:staffing-3e5a9818-f69d-4470-b39b-5bfab41c8218 user=SA
+2026-11-11T23:06:17.888+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-14 - Start completed.
+2026-11-11T23:06:17.903+08:00  INFO 31468 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-11T23:06:17.905+08:00  INFO 31468 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-11-11T23:06:17.909+08:00  INFO 31468 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-11T23:06:17.909+08:00  INFO 31468 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-14)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-11T23:06:17.918+08:00  INFO 31468 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-11T23:06:17.918+08:00  INFO 31468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T23:06:17.939+08:00  WARN 31468 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-11-11T23:06:17.941+08:00  WARN 31468 --- [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 889102d4-e02f-408c-91d4-e91589157021
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-11-11T23:06:17.941+08:00  INFO 31468 --- [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-11-11T23:06:17.998+08:00  INFO 31468 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 57403 (http) with context path '/'
+2026-11-11T23:06:18.000+08:00  INFO 31468 --- [           main] c.e.staffing.api.RecommendationApiTest   : Started RecommendationApiTest in 0.353 seconds (process running for 30.226)
+2026-11-11T23:06:18.011+08:00  INFO 31468 --- [-auto-14-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-11-11T23:06:18.012+08:00  INFO 31468 --- [-auto-14-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-11-11T23:06:18.012+08:00  INFO 31468 --- [-auto-14-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2026-11-11T23:06:19.244+08:00  INFO 31468 --- [           main] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-11-11T23:06:19.253+08:00  INFO 31468 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-11-11T23:06:19.255+08:00  INFO 31468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T23:06:19.255+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-14 - Shutdown initiated...
+2026-11-11T23:06:19.256+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-14 - Shutdown completed.
+[INFO] Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.615 s -- in com.example.staffing.api.RecommendationApiTest
+[INFO] Running com.example.staffing.api.ReleaseApiTest
+2026-11-11T23:06:19.260+08:00  INFO 31468 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.staffing.api.ReleaseApiTest]: ReleaseApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:06:19.260+08:00  INFO 31468 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.staffing.StaffingApplication for test class com.example.staffing.api.ReleaseApiTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.5)
+
+2026-11-11T23:06:19.271+08:00  INFO 31468 --- [           main] c.example.staffing.api.ReleaseApiTest    : Starting ReleaseApiTest using Java 21.0.11 with PID 31468 (started by zengky in C:\Users\ZENGKY\Desktop\New folder\baseline\backend)
+2026-11-11T23:06:19.271+08:00  INFO 31468 --- [           main] c.example.staffing.api.ReleaseApiTest    : No active profile set, falling back to 1 default profile: "default"
+2026-11-11T23:06:19.417+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-11T23:06:19.421+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 4 ms. Found 0 JPA repository interfaces.
+2026-11-11T23:06:19.444+08:00  INFO 31468 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
+2026-11-11T23:06:19.444+08:00  INFO 31468 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-11-11T23:06:19.444+08:00  INFO 31468 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-11-11T23:06:19.469+08:00  INFO 31468 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-11-11T23:06:19.469+08:00  INFO 31468 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 197 ms
+2026-11-11T23:06:19.477+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-15 - Starting...
+2026-11-11T23:06:19.479+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-15 - Added connection conn140: url=jdbc:h2:mem:staffing-b9aed15c-4292-4920-a518-b91fb3ee6e16 user=SA
+2026-11-11T23:06:19.479+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-15 - Start completed.
+2026-11-11T23:06:19.492+08:00  INFO 31468 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-11T23:06:19.493+08:00  INFO 31468 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-11-11T23:06:19.496+08:00  INFO 31468 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-11T23:06:19.496+08:00  INFO 31468 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-15)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-11T23:06:19.504+08:00  INFO 31468 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-11T23:06:19.504+08:00  INFO 31468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T23:06:19.520+08:00  WARN 31468 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-11-11T23:06:19.523+08:00  WARN 31468 --- [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: bb27d69b-fbbb-4b74-a14f-8c07d4eab092
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-11-11T23:06:19.523+08:00  INFO 31468 --- [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-11-11T23:06:19.567+08:00  INFO 31468 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 61392 (http) with context path '/'
+2026-11-11T23:06:19.568+08:00  INFO 31468 --- [           main] c.example.staffing.api.ReleaseApiTest    : Started ReleaseApiTest in 0.305 seconds (process running for 31.794)
+2026-11-11T23:06:19.578+08:00  INFO 31468 --- [-auto-15-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-11-11T23:06:19.578+08:00  INFO 31468 --- [-auto-15-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-11-11T23:06:19.579+08:00  INFO 31468 --- [-auto-15-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-11-11T23:06:20.218+08:00  INFO 31468 --- [           main] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-11-11T23:06:20.226+08:00  INFO 31468 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-11-11T23:06:20.227+08:00  INFO 31468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T23:06:20.228+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-15 - Shutdown initiated...
+2026-11-11T23:06:20.229+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-15 - Shutdown completed.
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.972 s -- in com.example.staffing.api.ReleaseApiTest
+[INFO] Running com.example.staffing.api.SessionApiTest
+2026-11-11T23:06:20.232+08:00  INFO 31468 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.staffing.api.SessionApiTest]: SessionApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:06:20.232+08:00  INFO 31468 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.staffing.StaffingApplication for test class com.example.staffing.api.SessionApiTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.5)
+
+2026-11-11T23:06:20.246+08:00  INFO 31468 --- [           main] c.example.staffing.api.SessionApiTest    : Starting SessionApiTest using Java 21.0.11 with PID 31468 (started by zengky in C:\Users\ZENGKY\Desktop\New folder\baseline\backend)
+2026-11-11T23:06:20.246+08:00  INFO 31468 --- [           main] c.example.staffing.api.SessionApiTest    : No active profile set, falling back to 1 default profile: "default"
+2026-11-11T23:06:20.403+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-11T23:06:20.410+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 5 ms. Found 0 JPA repository interfaces.
+2026-11-11T23:06:20.431+08:00  INFO 31468 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
+2026-11-11T23:06:20.431+08:00  INFO 31468 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-11-11T23:06:20.431+08:00  INFO 31468 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-11-11T23:06:20.454+08:00  INFO 31468 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-11-11T23:06:20.454+08:00  INFO 31468 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 208 ms
+2026-11-11T23:06:20.463+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-16 - Starting...
+2026-11-11T23:06:20.465+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-16 - Added connection conn150: url=jdbc:h2:mem:staffing-b75a25ed-8eba-476c-860a-d3a97533eecf user=SA
+2026-11-11T23:06:20.465+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-16 - Start completed.
+2026-11-11T23:06:20.475+08:00  INFO 31468 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-11T23:06:20.476+08:00  INFO 31468 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-11-11T23:06:20.480+08:00  INFO 31468 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-11T23:06:20.480+08:00  INFO 31468 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-16)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-11T23:06:20.488+08:00  INFO 31468 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-11T23:06:20.488+08:00  INFO 31468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T23:06:20.505+08:00  WARN 31468 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-11-11T23:06:20.507+08:00  WARN 31468 --- [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: e2e694e9-e6a3-4d7f-8113-9ed68893a4fa
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-11-11T23:06:20.508+08:00  INFO 31468 --- [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-11-11T23:06:20.557+08:00  INFO 31468 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 63019 (http) with context path '/'
+2026-11-11T23:06:20.558+08:00  INFO 31468 --- [           main] c.example.staffing.api.SessionApiTest    : Started SessionApiTest in 0.325 seconds (process running for 32.784)
+2026-11-11T23:06:20.565+08:00  INFO 31468 --- [-auto-16-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-11-11T23:06:20.565+08:00  INFO 31468 --- [-auto-16-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-11-11T23:06:20.565+08:00  INFO 31468 --- [-auto-16-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.787 s -- in com.example.staffing.api.SessionApiTest
+[INFO] Running com.example.staffing.api.SessionSignOutTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.614 s -- in com.example.staffing.api.SessionSignOutTest
+[INFO] Running com.example.staffing.api.SessionTokenRepositoryTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.101 s -- in com.example.staffing.api.SessionTokenRepositoryTest
+[INFO] Running com.example.staffing.data.SchemaSeedTest
+2026-11-11T23:06:21.741+08:00  INFO 31468 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.staffing.data.SchemaSeedTest]: SchemaSeedTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:06:21.780+08:00  INFO 31468 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.staffing.StaffingApplication for test class com.example.staffing.data.SchemaSeedTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.5)
+
+2026-11-11T23:06:21.839+08:00  INFO 31468 --- [           main] c.example.staffing.data.SchemaSeedTest   : Starting SchemaSeedTest using Java 21.0.11 with PID 31468 (started by zengky in C:\Users\ZENGKY\Desktop\New folder\baseline\backend)
+2026-11-11T23:06:21.840+08:00  INFO 31468 --- [           main] c.example.staffing.data.SchemaSeedTest   : No active profile set, falling back to 1 default profile: "default"
+2026-11-11T23:06:22.161+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-11T23:06:22.173+08:00  INFO 31468 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 10 ms. Found 0 JPA repository interfaces.
+2026-11-11T23:06:22.265+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-17 - Starting...
+2026-11-11T23:06:22.268+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-17 - Added connection conn160: url=jdbc:h2:mem:staffing-3e1a80ef-dabc-4519-9f84-cbc13e277822 user=SA
+2026-11-11T23:06:22.268+08:00  INFO 31468 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-17 - Start completed.
+2026-11-11T23:06:22.331+08:00  INFO 31468 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-11T23:06:22.335+08:00  INFO 31468 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-11-11T23:06:22.343+08:00  INFO 31468 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-11T23:06:22.346+08:00  INFO 31468 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-17)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-11T23:06:22.366+08:00  INFO 31468 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-11T23:06:22.367+08:00  INFO 31468 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-11T23:06:22.450+08:00  WARN 31468 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-11-11T23:06:22.465+08:00  WARN 31468 --- [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: d4b05c01-076a-47a1-80b3-3e77faa8a4e9
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-11-11T23:06:22.467+08:00  INFO 31468 --- [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-11-11T23:06:22.649+08:00  INFO 31468 --- [           main] c.example.staffing.data.SchemaSeedTest   : Started SchemaSeedTest in 0.849 seconds (process running for 34.876)
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.987 s -- in com.example.staffing.data.SchemaSeedTest
+[INFO] Running com.example.staffing.domain.AllocationServiceTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.222 s -- in com.example.staffing.domain.AllocationServiceTest
+[INFO] Running com.example.staffing.domain.BandsTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in com.example.staffing.domain.BandsTest
+[INFO] Running com.example.staffing.domain.CatalogServiceTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.148 s -- in com.example.staffing.domain.CatalogServiceTest
+[INFO] Running com.example.staffing.domain.ColumnMapTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.example.staffing.domain.ColumnMapTest
+[INFO] Running com.example.staffing.domain.ConfirmationServiceTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.334 s -- in com.example.staffing.domain.ConfirmationServiceTest
+[INFO] Running com.example.staffing.domain.GatesTest
+[INFO] Tests run: 18, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.021 s -- in com.example.staffing.domain.GatesTest
+[INFO] Running com.example.staffing.domain.HeadcountShareTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in com.example.staffing.domain.HeadcountShareTest
+[INFO] Running com.example.staffing.domain.ImportServiceTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.079 s -- in com.example.staffing.domain.ImportServiceTest
+[INFO] Running com.example.staffing.domain.ImportValidatorTest
+[INFO] Tests run: 17, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.563 s -- in com.example.staffing.domain.ImportValidatorTest
+[INFO] Running com.example.staffing.domain.MatchingServiceTest
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.034 s -- in com.example.staffing.domain.MatchingServiceTest
+[INFO] Running com.example.staffing.domain.PostServiceTest
+[INFO] Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.036 s -- in com.example.staffing.domain.PostServiceTest
+[INFO] Running com.example.staffing.domain.PostStatusTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in com.example.staffing.domain.PostStatusTest
+[INFO] Running com.example.staffing.domain.ProjectServiceTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.092 s -- in com.example.staffing.domain.ProjectServiceTest
+[INFO] Running com.example.staffing.domain.RangesTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in com.example.staffing.domain.RangesTest
+[INFO] Running com.example.staffing.domain.RecommendationServiceTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.397 s -- in com.example.staffing.domain.RecommendationServiceTest
+[INFO] Running com.example.staffing.domain.RecommendationViewTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.example.staffing.domain.RecommendationViewTest
+[INFO] Running com.example.staffing.domain.ReleaseServiceTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.example.staffing.domain.ReleaseServiceTest
+[INFO] Running com.example.staffing.domain.WorkbookParserTest
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.129 s -- in com.example.staffing.domain.WorkbookParserTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 316, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ staffing ---
+[INFO] 
+[INFO] --- jacoco:0.8.12:report (report) @ staffing ---
+[INFO] Loading execution data file C:\Users\ZENGKY\Desktop\New folder\baseline\backend\target\jacoco.exec
+[INFO] Analyzed bundle 'staffing' with 150 classes
+[INFO] 
+[INFO] --- jacoco:0.8.12:check (check) @ staffing ---
+[INFO] Loading execution data file C:\Users\ZENGKY\Desktop\New folder\baseline\backend\target\jacoco.exec
+[INFO] Analyzed bundle 'staffing' with 150 classes
+[INFO] All coverage checks have been met.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  44.812 s
+[INFO] Finished at: 2026-11-11T23:06:28+08:00
+[INFO] ------------------------------------------------------------------------
+exit: 0
+ended: 2026-11-11T23:06:29+0800
+
+===== CMD: cd web && npm test =====
+cwd: /c/Users/ZENGKY/Desktop/New folder/baseline
+started: 2026-11-11T23:06:29+0800
+
+> staffing-web@0.0.1 test
+> node --test tests/candidates.test.ts tests/post.test.ts tests/confirmation.test.ts tests/catalog.test.ts tests/imports.test.ts tests/people.test.ts tests/projects.test.ts tests/session.test.ts tests/nav.test.ts tests/headcount.test.ts
+
+✔ the cross-role section is shown only when the main list is empty (1.4448ms)
+✔ an empty cross-role section still explains itself (0.1695ms)
+✔ every gate is counted once, X1 and X2 included (0.2172ms)
+✔ a band is named, and a bonus row names the target it misses (0.1438ms)
+✔ the gap is a count of bands (0.1246ms)
+✔ a role reads its domain as the skill names, and an empty one says so (0.6825ms)
+✔ the toggle offers the state the item is not in (0.6078ms)
+✔ a rename sends the trimmed name and nothing else (0.1242ms)
+✔ only the coordinator may edit a catalog (0.0847ms)
+✔ a state is named, and a voided one names its reason (0.9062ms)
+✔ the open proposals come first and the closed history follows, each in the server order (0.8828ms)
+✔ the lead confirms and rejects, the coordinator withdraws, and a closed row offers nothing (0.1567ms)
+✔ a proposal names the person and marks a deactivation (0.1718ms)
+✔ the reason snapshot reads as the gates it passed and the evidence behind it (0.2699ms)
+✔ a notice names its post, the person, the reason and the moment (0.1827ms)
+✔ the inbox counts each chip over the whole list and pages one state (0.4821ms)
+✔ an inbox row names its post, and a post without a title falls back to its number (0.1661ms)
+✔ a share is printed with one decimal, never recomputed (0.7333ms)
+✔ the axis is topped by the tallest bar and divides into five steps (0.6935ms)
+✔ the tallest bar is zero when nobody holds a category (0.1579ms)
+✔ a bar is proportional to its count and a zero bar has no height (0.1092ms)
+✔ an empty pool is the state that replaces the bars (0.153ms)
+✔ each chart header carries its total (0.097ms)
+✔ an applied batch names what it wrote, a rejected one names what is left to fix (0.5345ms)
+✔ the counts keep their singular where one row is meant (0.1026ms)
+✔ a refused row names its sheet, its row number and its key (0.0808ms)
+✔ a row that could not name a person is located without a key (0.0745ms)
+✔ a refusal says it left no batch, which a rejection never does (0.1285ms)
+✔ only the coordinator imports a workbook (0.0635ms)
+✔ a lead sees the two delivery links, the coordinator sees the six (1.2147ms)
+✔ the prototype keeps its three groups and drops the notices destination (0.1425ms)
+✔ only the decisions link carries the count badge (0.0985ms)
+✔ a signed-out visitor sees the whole map instead of an empty sidebar (0.1078ms)
+✔ a detail screen keeps its parent link lit (0.093ms)
+✔ the breadcrumb names the area of each route (0.1547ms)
+✔ the account chip names the role and draws one letter (0.0797ms)
+✔ the profile says it is read-only and names the import as the writer (0.4312ms)
+✔ a band is displayed by name, never as a number (0.1401ms)
+✔ an occupancy keeps its inclusive range and the way it came about (0.0698ms)
+✔ a past range is listed and only marked, never dropped (0.0622ms)
+✔ the active flag reads as a word (0.0735ms)
+✔ the gap numbers are the three the server sent, never recomputed (0.8382ms)
+✔ one sentence per gap row says how many are chosen and what is still needed (0.1266ms)
+✔ a confirmation freezes the six gate-bearing fields and says why (0.1635ms)
+✔ the headcount may rise under a confirmation but never fall below it (0.0801ms)
+✔ the still-short posts are the ones the server marked, in its order (0.0981ms)
+✔ a seat names the person, the day and the deactivation when the import has one (0.0747ms)
+✔ the form starts from the stored post and posts back the same body (0.2715ms)
+✔ a project reads as its lead, its inclusive range and its state (0.5014ms)
+✔ the note names what the state means for the posts and the allocations (0.0765ms)
+✔ the gap numbers of a project are sums of its rows (0.4185ms)
+✔ the project sentence carries counts, a singular post and the filled case (0.084ms)
+✔ only the project lead, and only while it is open, is offered the end (0.0782ms)
+✔ the confirmation names the project, its posts and the people it releases (0.1159ms)
+✔ a lead opens a project of their own; the coordinator names the lead (0.0827ms)
+✔ the draft trims the two names and keeps the dates it was given (0.067ms)
+✔ the form names its own refusals before anything is sent (0.146ms)
+✔ the account name is trimmed and the password is left alone (0.8002ms)
+✔ an empty field is named instead of sent (0.1101ms)
+✔ the token lives in this tab's sessionStorage and is forgotten on demand (0.1444ms)
+ℹ tests 60
+ℹ suites 0
+ℹ pass 60
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 639.0973
+exit: 0
+ended: 2026-11-11T23:06:34+0800
+
+===== CMD: cd web && npm run test:e2e =====
+cwd: /c/Users/ZENGKY/Desktop/New folder/baseline
+started: 2026-11-11T23:06:35+0800
+
+> staffing-web@0.0.1 test:e2e
+> playwright test
+
+
+Running 24 tests using 1 worker
+
+  ✓   1 [setup] › e2e\auth.setup.ts:15:3 › signs in as coordinator (135ms)
+  ✓   2 [setup] › e2e\auth.setup.ts:15:3 › signs in as lead.one (71ms)
+  ✓   3 [setup] › e2e\auth.setup.ts:15:3 › signs in as lead.two (76ms)
+  ✓   4 [e2e] › e2e\headcount.spec.ts:28:3 › the coordinator › an empty pool replaces both charts instead of drawing bars (2.4s)
+  ✓   5 [e2e] › e2e\headcount.spec.ts:44:3 › the coordinator › both charts sit above the table and count only the active people (1.4s)
+  ✓   6 [e2e] › e2e\headcount.spec.ts:97:3 › the coordinator › an import shows up in the charts on the next load (1.0s)
+  ✓   7 [e2e] › e2e\headcount.spec.ts:133:3 › a lead › sees no chart section and puts no report request on the wire (1.1s)
+  ✓   8 [e2e] › e2e\journeys.spec.ts:29:3 › J1 import to gap › J1 imports, posts, searches, proposes, confirms and reads the gap (2.9s)
+  ✓   9 [e2e] › e2e\journeys.spec.ts:92:3 › J2 the end and the later search › J2 ends a project and the released people come back in a later search (2.2s)
+  ✓  10 [e2e] › e2e\journeys.spec.ts:133:3 › J3 the lead opens a project, the coordinator recommends › J3 opens a project, states its post, is recommended a person and confirms her (3.1s)
+  ✓  11 [e2e] › e2e\login.spec.ts:14:3 › signed out › a screen with no session lands on the form, and the form opens it (1.1s)
+  ✓  12 [e2e] › e2e\login.spec.ts:27:3 › signed out › an empty form is refused without a request (1.0s)
+  ✓  13 [e2e] › e2e\login.spec.ts:34:3 › signed out › two tabs of one browser keep two accounts (2.5s)
+  ✓  14 [e2e] › e2e\login.spec.ts:66:3 › a signed-in lead › a forbidden screen keeps its reason and stops claiming to read (1.2s)
+  ✓  15 [e2e] › e2e\scenarios.spec.ts:25:3 › the project end › The end releases everyone and cancels the posts (2.7s)
+  ✓  16 [e2e] › e2e\scenarios.spec.ts:66:3 › the person profile › The profile is read-only (1.1s)
+  ✓  17 [e2e] › e2e\scenarios.spec.ts:79:3 › the person profile › A band is displayed, never a number (1.1s)
+  ✓  18 [e2e] › e2e\scenarios.spec.ts:90:3 › the person profile › Profile lists a person's occupancy (1.2s)
+  ✓  19 [e2e] › e2e\scenarios.spec.ts:121:3 › the confirmation › Confirmation is visible to both roles (2.3s)
+  ✓  20 [e2e] › e2e\scenarios.spec.ts:147:3 › the confirmation › Both roles see the same gap numbers (2.1s)
+  ✓  21 [e2e] › e2e\scenarios.spec.ts:173:3 › the search › The confirmed person leaves other searches (1.1s)
+  ✓  22 [e2e] › e2e\scenarios.spec.ts:202:3 › the search › The notice list explains each loss (1.1s)
+  ✓  23 [e2e] › e2e\smoke.spec.ts:11:3 › the harness › each signed-in account reads back its own role (16ms)
+  ✓  24 [e2e] › e2e\smoke.spec.ts:28:3 › the shell › a signed-in lead opens it with the links the role can use (1.0s)
+
+  24 passed (52.4s)
+exit: 0
+ended: 2026-11-11T23:07:31+0800
+
+===== CMD: cd web && npm audit --audit-level=high =====
+cwd: /c/Users/ZENGKY/Desktop/New folder/baseline
+started: 2026-11-11T23:07:32+0800
+# npm audit report
+
+minimatch  7.0.0 - 11.0.0
+Severity: moderate
+minimatch has potential denial of service via globparts amplification - https://github.com/advisories/GHSA-g3hv-75wg-m249
+fix available via `npm audit fix --force`
+Will install typescript-eslint@8.36.0, which is a breaking change
+node_modules/@typescript-eslint/typescript-estree/node_modules/minimatch
+  @typescript-eslint/typescript-estree  6.16.0 - 8.72.2
+  Depends on vulnerable versions of minimatch
+  node_modules/@typescript-eslint/typescript-estree
+    @typescript-eslint/parser  6.16.0 - 8.72.2
+    Depends on vulnerable versions of @typescript-eslint/typescript-estree
+    node_modules/@typescript-eslint/parser
+      typescript-eslint  <=8.72.2
+      Depends on vulnerable versions of @typescript-eslint/eslint-plugin
+      Depends on vulnerable versions of @typescript-eslint/parser
+      Depends on vulnerable versions of @typescript-eslint/typescript-estree
+      Depends on vulnerable versions of @typescript-eslint/utils
+      node_modules/typescript-eslint
+    @typescript-eslint/type-utils  6.16.0 - 8.72.2
+    Depends on vulnerable versions of @typescript-eslint/typescript-estree
+    Depends on vulnerable versions of @typescript-eslint/utils
+    node_modules/@typescript-eslint/type-utils
+      @typescript-eslint/eslint-plugin  6.16.0 - 8.72.2
+      Depends on vulnerable versions of @typescript-eslint/type-utils
+      Depends on vulnerable versions of @typescript-eslint/utils
+      node_modules/@typescript-eslint/eslint-plugin
+    @typescript-eslint/utils  6.16.0 - 8.72.2
+    Depends on vulnerable versions of @typescript-eslint/typescript-estree
+    node_modules/@typescript-eslint/utils
+
+uuid  <11.1.1
+Severity: moderate
+uuid: Missing buffer bounds check in v3/v5/v6 when buf is provided - https://github.com/advisories/GHSA-w5hq-g745-h8pq
+fix available via `npm audit fix --force`
+Will install exceljs@3.4.0, which is a breaking change
+node_modules/uuid
+  exceljs  >=3.5.0
+  Depends on vulnerable versions of uuid
+  node_modules/exceljs
+
+9 moderate severity vulnerabilities
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+exit: 0
+ended: 2026-11-11T23:07:39+0800
+

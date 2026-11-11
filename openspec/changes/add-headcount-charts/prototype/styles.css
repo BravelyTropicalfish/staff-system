@@ -1,0 +1,278 @@
+/* Headcount 图表原型（add-headcount-charts rev 2）。
+   静态、无依赖、无构建：只模仿真实应用的壳层与人员池页面的排版。 */
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #f6f7f9;
+  color: #0f172a;
+  font: 14px/1.5 -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+code {
+  font-family: ui-monospace, "SF Mono", Consolas, monospace;
+  font-size: 12px;
+  background: #eef2f7;
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.app { display: flex; min-height: 100vh; }
+
+/* ---------- 壳层：侧栏 ---------- */
+
+.sidebar {
+  width: 244px;
+  flex: 0 0 244px;
+  background: #fff;
+  border-right: 1px solid #e5e9f0;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 12px;
+  gap: 14px;
+}
+
+.brand { display: flex; align-items: center; gap: 10px; padding: 2px 6px 10px; }
+
+.brand-mark {
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  background: #2f4bd0;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+}
+
+.brand-name { font-weight: 650; letter-spacing: .2px; }
+.brand-sub { font-size: 11px; color: #7c8698; }
+
+.nav { display: flex; flex-direction: column; gap: 2px; }
+.nav-group {
+  font-size: 11px;
+  color: #98a2b3;
+  padding: 10px 8px 4px;
+  letter-spacing: .4px;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: #334155;
+  font-size: 13px;
+  cursor: default;
+}
+.nav-item.is-active { background: #eef2ff; color: #2f4bd0; font-weight: 600; }
+.badge-count {
+  font-size: 11px;
+  background: #e2e8f0;
+  color: #475569;
+  border-radius: 999px;
+  padding: 0 7px;
+}
+
+.sidebar-foot {
+  margin-top: auto;
+  font-size: 11px;
+  line-height: 1.65;
+  color: #7c8698;
+  border-top: 1px solid #eef1f6;
+  padding-top: 10px;
+}
+
+/* ---------- 壳层：顶栏 ---------- */
+
+.main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+.topbar {
+  height: 52px;
+  flex: 0 0 52px;
+  background: #fff;
+  border-bottom: 1px solid #e5e9f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.crumbs { font-size: 12px; color: #64748b; }
+.crumbs .sep { margin: 0 6px; color: #cbd5e1; }
+
+.account { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #475569; }
+.avatar {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: #dbe4ff; color: #2f4bd0;
+  display: grid; place-items: center; font-weight: 700; font-size: 12px;
+}
+
+/* ---------- 评审状态切换 ---------- */
+
+.state-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #fffbeb;
+  border-bottom: 1px solid #fde68a;
+  font-size: 12px;
+  color: #92400e;
+}
+.state-bar-label { font-weight: 600; margin-right: 2px; }
+.state-btn {
+  font: inherit;
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid #fcd34d;
+  background: #fff;
+  color: #92400e;
+  cursor: pointer;
+}
+.state-btn:hover { background: #fef3c7; }
+.state-btn.is-active { background: #92400e; border-color: #92400e; color: #fff; }
+
+/* ---------- 页面 ---------- */
+
+.view { padding: 18px 20px 40px; }
+
+.page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
+.page-head h1 { margin: 0; font-size: 20px; letter-spacing: .2px; }
+.lede { font-size: 12px; color: #64748b; margin-top: 4px; }
+
+.card {
+  background: #fff;
+  border: 1px solid #e5e9f0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.card + .card { margin-top: 14px; }
+
+.card-head {
+  padding: 12px 16px;
+  border-bottom: 1px solid #eef1f6;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.card-head h2 { margin: 0; font-size: 14px; }
+.card-head .total { font-size: 12px; color: #64748b; }
+.card-head .total b { font-size: 15px; color: #0f172a; }
+
+.card-body { padding: 16px; }
+
+/* ---------- 图表 ---------- */
+
+.chart-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; }
+
+.chart-plot { display: flex; gap: 8px; height: 216px; }
+
+.axis {
+  width: 34px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+  font-size: 10px;
+  color: #94a3b8;
+  padding-bottom: 1px;
+}
+
+.plot {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  padding: 0 4px;
+  border-bottom: 1px solid #e2e8f0;
+  /* 横向细网格，帮助读高度 */
+  background-image: linear-gradient(to top, #f1f5f9 1px, transparent 1px);
+  background-size: 100% 25%;
+}
+
+.slot { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+
+.slot-value { font-size: 12px; font-weight: 650; color: #1e293b; margin-bottom: 5px; }
+
+.bar {
+  width: 100%;
+  max-width: 54px;
+  background: linear-gradient(180deg, #5b7cfa 0%, #3f5bd8 100%);
+  border-radius: 5px 5px 0 0;
+}
+
+/* 0 值柱：高度为 0，但保留一个可见的刻度，证明分类在轴上 */
+.bar.is-zero {
+  height: 3px;
+  background: #cbd5e1;
+  border-radius: 2px;
+}
+
+.chart-labels { display: flex; gap: 8px; margin-top: 8px; }
+.axis-spacer { width: 34px; flex: 0 0 34px; }
+.labels { flex: 1; display: flex; gap: 14px; padding: 0 4px; }
+.label-cell { flex: 1; text-align: center; min-width: 0; }
+.label-cell b { display: block; font-size: 12px; font-weight: 600; }
+.label-cell span { font-size: 11px; color: #64748b; }
+.label-cell.is-zero b { color: #94a3b8; }
+.label-cell.is-zero span { color: #94a3b8; }
+
+/* 空池：两张图都被同一句话替换 */
+.chart-empty {
+  height: 216px;
+  display: grid;
+  place-items: center;
+  color: #94a3b8;
+  font-size: 13px;
+  border: 1px dashed #e2e8f0;
+  border-radius: 10px;
+  background: #fbfcfe;
+}
+
+/* ---------- 人员表 ---------- */
+
+table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid #f1f5f9; }
+th { font-size: 11.5px; color: #64748b; font-weight: 600; background: #fbfcfe; }
+tbody tr:last-child td { border-bottom: none; }
+td.mono { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: 12px; color: #475569; }
+
+.badge {
+  display: inline-block;
+  font-size: 11px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #3552c7;
+}
+.badge-success { background: #e8f7ee; color: #17803d; }
+.badge-muted { background: #f1f5f9; color: #64748b; }
+
+/* ---------- 提示条与说明 ---------- */
+
+.banner {
+  border: 1px solid #e5e9f0;
+  background: #f8fafc;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 12.5px;
+  color: #475569;
+}
+.banner.danger { border-color: #fecaca; background: #fef2f2; color: #b42318; }
+.banner + .card, .banner + .chart-grid { margin-top: 14px; }
+
+.legend { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 6px 14px; font-size: 12px; }
+.legend dt { color: #64748b; }
+.legend dd { margin: 0; color: #334155; }
+
+.muted { color: #7c8698; }
+.small { font-size: 11.5px; }
+
+@media (max-width: 1180px) {
+  .chart-grid { grid-template-columns: minmax(0, 1fr); }
+}

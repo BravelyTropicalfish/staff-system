@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Headcount 图表 · 原型（add-headcount-charts）</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">S</span>
+      <div>
+        <div class="brand-name">Staffing</div>
+        <div class="brand-sub">headcount 原型 · rev 2</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <div class="nav-group">项目交付</div>
+      <a class="nav-item">岗位与缺口</a>
+      <a class="nav-item">推荐与确认 <span class="badge-count">2</span></a>
+      <div class="nav-group">人员</div>
+      <a class="nav-item">候选人搜索</a>
+      <a class="nav-item is-active" id="nav-people">人员池</a>
+      <div class="nav-group">数据</div>
+      <a class="nav-item">报表导入</a>
+      <a class="nav-item">目录管理</a>
+    </nav>
+    <div class="sidebar-foot">
+      静态原型，无后端。数据是评审用样例，规则见
+      <code>specs/staffing/headcount-report/spec.md</code>。
+      <br>两张图是 <b>人员池页面</b> 的一个区块，不新增路由。
+      <br>空分类保留 0 高柱；停用且无人的角色不在轴上。
+      <br>总数为 0 时空态替换两张图。
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="crumbs">人员池 <span class="sep">/</span> 全部人员</div>
+      <div class="account" id="account"></div>
+    </header>
+
+    <!-- 评审用状态切换：原型里没有登录页，用一个开关代替 -->
+    <div class="state-bar">
+      <span class="state-bar-label">评审状态</span>
+      <button class="state-btn" data-state="coordinator">协调员 · 有数据</button>
+      <button class="state-btn" data-state="empty">协调员 · 空池</button>
+      <button class="state-btn" data-state="lead">项目经理 · 无图表区</button>
+    </div>
+
+    <main id="view" class="view"></main>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

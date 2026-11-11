@@ -1,0 +1,7 @@
+cd web && npm run lint
+cd web && npx tsc --noEmit
+cd backend && ./mvnw -B -DskipTests compile
+cd backend && ./mvnw -B verify
+cd web && npm test
+cd web && npm run test:e2e
+cd web && npm audit --audit-level=high
