@@ -2,7 +2,7 @@
 
 - **Gate:** G3 (Merge & Archive)
 - **Change id:** `add-staffing-mvp` (REQ-001, rev 13 in force)
-- **Timestamp:** 2026-11-11T23:32+08:00
+- **Timestamp:** 2026-11-11T23:32+08:00 (condition 1 closed 2026-11-11T23:58+08:00)
 
 ## Input artifacts
 
@@ -23,24 +23,34 @@
 |---|---|---|
 | Merge outcome | Pass | 40 requirements added across the six capabilities (+5 allocation, +5 candidate-matching, +5 people-import, +8 people-pool, +8 post-requirement, +9 staffing-confirmation); the merged tree counts 40 requirements / 90 scenarios |
 | Conflicts | None | Every capability was absent from `openspec/specs/` before the merge |
-| Archive completeness | **Conditional** | The destination copy is complete (30 files). The source folder could not be removed completely: its emptied `prototype` directory is held by an external Windows handle, so `openspec/changes/add-staffing-mvp/` still exists and `openspec list` shows a task-less `add-staffing-mvp` |
+| Archive completeness | Pass | The destination copy is complete (30 files). The emptied source folder was removed after the owner closed the terminal that held it; `openspec list` shows only `add-headcount-charts` (see Closure below) |
 | Harness / Rules evolve | Not required | The CI browser-install failure was fixed in the workflow (browser-only install + cache, job pinned to `ubuntu-24.04`); no Rules change is implied |
 | Gate records | Pass | G1 rev 13 signed 2026-11-11 (IO raylen / SA kyrie); G2 Pass with addenda 1–8 |
 
 ## Decision
 
-**Conditional.**
+**Pass.**
 
-A Pass is not recorded because the archive is not complete: the emptied source folder is still on
-disk (blocked by a file handle, not by content). Everything else — spec merge, archive copy, KB check,
-local verify and CI — is green.
+The merge, the archive copy and the knowledge-base check are complete, the emptied source folder is
+gone, and both `local verify` and CI are green. The decision started as Conditional on that one file
+handle and was closed the same day (see Closure).
 
 ## Conditions + owners
 
-| # | Remediation item | Owner | Deadline |
-|---|---|---|---|
-| 1 | Close the browser/editor handle on `openspec/changes/add-staffing-mvp/prototype`, delete the leftover `openspec/changes/add-staffing-mvp/` directory, and confirm `openspec list` shows only `add-headcount-charts` (no task-less `add-staffing-mvp`) | raylen (implementation owner) | 2026-11-12 |
-| 2 | Record the closure here (a short addendum) once the directory is gone; the decision then reads Pass without re-running the lane | SA cecil | 2026-11-12 |
+None — condition 1 was met before the record became final.
+
+## Closure — 2026-11-11, condition 1 met
+
+| Field | Value |
+|---|---|
+| Condition | The emptied `openspec/changes/add-staffing-mvp/prototype` directory held by an external handle |
+| Closed by | raylen closed the terminal whose working directory was that folder; the agent then removed the leftover directory |
+| Verification | `Remove-Item openspec\changes\add-staffing-mvp -Recurse -Force` succeeded, and `openspec list` now shows only `add-headcount-charts` |
+| Decision after closure | **Pass** (SA cecil, 2026-11-11) |
+
+Re-verification after the closure: the archive copy still holds 30 files, `openspec/specs/staffing/*/spec.md`
+still counts 40 requirements / 90 scenarios, and `node scripts/kb-lint.mjs` prints
+`24 entries, every _INDEX.md link resolves`.
 
 ## Open risks carried past G3
 
@@ -64,5 +74,5 @@ itself. AO AI4SE improvement asks: none attached.
 
 ## Next
 
-- The owner closes condition 1, the SA appends the closure, and the record reads Pass.
+- G3 is **Pass**; the change is archived and the living specs carry the 40 requirements.
 - `/sdd:deploy-artifacts` does not apply (Non-Goal 10). CD remains out of scope by design.

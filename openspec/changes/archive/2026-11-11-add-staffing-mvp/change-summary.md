@@ -83,9 +83,9 @@ or a project end gives the seat back. The change package carries six delta capab
 - **9 moderate npm advisories** in the dev toolchain (no high or critical).
 - **The tree mixes owner-side dev tooling** (`dev/H2ConsoleConfig.java`, application properties,
   `pom.xml`) with the change; it is not part of T31–T43.
-- **The emptied source folder is still on disk**: an external Windows handle holds
-  `openspec/changes/add-staffing-mvp/prototype`, so the folder could not be removed; `openspec list`
-  still shows a task-less `add-staffing-mvp`. This is G3 condition 1 (owner raylen, 2026-11-12).
+- **The emptied source folder is gone**: the handle that held `prototype` was released when the owner
+  closed that terminal, the leftover `openspec/changes/add-staffing-mvp/` was removed, and
+  `openspec list` shows only `add-headcount-charts`. G3 is **Pass**.
 
 ## Links
 
