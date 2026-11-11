@@ -29,7 +29,7 @@
 ## Report
 
 - mode: persisted
-- report_path: pending (filled after write)
+- report_path: docs/ai4se-plugins/20261111-230836-local-verify-report.md
 - overall: Pass
 - waiver: N/A
 
