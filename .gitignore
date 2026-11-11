@@ -32,6 +32,10 @@ coverage/
 .nyc_output/
 playwright-report/
 test-results/
+web/e2e/.auth/
+
+# Local H2 file database written by dev runs (the Java `data` package stays tracked)
+backend/data/
 
 # Local installer state (portable host assets are committed)
 .agents/
