@@ -1,7 +1,27 @@
 # Change summary — add-staffing-mvp
 
-> P5 overlay, not a Gate decision and not Living Spec authority. Drafted before the merge, so the
-> archive/KB slots record what is still missing rather than a result.
+> P5 overlay, not a Gate decision and not Living Spec authority. The merge ran on 2026-11-11; the
+> one open item is a Windows file handle on the emptied source folder, recorded under Residual risks
+> and in the G3 condition.
+
+## Merge & archive
+
+- `openspec archive add-staffing-mvp --yes` merged the six delta specs into living specs:
+  `openspec/specs/staffing/<capability>/spec.md`, +40 requirements, 0 modified, 0 removed
+  (allocation +5, candidate-matching +5, people-import +5, people-pool +8, post-requirement +8,
+  staffing-confirmation +9). The merged tree counts 40 requirements / 90 scenarios.
+- The change itself now lives at `openspec/changes/archive/2026-11-11-add-staffing-mvp/`; the archive
+  copy is complete (30 files, including the Chinese `spec.zh.md` siblings, the prototype, both gate
+  records and this summary).
+- The Chinese translations were held as `spec.zh.md.hold` for the archive run — OpenSpec treats any
+  other `.md` under a capability folder as a stray delta — and restored to `spec.zh.md` inside the
+  archived copy afterwards.
+- Knowledge base: `scripts/kb-lint.sh` (now a real check, `scripts/kb-lint.mjs`) reports
+  `24 entries, every _INDEX.md link resolves`. The repository has no KB writer script, so the KB step
+  validates the existing tree rather than importing change prose into it.
+- Leftover: an empty `openspec/changes/add-staffing-mvp/prototype` directory is still held by an
+  external handle, so the source folder could not be removed completely; `openspec list` therefore
+  still shows a task-less `add-staffing-mvp`. Removal is the G3 condition, owner raylen.
 
 ## Intent
 
@@ -63,8 +83,9 @@ or a project end gives the seat back. The change package carries six delta capab
 - **9 moderate npm advisories** in the dev toolchain (no high or critical).
 - **The tree mixes owner-side dev tooling** (`dev/H2ConsoleConfig.java`, application properties,
   `pom.xml`) with the change; it is not part of T31–T43.
-- **Archive is blocked by tooling**: the `openspec` CLI is absent and `scripts/archive-change.sh` is
-  the bootstrap placeholder that exits 1, so the Living Spec merge and the KB update have not run.
+- **The emptied source folder is still on disk**: an external Windows handle holds
+  `openspec/changes/add-staffing-mvp/prototype`, so the folder could not be removed; `openspec list`
+  still shows a task-less `add-staffing-mvp`. This is G3 condition 1 (owner raylen, 2026-11-12).
 
 ## Links
 
@@ -81,4 +102,7 @@ or a project end gives the seat back. The change package carries six delta capab
   `docs/ai4se-plugins/20261111-191403-pipeline-report.md`
 - Pull request: https://github.com/BravelyTropicalfish/staff-system/pull/1 (open; its head predates
   T31–T43)
-- Archive / KB: **missing** — blocked as stated above
+- Archive / KB: archived at `openspec/changes/archive/2026-11-11-add-staffing-mvp/`; living specs at
+  `openspec/specs/staffing/*/spec.md`; KB `scripts/kb-lint.sh` exit 0 (24 entries)
+- Pipeline: `docs/ai4se-plugins/20261111-231243-pipeline-report.md` (run #12 on `a11bffd`, five jobs
+  green, 2m28s; the three failed runs before it failed only in the browser installation)
