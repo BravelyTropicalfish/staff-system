@@ -32,13 +32,13 @@ const qa: Role = {
 };
 
 test('a role reads its domain as the skill names, and an empty one says so', () => {
-  assert.equal(domainLabel(qa), '测试, 后端开发');
-  assert.equal(domainLabel({ skills: [] }), 'no domain skills');
+  assert.equal(domainLabel(qa), '测试、后端开发');
+  assert.equal(domainLabel({ skills: [] }), '暂无技能域');
 });
 
 test('the toggle offers the state the item is not in', () => {
-  assert.equal(toggleLabel({ active: true }), 'Deactivate');
-  assert.equal(toggleLabel({ active: false }), 'Activate');
+  assert.equal(toggleLabel({ active: true }), '停用');
+  assert.equal(toggleLabel({ active: false }), '启用');
   assert.deepEqual(toggleBody({ active: true }), { active: false });
   assert.deepEqual(toggleBody({ active: false }), { active: true });
 });

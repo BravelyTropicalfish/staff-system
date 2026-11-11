@@ -54,7 +54,12 @@ export default function ProjectScreen() {
   if (loadError) {
     return (
       <div>
-        <h1>Project {projectId}</h1>
+        <div className="btn-row" style={{ marginBottom: 8 }}>
+          <Link className="btn btn-sm" to="/posts">
+            ← 返回岗位与缺口
+          </Link>
+        </div>
+        <h1>项目 {projectId}</h1>
         <p className="mt-4 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
           {loadError}
         </p>
@@ -65,8 +70,13 @@ export default function ProjectScreen() {
   if (!ready) {
     return (
       <div>
-        <h1>Project {projectId}</h1>
-        <p className="mt-2 text-sm text-slate-600">Reading the project…</p>
+        <div className="btn-row" style={{ marginBottom: 8 }}>
+          <Link className="btn btn-sm" to="/posts">
+            ← 返回岗位与缺口
+          </Link>
+        </div>
+        <h1>项目 {projectId}</h1>
+        <p className="mt-2 text-sm text-slate-600">正在读取项目…</p>
       </div>
     );
   }
@@ -97,10 +107,13 @@ export default function ProjectScreen() {
           <div className="lede">{projectNote(project)}</div>
         </div>
         <div className="btn-row">
+          <Link className="btn btn-sm" to="/posts">
+            ← 返回岗位与缺口
+          </Link>
           {/* Adding a post is the same guard as ending: the project's own lead, while it is open. */}
           {canEnd(project, viewer) ? (
             <Link className="btn btn-sm" to={`/projects/${project.id}/posts/new`}>
-              Add a post
+              新增岗位
             </Link>
           ) : null}
         </div>
@@ -110,22 +123,22 @@ export default function ProjectScreen() {
       <div className="grid-3">
         <section className="card kpi">
           <div className="card-body">
-            <div className="muted small">Posts</div>
+            <div className="muted small">岗位</div>
             <div className="stat mono">{tally.posts}</div>
           </div>
         </section>
         <section className="card kpi">
           <div className="card-body">
-            <div className="muted small">Seats chosen</div>
+            <div className="muted small">已到位</div>
             <div className="stat mono">
               {tally.chosen}
-              <small> of {tally.seats}</small>
+              <small> / {tally.seats}</small>
             </div>
           </div>
         </section>
         <section className="card kpi">
           <div className="card-body">
-            <div className="muted small">Seats still needed</div>
+            <div className="muted small">仍缺</div>
             <div className="stat mono">{tally.remaining}</div>
           </div>
         </section>
@@ -134,21 +147,21 @@ export default function ProjectScreen() {
       <div className="grid-2" style={{ marginTop: 12 }}>
         <section className="card">
           <div className="card-head">
-            <h2>Posts</h2>
+            <h2>岗位</h2>
           </div>
           <div className="card-body tight">
             {posts.length === 0 ? (
-              <p className="empty">The project carries no post yet.</p>
+              <p className="empty">这个项目还没有岗位。</p>
             ) : (
               <table>
                 <thead>
                   <tr>
-                    <th>Post</th>
-                    <th>Role</th>
-                    <th>From</th>
-                    <th>To</th>
-                    <th>Status</th>
-                    <th>Seats</th>
+                    <th>岗位</th>
+                    <th>角色</th>
+                    <th>开始</th>
+                    <th>结束</th>
+                    <th>状态</th>
+                    <th>名额</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -158,7 +171,7 @@ export default function ProjectScreen() {
                       <tr key={post.id}>
                         <td>
                           <Link className="underline" to={`/posts/${post.id}`}>
-                            {post.title ?? `Post ${post.id}`}
+                            {post.title ?? `岗位 ${post.id}`}
                           </Link>
                         </td>
                         <td>{post.role}</td>
@@ -181,7 +194,7 @@ export default function ProjectScreen() {
 
         <section className="card">
           <div className="card-head">
-            <h2>Gap</h2>
+            <h2>缺口</h2>
           </div>
           <div className="card-body stack">
             <p className="stat mono">{gapSummary(gaps)}</p>
@@ -192,7 +205,7 @@ export default function ProjectScreen() {
                     <p>{endConfirmation(project, posts)}</p>
                     <div className="btn-row">
                       <button type="button" className="btn btn-danger" disabled={busy} onClick={end}>
-                        End it
+                        确认结束
                       </button>
                       <button
                         type="button"
@@ -200,27 +213,23 @@ export default function ProjectScreen() {
                         disabled={busy}
                         onClick={() => setConfirming(false)}
                       >
-                        Keep it open
+                        保持进行中
                       </button>
                     </div>
                   </>
                 ) : (
                   <>
-                    <p>
-                      Ending is terminal: it cancels every post, releases everyone and cannot be undone.
-                    </p>
+                    <p>结束是终态：它会取消全部岗位、释放所有人，且不可撤销。</p>
                     <div className="btn-row">
                       <button type="button" className="btn btn-danger" onClick={() => setConfirming(true)}>
-                        End the project
+                        结束项目
                       </button>
                     </div>
                   </>
                 )}
               </div>
             ) : ended ? null : (
-              <p className="note">
-                Only the project's lead ends it; this screen offers the action to nobody else.
-              </p>
+              <p className="note">只有项目自己的项目经理可以结束它；这一屏不会把这个动作给别人。</p>
             )}
           </div>
         </section>

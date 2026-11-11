@@ -44,9 +44,9 @@ export default function NoticesScreen() {
 
   return (
     <div>
-      <h1>Notices</h1>
+      <h1>作废通知</h1>
       <p className="lede">
-        Every proposal that was lost, and why. An entry stays until it is dismissed.
+        每一条被作废的推荐，以及原因。条目一直保留到手动清除。
       </p>
       {error ? (
         <p className="mt-4 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
@@ -54,9 +54,9 @@ export default function NoticesScreen() {
         </p>
       ) : null}
       {notices === null ? (
-        error === null ? <p className="mt-2 text-sm text-slate-600">Reading the notices…</p> : null
+        error === null ? <p className="mt-2 text-sm text-slate-600">正在读取通知…</p> : null
       ) : notices.length === 0 ? (
-        <p className="mt-4 text-sm text-slate-600">Nothing was lost.</p>
+        <p className="mt-4 text-sm text-slate-600">没有被作废的推荐。</p>
       ) : (
         <ul className="mt-4 space-y-2">
           {notices.map((notice) => (
@@ -71,7 +71,7 @@ export default function NoticesScreen() {
                 disabled={busy}
                 onClick={() => dismiss(notice.id)}
               >
-                Dismiss
+                清除
               </button>
             </li>
           ))}

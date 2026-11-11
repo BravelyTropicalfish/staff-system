@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Projects. The list answers both roles with what each may see (the coordinator everything, a lead
- * only its own); a lead opens a project of their own and the coordinator opens one for any lead; the
- * end is the owning lead's. Each refusal is the server's answer and not only the screen's.
+ * only its own); a project is opened by its own lead, never by the coordinator; the end is the
+ * owning lead's. Each refusal is the server's answer and not only the screen's.
  */
 @RestController
 @RequestMapping("/api/projects")

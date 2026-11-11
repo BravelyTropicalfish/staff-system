@@ -4,12 +4,12 @@ Scope: projects and allocation records — the person × project date range that
 
 ## ADDED Requirements
 
-### Requirement: A project is opened by its lead or on their behalf
+### Requirement: A project is opened by its lead
 
 The system SHALL store a project with name, lead, start date and end date, where the lead is one
 identified lead account. A lead SHALL be able to open a project of their own and SHALL NOT open one
-whose lead is somebody else; the coordinator SHALL be able to open a project for any lead and to
-edit a project. A project whose end date precedes its start date SHALL be refused.
+whose lead is somebody else. The coordinator SHALL NOT open a project: the coordinator reads every
+project and writes none of them. A project whose end date precedes its start date SHALL be refused.
 
 **Traces:** proposal step 3; REQ-001 §3, §5; S1, S39.
 
@@ -19,6 +19,7 @@ edit a project. A project whose end date precedes its start date SHALL be refuse
 - **WHEN** they save a project naming themselves as the lead
 - **THEN** the project is stored `open` with that lead
 - **AND** a project naming another lead is refused and nothing is stored
+- **AND** the coordinator saving any project is refused and nothing is stored
 
 #### Scenario: Inverted dates are refused
 

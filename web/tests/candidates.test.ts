@@ -31,6 +31,7 @@ const grace: FallbackRow = {
   bandsAbove: 2,
   skill: '测试',
   band: 'Practitioner',
+  gates: ['G1', 'G5', 'G6', 'X1', 'X2'],
 };
 
 const linh: FallbackRow = {
@@ -42,6 +43,7 @@ const linh: FallbackRow = {
   bandsAbove: 1,
   skill: '测试',
   band: 'Expert',
+  gates: ['G1', 'G5', 'G6', 'X1', 'X2'],
 };
 
 function search(overrides: Partial<CandidateSearch> = {}): CandidateSearch {
@@ -95,18 +97,22 @@ test('every gate is counted once, X1 and X2 included', () => {
     [0, 0, 1, 0, 0, 0, 2, 0],
     'a gate that did not run counts zero instead of disappearing',
   );
+  assert.deepEqual(
+    chips.map((chip) => chip.name),
+    ['在职', '角色', '职级', '必备技能', '差旅', '占用', '高一档', '技能域'],
+  );
 });
 
 test('a band is named, and a bonus row names the target it misses', () => {
   assert.equal(skillLabel(ada.skills[0]), '后端开发 · Practitioner');
-  assert.equal(skillLabel(ada.skills[1]), '测试 · Novice (needs Practitioner)');
+  assert.equal(skillLabel(ada.skills[1]), '测试 · Novice（要求 Practitioner）');
   assert.equal(
     skillLabel({ skill: '测试', kind: 'required', band: null, target: null }),
-    '测试 · not held',
+    '测试 · 未持有',
   );
 });
 
 test('the gap is a count of bands', () => {
-  assert.equal(bandsAboveLabel(1), '+1 band');
-  assert.equal(bandsAboveLabel(2), '+2 bands');
+  assert.equal(bandsAboveLabel(1), '+1 档');
+  assert.equal(bandsAboveLabel(2), '+2 档');
 });

@@ -38,7 +38,7 @@ class MatchingServiceTest {
     CandidateSearchView view = service.search(1);
 
     assertThat(view.suitable()).isEmpty();
-    assertThat(view.fallbackReason()).isEqualTo("no DEV person passes the gates");
+    assertThat(view.fallbackReason()).isEqualTo("DEV 角色没有人通过门槛");
     assertThat(view.fallback()).hasSize(1);
     FallbackRow row = view.fallback().get(0);
     assertThat(row.employeeNo()).isEqualTo("E200");
@@ -59,7 +59,7 @@ class MatchingServiceTest {
     assertThat(view.fallback()).isEmpty();
     assertThat(view.excluded()).singleElement().satisfies(row -> {
       assertThat(row.gate()).isEqualTo("G1");
-      assertThat(row.reason()).isEqualTo("the person is not active");
+      assertThat(row.reason()).isEqualTo("该人员已停用");
     });
   }
 
@@ -116,7 +116,7 @@ class MatchingServiceTest {
 
     assertThat(view.excluded()).singleElement().satisfies(row -> {
       assertThat(row.gate()).isEqualTo("X1");
-      assertThat(row.reason()).isEqualTo("cross-role: level not above the requirement");
+      assertThat(row.reason()).isEqualTo("跨角色：职级没有高于要求");
     });
   }
 
@@ -130,7 +130,7 @@ class MatchingServiceTest {
 
     assertThat(view.excluded()).singleElement().satisfies(row -> {
       assertThat(row.gate()).isEqualTo("X1");
-      assertThat(row.reason()).isEqualTo("cross-role: no band sits above Principal");
+      assertThat(row.reason()).isEqualTo("跨角色：没有高于 Principal 的职级");
     });
   }
 
@@ -144,7 +144,7 @@ class MatchingServiceTest {
 
     assertThat(view.excluded()).singleElement().satisfies(row -> {
       assertThat(row.gate()).isEqualTo("X2");
-      assertThat(row.reason()).isEqualTo("cross-role: DEV has no skill to qualify on");
+      assertThat(row.reason()).isEqualTo("跨角色：DEV 没有可用于达标的技能");
     });
   }
 
@@ -159,7 +159,7 @@ class MatchingServiceTest {
 
     assertThat(view.excluded()).singleElement().satisfies(row -> {
       assertThat(row.gate()).isEqualTo("X2");
-      assertThat(row.reason()).isEqualTo("cross-role: no domain skill at Practitioner");
+      assertThat(row.reason()).isEqualTo("跨角色：技能域内没有达到 Practitioner 的技能");
     });
   }
 

@@ -36,36 +36,27 @@ const handRun: PersonAllocation = {
 };
 
 test('the profile says it is read-only and names the import as the writer', () => {
-  assert.equal(
-    profileNote({ active: true }),
-    'active · master data arrives by import, so this profile is read-only',
-  );
-  assert.equal(
-    profileNote({ active: false }),
-    'inactive — the import marked it · master data arrives by import, so this profile is read-only',
-  );
+  assert.equal(profileNote({ active: true }), '在职 · 主数据由报表导入，本页只读');
+  assert.equal(profileNote({ active: false }), '已停用 · 由导入标记 · 主数据由报表导入，本页只读');
 });
 
 test('a band is displayed by name, never as a number', () => {
-  assert.equal(bandLabel(practitioner), '测试 · Practitioner · QA domain');
-  assert.equal(bandLabel(expert), '测试 · Expert · QA domain');
+  assert.equal(bandLabel(practitioner), '测试 · Practitioner · QA 域');
+  assert.equal(bandLabel(expert), '测试 · Expert · QA 域');
   assert.ok(!/\d/.test(bandLabel(practitioner)), 'a band carries no rank number');
 });
 
 test('an occupancy keeps its inclusive range and the way it came about', () => {
-  assert.equal(
-    occupancyLabel(confirmed),
-    'Atlas · 2026-01-05 → 2026-03-27 · confirmed seat',
-  );
-  assert.equal(occupancyLabel(handRun), 'Borealis · 2025-09-01 → 2025-12-31 · hand record · ended');
+  assert.equal(occupancyLabel(confirmed), 'Atlas · 2026-01-05 → 2026-03-27 · 确认座位');
+  assert.equal(occupancyLabel(handRun), 'Borealis · 2025-09-01 → 2025-12-31 · 手工登记 · 已结束');
 });
 
 test('a past range is listed and only marked, never dropped', () => {
-  assert.ok(occupancyLabel(handRun).endsWith('· ended'));
-  assert.ok(!occupancyLabel(confirmed).includes('ended'));
+  assert.ok(occupancyLabel(handRun).endsWith('· 已结束'));
+  assert.ok(!occupancyLabel(confirmed).includes('已结束'));
 });
 
 test('the active flag reads as a word', () => {
-  assert.equal(stateLabel({ active: true }), 'active');
-  assert.equal(stateLabel({ active: false }), 'inactive');
+  assert.equal(stateLabel({ active: true }), '在职');
+  assert.equal(stateLabel({ active: false }), '已停用');
 });

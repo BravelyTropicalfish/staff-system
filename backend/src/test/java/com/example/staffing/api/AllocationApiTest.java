@@ -104,7 +104,7 @@ class AllocationApiTest {
     assertThat(removed.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
     assertThat(body(removed)).containsEntry("code", "release first");
     assertThat(edited.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
-    assertThat(body(edited).get("message").toString()).contains("release the person instead");
+    assertThat(body(edited).get("message").toString()).contains("请改为解除该人员");
     assertThat(count("SELECT COUNT(*) FROM allocation")).isEqualTo(1);
     assertThat(jdbc.queryForObject("SELECT start_date FROM allocation", String.class))
         .isEqualTo("2027-02-01");
@@ -156,7 +156,7 @@ class AllocationApiTest {
         coordinator.post("/api/allocations", allocation("E100", 999, "2027-02-01", "2027-04-30"), Map.class);
 
     assertThat(unknownPerson.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
-    assertThat(body(unknownPerson).get("message").toString()).contains("E999", "not in the pool");
+    assertThat(body(unknownPerson).get("message").toString()).contains("E999", "不在人员池中");
     assertThat(unknownProject.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
     assertThat(count("SELECT COUNT(*) FROM allocation")).isZero();
   }

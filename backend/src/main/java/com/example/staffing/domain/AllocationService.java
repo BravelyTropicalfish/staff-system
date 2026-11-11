@@ -36,15 +36,15 @@ public class AllocationService {
     requireDates(start, end);
     String employeeNo = personNo == null ? "" : personNo.trim();
     if (people.findByEmployeeNo(employeeNo).isEmpty()) {
-      throw invalid("person " + personNo + " is not in the pool");
+      throw invalid("人员 " + personNo + " 不在人员池中");
     }
     ProjectRepository.ProjectRow project =
         projects
             .findById(projectId)
-            .orElseThrow(() -> invalid("project " + projectId + " is not a project"));
+            .orElseThrow(() -> invalid("项目 " + projectId + " 不存在"));
     if (!"OPEN".equals(project.status())) {
       throw new ProjectException(
-          "project closed", "the project " + project.name() + " is closed");
+          "project closed", "项目 " + project.name() + " 已结束");
     }
     long id = allocations.insertManual(employeeNo, projectId, start, end);
     return view(find(id));
@@ -69,27 +69,26 @@ public class AllocationService {
     if (!MANUAL.equals(allocation.source())) {
       throw new AllocationException(
           "release first",
-          "the allocation of "
-              + allocation.personNo()
-              + " on "
+          allocation.personNo()
+              + " 在 "
               + allocation.project()
-              + " came from a confirmation; release the person instead");
+              + " 上的占用来自确认，请改为解除该人员");
     }
   }
 
   private static void requireDates(LocalDate start, LocalDate end) {
     if (start == null || end == null) {
-      throw invalid("the allocation needs a start and an end date");
+      throw invalid("占用必须填写起止日期");
     }
     if (end.isBefore(start)) {
-      throw invalid("the end date cannot precede the start date");
+      throw invalid("结束日期不能早于开始日期");
     }
   }
 
   private AllocationRepository.AllocationRow find(long id) {
     return allocations
         .findById(id)
-        .orElseThrow(() -> new NoSuchElementException("No allocation " + id));
+        .orElseThrow(() -> new NoSuchElementException("没有占用 " + id));
   }
 
   private static AllocationException invalid(String message) {

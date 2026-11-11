@@ -37,7 +37,7 @@ class ReleaseServiceTest {
 
     assertThatThrownBy(() -> service.release(9, COORDINATOR))
         .isInstanceOf(NoSuchElementException.class)
-        .hasMessage("No assignment 9");
+        .hasMessage("没有指派 9");
   }
 
   @Test

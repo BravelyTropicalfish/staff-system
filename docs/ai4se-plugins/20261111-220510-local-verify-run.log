@@ -1,0 +1,21 @@
+# Local verify run — add-staffing-mvp
+
+- Date: 2026-11-11, 22:03–22:05 (+0800)
+- Root: `c:\Users\ZENGKY\Desktop\New folder\baseline`
+- Whitelist: `docs/feedback/verification-commands.md` (the command list is the agent file
+  `docs/ai4se-plugins/20261111-agent-whitelist-commands.txt`, unchanged since the previous run)
+- Host: Windows, PowerShell; Maven wrapper `mvnw.cmd`
+
+| # | Command | Exit | Result |
+|---|---------|------|--------|
+| 1 | `cd web && npm ci && npm run lint` | 0 | First attempt failed (EPERM: the running Vite dev server held `node_modules`); after stopping the dev server `npm ci` exited 0 with one warning (`esbuild` postinstall skipped by the allow-scripts policy — Vite still builds), ESLint 0 problems |
+| 2 | `cd web && npx tsc --noEmit` | 0 | no diagnostics |
+| 3 | `cd backend && ./mvnw -B -DskipTests compile` | 0 | `BUILD SUCCESS` |
+| 4 | `cd backend && ./mvnw -B test` | 0 | `Tests run: 297, Failures: 0, Errors: 0, Skipped: 0`, `BUILD SUCCESS` (Mockito self-attach warning only) |
+| 5 | `cd web && npm test` | 0 | tests 54 / pass 54 / fail 0 |
+| 6 | `cd backend && ./mvnw -B verify` | 0 | 297 tests, `All coverage checks have been met.`, `BUILD SUCCESS`; the first verify run in this session failed the JaCoCo gate (api lines 0.9 / branches 0.8) because `SessionTokenRepository.containsContext` and its token branches were untested — `SessionTokenRepositoryTest` was added and the rerun passed |
+| 7 | `cd web && npx playwright install --with-deps chromium && npm run test:e2e` | 0 | Chromium was already installed, so only the test half ran: `20 passed (55.8s)` — 3 setup + 2 journeys + 8 scenarios + 2 smoke + 3 login + J1/J2/J3 |
+| 8 | `cd web && npm audit --audit-level=high` | 0 | 9 moderate, 0 high, 0 critical (declared threshold: high) |
+
+Environment note: the first `npm ci` failure was a Windows file lock from the dev Vite server, not a
+dependency problem; stopping the server and rerunning the same command succeeded.

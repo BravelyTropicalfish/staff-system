@@ -11,12 +11,16 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.Test;
 
-/** The shape of the file: which sheets, which columns, and which rows count as data. */
+/** The shape of the file: the one sheet, its columns, and which rows count as data. */
 class WorkbookParserTest {
 
   @Test
-  void aWorkbookWithoutTheSkillsSheetIsRefused() {
-    byte[] bytes = WorkbookFixture.workbook().person(personRow("E200")).onlyPeopleSheet().xlsx();
+  void aWorkbookWithoutTheSkillsColumnIsRefused() {
+    byte[] bytes =
+        WorkbookFixture.workbook()
+            .peopleHeader("employee_no", "name", "email", "role", "job_level", "travel_willingness", "active")
+            .person(personRow("E200"))
+            .xlsx();
 
     assertThatExceptionOfType(UnreadableWorkbookException.class)
         .isThrownBy(() -> WorkbookParser.parse(bytes))
@@ -25,7 +29,7 @@ class WorkbookParserTest {
 
   @Test
   void aWorkbookWithoutThePeopleSheetIsRefused() {
-    byte[] bytes = WorkbookFixture.workbook().skill("E100", "Java", "Novice").onlySkillsSheet().xlsx();
+    byte[] bytes = WorkbookFixture.workbook().noPeopleSheet().xlsx();
 
     assertThatExceptionOfType(UnreadableWorkbookException.class)
         .isThrownBy(() -> WorkbookParser.parse(bytes))
@@ -38,7 +42,7 @@ class WorkbookParserTest {
 
     assertThatExceptionOfType(UnreadableWorkbookException.class)
         .isThrownBy(() -> WorkbookParser.parse(bytes))
-        .withMessageContaining("empty");
+        .withMessageContaining("空的");
   }
 
   @Test
@@ -47,7 +51,7 @@ class WorkbookParserTest {
 
     assertThatExceptionOfType(UnreadableWorkbookException.class)
         .isThrownBy(() -> WorkbookParser.parse(bytes))
-        .withMessageContaining("not a readable .xlsx workbook");
+        .withMessageContaining("不是可读取的 .xlsx 工作簿");
   }
 
   @Test
@@ -61,7 +65,8 @@ class WorkbookParserTest {
                 "Role",
                 "Job Level",
                 "Travel Willingness",
-                "Active")
+                "Active",
+                "Skills")
             .person(personRow("E200"))
             .xlsx();
 
@@ -76,7 +81,7 @@ class WorkbookParserTest {
   void aMissingColumnIsRefusedByName() {
     byte[] bytes =
         WorkbookFixture.workbook()
-            .peopleHeader("employee_no", "name", "email", "role", "job_level", "active")
+            .peopleHeader("employee_no", "name", "email", "role", "job_level", "active", "skills")
             .person(personRow("E200"))
             .xlsx();
 
@@ -90,7 +95,7 @@ class WorkbookParserTest {
     byte[] bytes =
         WorkbookFixture.workbook()
             .person(personRow("E200"))
-            .person("", "", "", "", "", "", "")
+            .person("", "", "", "", "", "", "", "")
             .person(personRow("E300"))
             .xlsx();
 
@@ -101,11 +106,12 @@ class WorkbookParserTest {
 
   @Test
   void aSheetWithoutAnyHeaderRowIsRefusedByColumn() {
-    byte[] bytes = WorkbookFixture.workbook().skill("E100", "Java", "Novice").emptyPeople().xlsx();
+    byte[] bytes = WorkbookFixture.workbook().emptyPeople().xlsx();
 
     assertThatExceptionOfType(UnreadableWorkbookException.class)
         .isThrownBy(() -> WorkbookParser.parse(bytes))
-        .withMessageContaining("the people sheet has no employee_no");
+        .withMessageContaining("people 表缺少这些列")
+        .withMessageContaining("employee_no");
   }
 
   @Test
@@ -116,7 +122,6 @@ class WorkbookParserTest {
       writeRow(people, 0, WorkbookFixture.PEOPLE_HEADER.toArray(String[]::new));
       // The spreadsheet keeps no row 1 at all; the fixture still writes row 2 as the third line.
       writeRow(people, 2, personRow("E300"));
-      writeRow(book.createSheet("skills"), 0, WorkbookFixture.SKILL_HEADER.toArray(String[]::new));
       book.write(out);
       bytes = out.toByteArray();
     }
@@ -133,17 +138,9 @@ class WorkbookParserTest {
     }
   }
 
-  @Test
-  void anEmptyPeopleSheetIsAcceptedWhileSkillsCarryRows() {
-    byte[] bytes = WorkbookFixture.workbook().skill("E100", "Java", "Novice").xlsx();
-
-    ParsedWorkbook parsed = WorkbookParser.parse(bytes);
-
-    assertThat(parsed.people()).isEmpty();
-    assertThat(parsed.skills()).hasSize(1);
-  }
-
   private static String[] personRow(String employeeNo) {
-    return new String[] {employeeNo, "Ann", "ann@example.com", "DEV", "Senior", "full", "active"};
+    return new String[] {
+      employeeNo, "Ann", "ann@example.com", "DEV", "Senior", "full", "active", "测试:Novice"
+    };
   }
 }

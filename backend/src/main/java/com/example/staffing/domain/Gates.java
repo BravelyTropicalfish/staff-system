@@ -46,26 +46,20 @@ public final class Gates {
   /** The reason this gate refuses the person, or null when the person passes it. */
   private static String refuse(Gate gate, Candidate candidate, PostRequirement post) {
     return switch (gate) {
-      case ACTIVE -> candidate.active() ? null : "the person is not active";
+      case ACTIVE -> candidate.active() ? null : "该人员已停用";
       case ROLE ->
           candidate.roleId() == post.roleId()
               ? null
-              : "the role " + candidate.role() + " is not the post's " + post.role();
+              : "角色 " + candidate.role() + " 不是岗位要求的 " + post.role();
       case JOB_LEVEL ->
           Bands.meets(Bands.JOB_LEVELS, candidate.jobLevel(), post.minJobLevel())
               ? null
-              : "the job level "
-                  + candidate.jobLevel()
-                  + " is below the required "
-                  + post.minJobLevel();
+              : "职级 " + candidate.jobLevel() + " 低于要求的 " + post.minJobLevel();
       case REQUIRED_SKILL -> skillShortfall(candidate, post);
       case TRAVEL ->
           Bands.meets(Bands.TRAVEL, candidate.travel(), post.travel())
               ? null
-              : "the travel willingness "
-                  + candidate.travel()
-                  + " is below the required "
-                  + post.travel();
+              : "差旅意愿 " + candidate.travel() + " 低于要求的 " + post.travel();
       case DATES -> blockingAllocation(candidate, post);
     };
   }
@@ -75,10 +69,10 @@ public final class Gates {
     for (PostRequirement.SkillNeed need : post.requiredSkills()) {
       String band = candidate.skillBands().get(need.skillId());
       if (band == null) {
-        return "the person does not hold " + need.skill();
+        return "未持有 " + need.skill();
       }
       if (!Bands.meets(Bands.PROFICIENCIES, band, need.band())) {
-        return need.skill() + " at " + band + " is below the required " + need.band();
+        return need.skill() + " 档位 " + band + " 低于要求的 " + need.band();
       }
     }
     return null;
@@ -88,14 +82,15 @@ public final class Gates {
   private static String blockingAllocation(Candidate candidate, PostRequirement post) {
     for (Candidate.Allocation allocation : candidate.allocations()) {
       if (Ranges.intersects(allocation.start(), allocation.end(), post.start(), post.end())) {
-        return "the allocation "
+        return "已有占用 "
             + allocation.start()
-            + " to "
+            + " 至 "
             + allocation.end()
-            + " intersects the post's "
+            + "，与岗位的 "
             + post.start()
-            + " to "
-            + post.end();
+            + " 至 "
+            + post.end()
+            + " 相交";
       }
     }
     return null;

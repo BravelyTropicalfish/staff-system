@@ -1,9 +1,10 @@
 import ExcelJS from 'exceljs';
 
 /**
- * T26, the workbook fixture. The import reads two sheets by column name, so the builder writes the
- * headers `WorkbookParser` requires and one row per person or band; the bands are the seeded
- * vocabularies, because the validator rejects anything outside them.
+ * The workbook fixture. The import reads one sheet by column name, so the builder writes the
+ * headers `WorkbookParser` requires and one row per person; that person's skills are folded into the
+ * `skills` cell as `skill:band;skill:band`, because one row is one person plus their skills. The
+ * bands are the seeded vocabularies, because the validator rejects anything outside them.
  */
 
 export type PersonRow = {
@@ -19,6 +20,13 @@ export type PersonRow = {
 export type SkillRow = { employeeNo: string; skill: string; proficiency: string };
 
 export async function workbook(people: PersonRow[], skills: SkillRow[]): Promise<Buffer> {
+  const byEmployee = new Map<string, string[]>();
+  for (const row of skills) {
+    const held = byEmployee.get(row.employeeNo) ?? [];
+    held.push(`${row.skill}:${row.proficiency}`);
+    byEmployee.set(row.employeeNo, held);
+  }
+
   const book = new ExcelJS.Workbook();
   const peopleSheet = book.addWorksheet('people');
   peopleSheet.addRow([
@@ -29,6 +37,7 @@ export async function workbook(people: PersonRow[], skills: SkillRow[]): Promise
     'job_level',
     'travel_willingness',
     'active',
+    'skills',
   ]);
   for (const person of people) {
     peopleSheet.addRow([
@@ -39,13 +48,8 @@ export async function workbook(people: PersonRow[], skills: SkillRow[]): Promise
       person.jobLevel,
       person.travel,
       person.active ?? 'active',
+      (byEmployee.get(person.employeeNo) ?? []).join(';'),
     ]);
-  }
-
-  const skillsSheet = book.addWorksheet('skills');
-  skillsSheet.addRow(['employee_no', 'skill', 'proficiency']);
-  for (const row of skills) {
-    skillsSheet.addRow([row.employeeNo, row.skill, row.proficiency]);
   }
 
   return Buffer.from(await book.xlsx.writeBuffer());

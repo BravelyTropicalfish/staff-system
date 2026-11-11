@@ -38,9 +38,9 @@ test.describe('J1 import to gap', () => {
     );
     await page.goto('/imports');
     await page.locator('input[type=file]').setInputFiles({ name: `${employeeNo}.xlsx`, mimeType: XLSX, buffer: file });
-    await page.getByRole('button', { name: 'Upload' }).click();
+    await page.getByRole('button', { name: '上传并校验' }).click();
     await expect(
-      page.getByText(`${employeeNo}.xlsx · applied · 1 person row · 1 skill row written`),
+      page.getByText(`${employeeNo}.xlsx · 已应用 · 写入 人员 1 行 · 技能 1 行`),
     ).toBeVisible();
 
     // 2. The project and its post are this journey's setup, not its subject.
@@ -53,16 +53,20 @@ test.describe('J1 import to gap', () => {
     await page.goto(`/posts/${post.id}/candidates`);
     const suitable = page
       .locator('section')
-      .filter({ has: page.getByRole('heading', { name: 'Suitable people' }) });
+      .filter({ has: page.getByRole('heading', { name: '合适清单' }) });
     await expect(suitable.getByText(name)).toBeVisible();
 
     // 4. The coordinator recommends her from that row, on the screen.
     const row = suitable.getByRole('row').filter({ hasText: name });
-    await row.getByRole('button', { name: 'Recommend' }).click();
+    await row.getByRole('button', { name: '推荐' }).click();
     await expect(
-      page.getByText(`${name} is recommended to the project lead`),
+      page.getByText(`${name} 已推荐给项目经理`),
     ).toBeVisible();
-    await expect(row.getByRole('button', { name: 'Proposed' })).toBeDisabled();
+    await expect(row.getByRole('button', { name: '已推荐' })).toBeDisabled();
+
+    // 4b. The mark survives a reload: it is read from the server, not kept in this tab.
+    await page.reload();
+    await expect(row.getByRole('button', { name: '已推荐' })).toBeDisabled();
     await api.dispose();
     await lead.dispose();
 
@@ -70,14 +74,14 @@ test.describe('J1 import to gap', () => {
     const leadContext = await browser.newContext({ storageState: LEAD_ONE, baseURL: APP });
     const leadPage = await leadContext.newPage();
     await leadPage.goto(`/posts/${post.id}`);
-    await expect(leadPage.getByText(`${name} (${employeeNo})`)).toBeVisible();
-    await leadPage.getByRole('button', { name: 'Confirm' }).click();
-    await expect(leadPage.getByText('1 of 1 chosen · filled')).toBeVisible();
-    await expect(leadPage.getByRole('button', { name: 'Confirm' })).toHaveCount(0);
+    await expect(leadPage.getByText(`${name}（${employeeNo}）`)).toBeVisible();
+    await leadPage.getByRole('button', { name: '确认' }).click();
+    await expect(leadPage.getByText('1 / 1 已到位 · 已满')).toBeVisible();
+    await expect(leadPage.getByRole('button', { name: '确认' })).toHaveCount(0);
 
     // 6. The gap reads the same on the project screen, where the work is planned.
     await leadPage.goto(`/projects/${project.id}`);
-    await expect(leadPage.getByText('1 post · 1 of 1 seats chosen · filled')).toBeVisible();
+    await expect(leadPage.getByText('1 个岗位 · 1 / 1 已到位 · 已满')).toBeVisible();
     await leadContext.close();
   });
 });
@@ -104,11 +108,11 @@ test.describe('J2 the end and the later search', () => {
 
     // 1. The lead ends the first project on its own screen, twice.
     await page.goto(`/projects/${first.id}`);
-    await expect(page.getByText('1 post · 1 of 1 seats chosen · filled')).toBeVisible();
-    await page.getByRole('button', { name: 'End the project' }).click();
-    await page.getByRole('button', { name: 'End it' }).click();
+    await expect(page.getByText('1 个岗位 · 1 / 1 已到位 · 已满')).toBeVisible();
+    await page.getByRole('button', { name: '结束项目' }).click();
+    await page.getByRole('button', { name: '确认结束' }).click();
     await expect(
-      page.getByText('closed · every post is cancelled and every allocation of this project is gone'),
+      page.getByText('已结束 · 岗位全部取消，本项目的占用全部删除'),
     ).toBeVisible();
 
     // 2. The coordinator searches again: the same person now passes on a later post.
@@ -117,7 +121,7 @@ test.describe('J2 the end and the later search', () => {
     await coordinatorPage.goto(`/posts/${laterPost.id}/candidates`);
     const suitable = coordinatorPage
       .locator('section')
-      .filter({ has: coordinatorPage.getByRole('heading', { name: 'Suitable people' }) });
+      .filter({ has: coordinatorPage.getByRole('heading', { name: '合适清单' }) });
     await expect(suitable.getByText(person.name)).toBeVisible();
     await coordinatorContext.close();
   });
@@ -132,25 +136,25 @@ test.describe('J3 the lead opens a project, the coordinator recommends', () => {
     await api.dispose();
 
     // 1. The lead opens a project of their own: the lead field is their account and locked.
-    await page.goto('/projects');
-    await page.getByRole('button', { name: 'New project' }).click();
+    await page.goto('/posts');
+    await page.getByRole('button', { name: '新建项目' }).click();
     const projectName = unique('J3 project');
-    await page.getByLabel('Name').fill(projectName);
-    await expect(page.getByLabel('Lead account')).toHaveValue('lead.one');
-    await expect(page.getByLabel('Lead account')).toBeDisabled();
-    await page.getByLabel('Start').fill('2027-01-01');
-    await page.getByLabel('End').fill('2027-12-31');
-    await page.getByRole('button', { name: 'Create the project' }).click();
+    await page.getByLabel('项目名称').fill(projectName);
+    await expect(page.getByLabel('项目经理账号')).toHaveValue('lead.one');
+    await expect(page.getByLabel('项目经理账号')).toBeDisabled();
+    await page.getByLabel('开始日期').fill('2027-01-01');
+    await page.getByLabel('结束日期').fill('2027-12-31');
+    await page.getByRole('button', { name: '创建项目' }).click();
 
     // 2. It opens on its own screen, where the lead states the post the project is short of.
     await expect(page.getByRole('heading', { level: 1, name: projectName })).toBeVisible();
-    await page.getByRole('link', { name: 'Add a post' }).click();
-    await page.getByLabel('Role').selectOption('DEV');
-    await page.getByLabel('Minimum job level').selectOption('Senior');
-    await page.getByLabel('Start date').fill('2027-02-01');
-    await page.getByLabel('End date').fill('2027-06-30');
-    await page.getByRole('button', { name: 'Create the post' }).click();
-    await expect(page.getByRole('heading', { level: 1, name: /^Post \d+ ·/ })).toBeVisible();
+    await page.getByRole('link', { name: '新增岗位' }).click();
+    await page.getByLabel('角色').selectOption('DEV');
+    await page.getByLabel('最低职级').selectOption('Senior');
+    await page.getByLabel('开始日期').fill('2027-02-01');
+    await page.getByLabel('结束日期').fill('2027-06-30');
+    await page.getByRole('button', { name: '创建岗位' }).click();
+    await expect(page.getByRole('heading', { level: 1, name: /^岗位 \d+ ·/ })).toBeVisible();
     const postId = new URL(page.url()).pathname.split('/').pop() ?? '';
 
     // 3. The coordinator reads the pool and recommends the person who passes every gate.
@@ -159,24 +163,30 @@ test.describe('J3 the lead opens a project, the coordinator recommends', () => {
     await coordinatorPage.goto(`/posts/${postId}/candidates`);
     const suitable = coordinatorPage
       .locator('section')
-      .filter({ has: coordinatorPage.getByRole('heading', { name: 'Suitable people' }) });
+      .filter({ has: coordinatorPage.getByRole('heading', { name: '合适清单' }) });
     const row = suitable.getByRole('row').filter({ hasText: person.name });
     await expect(row).toBeVisible();
-    await row.getByRole('button', { name: 'Recommend' }).click();
+    await row.getByRole('button', { name: '推荐' }).click();
     await expect(
-      coordinatorPage.getByText(`${person.name} is recommended to the project lead`),
+      coordinatorPage.getByText(`${person.name} 已推荐给项目经理`),
     ).toBeVisible();
     await coordinatorContext.close();
 
     // 4. The decision is the project lead's, on the post: she confirms and the seat is filled.
     await page.goto(`/posts/${postId}`);
-    await expect(page.getByText(`${person.name} (${person.employeeNo})`)).toBeVisible();
-    await page.getByRole('button', { name: 'Confirm' }).click();
-    await expect(page.getByText('1 of 1 chosen · filled')).toBeVisible();
+    await expect(page.getByText(`${person.name}（${person.employeeNo}）`)).toBeVisible();
+    await page.getByRole('button', { name: '确认' }).click();
+    await expect(page.getByText('1 / 1 已到位 · 已满')).toBeVisible();
 
-    // 5. The same numbers read on the project screen the lead opened.
-    await page.goto('/projects');
-    await page.getByRole('link', { name: projectName }).click();
-    await expect(page.getByText('1 post · 1 of 1 seats chosen · filled')).toBeVisible();
+    // 5. The same numbers read on the board the lead opened the project on.
+    await page.goto('/posts');
+    const boardRow = page
+      .locator('table')
+      .getByRole('row')
+      .filter({ hasText: projectName })
+      .filter({ hasText: 'filled' })
+      .first();
+    await boardRow.click();
+    await expect(page.getByText('1 / 1 已到位 · 已满')).toBeVisible();
   });
 });

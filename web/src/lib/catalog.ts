@@ -21,14 +21,14 @@ export type Role = {
   skills: Skill[];
 };
 
-/** A role's domain read as names; a role added later starts empty and says so. */
+/** 一个角色的技能域，按名字读；后来新增、还没配域的角色会说“暂无”。 */
 export function domainLabel(role: Pick<Role, 'skills'>): string {
-  return role.skills.length === 0 ? 'no domain skills' : role.skills.map((skill) => skill.name).join(', ');
+  return role.skills.length === 0 ? '暂无技能域' : role.skills.map((skill) => skill.name).join('、');
 }
 
-/** The one toggle an item's state allows. */
+/** 当前状态允许的那一个开关。 */
 export function toggleLabel(item: Pick<Role, 'active'>): string {
-  return item.active ? 'Deactivate' : 'Activate';
+  return item.active ? '停用' : '启用';
 }
 
 /** The patch body the toggle sends: the state flipped, never a state guessed by the screen. */

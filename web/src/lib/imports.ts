@@ -28,40 +28,39 @@ export type ImportBatch = {
   errors: RowError[];
 };
 
-/** The status in the words the screen uses. */
+/** 批次状态，用屏幕上的说法。 */
 export function statusLabel(batch: Pick<ImportBatch, 'status'>): string {
-  return batch.status === 'APPLIED' ? 'applied' : 'rejected';
+  return batch.status === 'APPLIED' ? '已应用' : '已拒绝';
 }
 
-function rows(count: number, what = ''): string {
-  return `${count} ${what ? `${what} ` : ''}${count === 1 ? 'row' : 'rows'}`;
+function rows(count: number, what: string): string {
+  return `${what} ${count} 行`;
 }
 
 /**
- * What the batch did to the pool, said in one line: an applied file names what it wrote, a rejected
- * one says that nothing was written and how much is left to fix.
+ * 一个批次对人员池做了什么，一句话说完：已应用的写明写了什么，已拒绝的说明一字未写、还有多少
+ * 行待修。
  */
 export function outcomeLine(
   batch: Pick<ImportBatch, 'status' | 'personRows' | 'skillRows' | 'errorCount'>,
 ): string {
-  const counts = `${rows(batch.personRows, 'person')} · ${rows(batch.skillRows, 'skill')}`;
+  const counts = `${rows(batch.personRows, '人员')} · ${rows(batch.skillRows, '技能')}`;
   return batch.status === 'APPLIED'
-    ? `applied · ${counts} written`
-    : `rejected · nothing was written · ${rows(batch.errorCount)} to fix`;
+    ? `已应用 · 写入 ${counts}`
+    : `已拒绝 · 未写入任何数据 · ${batch.errorCount} 行待修`;
 }
 
-/** One refused row, located by its sheet and its spreadsheet row and named by its key. */
+/** 一行被拒的记录，按它在工作簿里的位置与它的键值定位。 */
 export function errorLine(error: RowError): string {
-  const where = `${error.sheet} row ${error.rowNo}`;
+  const where = `${error.sheet} 第 ${error.rowNo} 行`;
   return `${error.key ? `${where} · ${error.key}` : where} — ${error.message}`;
 }
 
 /**
- * The refused half of a failure: the upload answered with a failure code and, unlike a rejected
- * batch, left nothing in the history at all.
+ * 失败中“被拒”的那一半：上传直接返回失败码，和“已拒绝的批次”不同，它在历史里什么都没留下。
  */
 export function refusalLine(error: { code: string; message: string }): string {
-  return `refused · ${error.code}: ${error.message} · no batch was recorded`;
+  return `上传被拒 · ${error.code}: ${error.message} · 未记录任何批次`;
 }
 
 /** Only the coordinator sends people data in. */

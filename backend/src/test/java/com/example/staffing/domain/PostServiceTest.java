@@ -43,7 +43,7 @@ class PostServiceTest {
     when(roles.findByName("")).thenReturn(Optional.empty());
 
     assertInvalid(() -> service.create(10, draft(null, "Senior", 1, START, END, "none"), LEAD),
-        "role  is not in the catalog");
+        "角色  不在目录中");
   }
 
   @Test
@@ -52,7 +52,7 @@ class PostServiceTest {
     givenRole("DEV", 5);
 
     assertInvalid(() -> service.create(10, draft("DEV", null, 1, START, END, "none"), LEAD),
-        " is not one of the four job level bands");
+        " 不是四个职级之一");
   }
 
   @Test
@@ -61,7 +61,7 @@ class PostServiceTest {
     givenRole("DEV", 5);
 
     assertInvalid(() -> service.create(10, draft("DEV", "Senior", 1, START, END, null), LEAD),
-        " is not one of the three travel bands");
+        " 不是三个差旅档位之一");
   }
 
   @Test
@@ -71,7 +71,7 @@ class PostServiceTest {
 
     assertInvalid(
         () -> service.create(10, new PostDraft(null, "DEV", "Senior", null, START, END, "none", null), LEAD),
-        "the post needs a headcount");
+        "岗位必须填写名额");
   }
 
   @Test
@@ -80,9 +80,9 @@ class PostServiceTest {
     givenRole("DEV", 5);
 
     assertInvalid(() -> service.create(10, draft("DEV", "Senior", 1, null, END, "none"), LEAD),
-        "the post needs a start and an end date");
+        "岗位必须填写起止日期");
     assertInvalid(() -> service.create(10, draft("DEV", "Senior", 1, START, null, "none"), LEAD),
-        "the post needs a start and an end date");
+        "岗位必须填写起止日期");
   }
 
   @Test

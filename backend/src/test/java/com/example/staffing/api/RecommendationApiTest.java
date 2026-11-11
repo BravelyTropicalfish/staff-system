@@ -246,7 +246,7 @@ class RecommendationApiTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
     assertThat(body(response))
         .containsEntry("code", "G1")
-        .containsEntry("message", "the person is not active");
+        .containsEntry("message", "该人员已停用");
     assertThat(count("SELECT COUNT(*) FROM recommendation")).isZero();
   }
 
@@ -371,6 +371,84 @@ class RecommendationApiTest {
     assertThat(body(refused)).containsEntry("code", "forbidden");
   }
 
+  @Test
+  @SuppressWarnings("unchecked")
+  void theDecisionInboxReadsEveryProposalTheCallerMayDecideOn() {
+    long atlas = givenProject("Atlas", "lead.one");
+    long borealis = givenProject("Borealis", "lead.two");
+    long first = qaPost(atlas, "Senior");
+    long second = qaPost(atlas, "Senior");
+    long third = qaPost(borealis, "Senior");
+    givenTitle(first, "QA engineer");
+    givenTitle(second, "QA analyst");
+    givenTitle(third, "QA lead");
+    givenPerson("E100", "Ada", "QA", "Senior", "full", true);
+    givenBand("E100", "测试", "Practitioner");
+    givenPerson("E200", "Bob", "QA", "Senior", "full", true);
+    givenBand("E200", "测试", "Practitioner");
+    givenPerson("E300", "Cy", "QA", "Senior", "full", true);
+    givenBand("E300", "测试", "Practitioner");
+    long open = idOf(recommend(first, "E100"));
+    long refused = idOf(recommend(second, "E200"));
+    long waiting = idOf(recommend(third, "E300"));
+    ApiSession leadOne = ApiSession.signIn(rest, "lead.one");
+    assertThat(
+            leadOne.post(
+                    "/api/recommendations/" + refused + "/reject",
+                    Map.of("note", "not this one"),
+                    Map.class)
+                .getStatusCode())
+        .isEqualTo(HttpStatus.OK);
+    givenProposedAt(open, "2026-01-01 10:00:00");
+    givenProposedAt(refused, "2026-01-02 10:00:00");
+    givenProposedAt(waiting, "2026-01-03 10:00:00");
+
+    List<Map<String, Object>> every = coordinator.get("/api/recommendations", List.class).getBody();
+
+    assertThat(every)
+        .as("pending first, then the closed history, each group newest first")
+        .extracting(row -> row.get("personNo"))
+        .containsExactly("E300", "E100", "E200");
+    assertThat(every.get(1))
+        .containsEntry("id", (int) open)
+        .containsEntry("postId", (int) first)
+        .containsEntry("postTitle", "QA engineer")
+        .containsEntry("project", "Atlas")
+        .containsEntry("state", "proposed")
+        .containsEntry("proposedBy", "coordinator");
+    assertThat((Map<String, Object>) every.get(1).get("snapshot"))
+        .containsEntry("personNo", "E100")
+        .containsEntry("role", "QA")
+        .containsEntry("jobLevel", "Senior");
+    assertThat((Map<String, Object>) every.get(0).get("snapshot"))
+        .as("the coordinator reads the reason of a proposal made on another lead's project too")
+        .isNotNull();
+
+    List<Map<String, Object>> mine = leadOne.get("/api/recommendations", List.class).getBody();
+
+    assertThat(mine)
+        .as("a lead reads only the proposals on the projects they own")
+        .extracting(row -> row.get("personNo"))
+        .containsExactly("E100", "E200");
+    assertThat(mine)
+        .allSatisfy(
+            row ->
+                assertThat(row.get("snapshot"))
+                    .as("the reason snapshot is the coordinator's alone")
+                    .isNull());
+
+    ApiSession leadTwo = ApiSession.signIn(rest, "lead.two");
+    List<Map<String, Object>> theirs =
+        leadTwo.get("/api/recommendations", List.class).getBody();
+    assertThat(theirs)
+        .singleElement()
+        .satisfies(
+            row -> assertThat(row)
+                .containsEntry("id", (int) waiting)
+                .containsEntry("project", "Borealis")
+                .containsEntry("postTitle", "QA lead"));
+  }
+
   /** A QA post needing 测试 at `Practitioner`, which the seed puts in the QA domain. */
   private long qaPost(String level) {
     return qaPost(givenProject("Atlas", "lead.one"), level);
@@ -408,6 +486,18 @@ class RecommendationApiTest {
         Date.valueOf(LocalDate.parse(POST_END)));
     return jdbc.queryForObject(
         "SELECT MAX(id) FROM post WHERE project_id = ?", Long.class, projectId);
+  }
+
+  private void givenTitle(long postId, String title) {
+    jdbc.update("UPDATE post SET title = ? WHERE id = ?", title, postId);
+  }
+
+  /** Pins a proposal's creation time, so the inbox order is a fact the test states. */
+  private void givenProposedAt(long id, String when) {
+    jdbc.update(
+        "UPDATE recommendation SET created_at = ? WHERE id = ?",
+        java.sql.Timestamp.valueOf(when),
+        id);
   }
 
   private void givenSkill(long postId, String skill, String kind, String band) {

@@ -48,7 +48,10 @@ class RecommendationServiceTest {
     givenOpenPost();
     givenSearch(
         List.of(),
-        List.of(new FallbackRow("E200", "Ada", "Frontend", "Lead", "none", 1, "SQL", "Proficient")),
+        List.of(
+            new FallbackRow(
+                "E200", "Ada", "Frontend", "Lead", "none", 1, "SQL", "Proficient",
+                List.of("G1", "G5", "G6", "X1", "X2"))),
         List.of());
     when(recommendations.pendingFor(1, "E200")).thenReturn(false);
     when(recommendations.insert(eq(1L), eq("E200"), anyString(), eq(9L))).thenReturn(5L);
@@ -74,15 +77,16 @@ class RecommendationServiceTest {
     givenOpenPost();
     givenSearch(
         List.of(),
-        List.of(new FallbackRow("E201", "Bo", "Frontend", "Lead", "none", 1, "SQL", "Expert")),
+        List.of(
+            new FallbackRow(
+                "E201", "Bo", "Frontend", "Lead", "none", 1, "SQL", "Expert",
+                List.of("G1", "G5", "G6", "X1", "X2"))),
         List.of(new ExclusionRow("E202", "Cy", "Frontend", "G6", "the allocation intersects")));
     when(people.findByEmployeeNo("E200")).thenReturn(Optional.of(person("E200")));
 
     assertThatThrownBy(() -> service.recommend(1, "E200", COORDINATOR))
         .isInstanceOf(RecommendationException.class)
-        .hasMessage(
-            "the person is not a candidate for DEV; the cross-role section is closed while a DEV"
-                + " person is suitable");
+        .hasMessage("该人员不是 DEV 的候选人；同角色有人合适时跨角色兜底关闭");
   }
 
   @Test
@@ -111,7 +115,7 @@ class RecommendationServiceTest {
 
     assertThatThrownBy(() -> service.recommend(1, "E999", COORDINATOR))
         .isInstanceOf(NoSuchElementException.class)
-        .hasMessage("No person E999");
+        .hasMessage("没有人员 E999");
   }
 
   @Test

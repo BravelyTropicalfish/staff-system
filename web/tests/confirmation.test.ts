@@ -1,8 +1,12 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  INBOX_FILTERS,
   evidenceLines,
   gatesLabel,
+  inboxCounts,
+  inboxPage,
+  inboxPost,
   moment,
   noticeLine,
   noticePost,
@@ -11,7 +15,7 @@ import {
   splitProposals,
   stateLabel,
 } from '../src/lib/confirmation.ts';
-import type { Notice, Proposal, ProposalSnapshot } from '../src/lib/confirmation.ts';
+import type { InboxProposal, Notice, Proposal, ProposalSnapshot } from '../src/lib/confirmation.ts';
 
 /**
  * T25, the confirmation screens' own readings of a post's proposals and of the notice list. The
@@ -56,13 +60,13 @@ const crossRole: ProposalSnapshot = {
 };
 
 test('a state is named, and a voided one names its reason', () => {
-  assert.equal(stateLabel(proposal()), 'proposed');
-  assert.equal(stateLabel(proposal({ state: 'confirmed' })), 'confirmed');
+  assert.equal(stateLabel(proposal()), '待决策');
+  assert.equal(stateLabel(proposal({ state: 'confirmed' })), '已确认');
   assert.equal(
     stateLabel(proposal({ state: 'voided', voidReason: 'person taken' })),
-    'voided · person taken',
+    '已作废 · 人员已被占用',
   );
-  assert.equal(stateLabel(proposal({ state: 'voided' })), 'voided');
+  assert.equal(stateLabel(proposal({ state: 'voided' })), '已作废');
 });
 
 test('the open proposals come first and the closed history follows, each in the server order', () => {
@@ -95,15 +99,15 @@ test('the lead confirms and rejects, the coordinator withdraws, and a closed row
 });
 
 test('a proposal names the person and marks a deactivation', () => {
-  assert.equal(proposalPerson(proposal()), 'Ada (E100)');
-  assert.equal(proposalPerson(proposal({ personActive: false })), 'Ada (E100) · inactive');
+  assert.equal(proposalPerson(proposal()), 'Ada（E100）');
+  assert.equal(proposalPerson(proposal({ personActive: false })), 'Ada（E100） · 已停用');
 });
 
 test('the reason snapshot reads as the gates it passed and the evidence behind it', () => {
-  assert.equal(gatesLabel(sameRole), 'passed G1, G2, G3, G4, G5, G6');
+  assert.equal(gatesLabel(sameRole), '通过 G1、G2、G3、G4、G5、G6');
   assert.deepEqual(evidenceLines(sameRole), ['测试 · Practitioner']);
-  assert.equal(gatesLabel(crossRole), 'passed G1, G5, G6, X1, X2');
-  assert.deepEqual(evidenceLines(crossRole), ['+1 band the minimum · 测试 at Practitioner']);
+  assert.equal(gatesLabel(crossRole), '通过 G1、G5、G6、X1、X2');
+  assert.deepEqual(evidenceLines(crossRole), ['职级 +1 档 · 测试 Practitioner']);
   assert.deepEqual(evidenceLines({ ...sameRole, skills: [] }), []);
 });
 
@@ -121,6 +125,44 @@ test('a notice names its post, the person, the reason and the moment', () => {
 
   assert.equal(moment(notice.createdAt), '2026-11-11 09:05');
   assert.equal(noticePost(notice), 'QA engineer');
-  assert.equal(noticePost({ postTitle: null, postId: 7 }), 'post 7');
-  assert.equal(noticeLine(notice), 'QA engineer · Ada (E100) · person taken · 2026-11-11 09:05');
+  assert.equal(noticePost({ postTitle: null, postId: 7 }), '岗位 7');
+  assert.equal(noticeLine(notice), 'QA engineer · Ada（E100）· 人员已被占用 · 2026-11-11 09:05');
+});
+
+function inboxRow(overrides: Partial<InboxProposal> = {}): InboxProposal {
+  return {
+    ...proposal(),
+    postId: 7,
+    postTitle: 'QA engineer',
+    project: 'Atlas',
+    ...overrides,
+  };
+}
+
+test('the inbox counts each chip over the whole list and pages one state', () => {
+  const rows = [
+    inboxRow({ id: 1, state: 'proposed' }),
+    inboxRow({ id: 2, state: 'proposed' }),
+    inboxRow({ id: 3, state: 'rejected' }),
+    inboxRow({ id: 4, state: 'voided', voidReason: 'post changed' }),
+  ];
+
+  assert.deepEqual(INBOX_FILTERS.map((chip) => chip.state), ['proposed', 'rejected', 'voided']);
+  assert.deepEqual(
+    INBOX_FILTERS.map((chip) => chip.label),
+    ['待决策', '已驳回', '已作废'],
+  );
+  assert.deepEqual(inboxCounts(rows), { proposed: 2, rejected: 1, voided: 1 });
+  assert.deepEqual(
+    inboxPage(rows, 'proposed').map((row) => row.id),
+    [1, 2],
+    'the server order is kept inside the page',
+  );
+  assert.deepEqual(inboxPage(rows, 'voided').map((row) => row.id), [4]);
+  assert.deepEqual(inboxPage(rows, 'rejected').map((row) => row.id), [3]);
+});
+
+test('an inbox row names its post, and a post without a title falls back to its number', () => {
+  assert.equal(inboxPost(inboxRow()), 'QA engineer');
+  assert.equal(inboxPost(inboxRow({ postTitle: null, postId: 7 })), '岗位 7');
 });

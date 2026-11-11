@@ -75,16 +75,16 @@ export function gapNumbers(row: Pick<PostGap, 'headcount' | 'confirmed' | 'remai
   return { chosen: row.confirmed, required: row.headcount, remaining: row.remaining };
 }
 
-/** One sentence per row: how many are chosen, out of how many, and what is still needed. */
+/** 一行缺口一句话：几个已到位、共几个，还缺什么。 */
 export function gapLabel(
   row: Pick<PostGap, 'headcount' | 'confirmed' | 'remaining' | 'status'>,
 ): string {
   const numbers = gapNumbers(row);
-  const chosen = `${numbers.chosen} of ${numbers.required} chosen`;
+  const chosen = `${numbers.chosen} / ${numbers.required} 已到位`;
   if (numbers.remaining === 0) {
-    return `${chosen} · filled`;
+    return `${chosen} · 已满`;
   }
-  return `${chosen} · ${numbers.remaining} still needed`;
+  return `${chosen} · 还缺 ${numbers.remaining} 人`;
 }
 
 /** The gate-bearing fields the server freezes while a person is confirmed. */
@@ -95,17 +95,14 @@ export function frozenFields(post: Pick<Post, 'confirmed'>): string[] {
   return ['role', 'minJobLevel', 'requiredSkills', 'startDate', 'endDate', 'travel'];
 }
 
-/** Why those fields are disabled, in the server's own voice with the people named by count. */
+/** 为什么这些字段被禁用，用服务端的口径、按人数点名。 */
 export function frozenReason(post: Pick<Post, 'confirmed'>): string | null {
   if (post.confirmed === 0) {
     return null;
   }
   const who =
-    post.confirmed === 1 ? 'the confirmed person' : `the ${post.confirmed} confirmed people`;
-  return (
-    `release ${who} first; the role, the job level, a required skill row, the dates and the ` +
-    'travel cannot change while a person is confirmed'
-  );
+    post.confirmed === 1 ? '已确认的 1 人' : `已确认的 ${post.confirmed} 人`;
+  return `先解除${who}；在有人确认期间，角色、职级、required 技能行、日期与差旅不可修改`;
 }
 
 /** The headcount may rise under a confirmation but never fall below it. */
@@ -118,10 +115,10 @@ export function stillShort(rows: PostGap[]): PostGap[] {
   return rows.filter((row) => row.stillShort);
 }
 
-/** A person's seat on the gap row is marked when the import has since deactivated them. */
+/** 一个人的座位：姓名、工号与确认日；导入后来停用的会被标记。 */
 export function seatLabel(person: GapPerson): string {
-  const base = `${person.name} (${person.personNo}) · confirmed ${person.confirmedAt.slice(0, 10)}`;
-  return person.active ? base : `${base} · inactive`;
+  const base = `${person.name}（${person.personNo}）· 确认于 ${person.confirmedAt.slice(0, 10)}`;
+  return person.active ? base : `${base} · 已停用`;
 }
 
 export type SkillRowValue = { skill: string; kind: 'required' | 'bonus'; band: string };

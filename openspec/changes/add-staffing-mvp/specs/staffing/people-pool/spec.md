@@ -84,17 +84,19 @@ fallback is a lower tier"; REQ-001 §5 vocabulary (role skill domain), §6 catal
 - **THEN** the stored person, post and snapshot keep their existing data
 - **AND** only searches made afterwards use the new domain
 
-### Requirement: Referenced catalog items freeze and are never deleted
+### Requirement: Referenced catalog items freeze; an unreferenced one may be deleted
 
 While at least one person or one post references a role or a skill, the system SHALL refuse
-to rename it and SHALL refuse to delete it, and SHALL offer deactivation instead. A name
-SHALL be editable while nothing references it. Deactivation and reactivation SHALL NOT
-rewrite any stored reference: existing people, posts and recommendation reasons keep showing
-the item, while new posts and new imports SHALL NOT select it. Maintaining the catalogs —
-adding, renaming, deactivating and reactivating — SHALL be offered to the coordinator only.
+to rename it and SHALL refuse to delete it, and SHALL offer deactivation instead. An item that
+nothing references — no person, no post, and, for a role, no skill in its domain — SHALL be
+deletable. A name SHALL be editable while nothing references it. Deactivation and reactivation
+SHALL NOT rewrite any stored reference: existing people, posts and recommendation reasons keep
+showing the item, while new posts and new imports SHALL NOT select it. Maintaining the catalogs —
+adding, renaming, deleting, deactivating and reactivating — SHALL be offered to the coordinator
+only.
 
-**Traces:** proposal step 1 and key rule "Catalog items are deactivated, never deleted";
-REQ-001 §6 catalog lifecycle; S28.
+**Traces:** proposal step 1 and key rule "A referenced catalog item is frozen; an unreferenced one
+may be deleted"; REQ-001 §6 catalog lifecycle; S28.
 
 #### Scenario: Delete and rename are both refused on a referenced skill
 
@@ -112,11 +114,12 @@ REQ-001 §6 catalog lifecycle; S28.
 - **AND** a post that already requires it still lists it as `required`
 - **AND** a person who already holds it still shows the band on the profile
 
-#### Scenario: Rename is allowed before the first reference
+#### Scenario: Rename and delete are allowed before the first reference
 
 - **GIVEN** a skill referenced by nobody
 - **WHEN** the coordinator renames it
 - **THEN** the rename succeeds and the catalog shows the new name
+- **AND** deleting another item nothing references removes it from the catalog
 
 ### Requirement: Person master record is keyed by employee number
 

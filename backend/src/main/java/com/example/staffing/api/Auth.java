@@ -12,7 +12,7 @@ final class Auth {
   static AuthenticatedUser coordinator(Authentication authentication) {
     if (!(authentication.getPrincipal() instanceof AuthenticatedUser user)
         || !user.isCoordinator()) {
-      throw new AccessDeniedException("this action is the coordinator's");
+      throw new AccessDeniedException("这个动作只属于协调员。");
     }
     return user;
   }

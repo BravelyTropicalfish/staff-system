@@ -54,7 +54,7 @@ class ConfirmationServiceTest {
 
     assertThatThrownBy(() -> service.confirm(7, LEAD))
         .isInstanceOf(RecommendationException.class)
-        .hasMessage("the recommendation is not proposed any more");
+        .hasMessage("这条推荐已不是待决策状态");
   }
 
   @Test
@@ -65,7 +65,7 @@ class ConfirmationServiceTest {
 
     assertThatThrownBy(() -> service.reject(7, "band too thin", LEAD))
         .isInstanceOf(RecommendationException.class)
-        .hasMessage("the recommendation is not proposed any more");
+        .hasMessage("这条推荐已不是待决策状态");
   }
 
   @Test
@@ -75,7 +75,7 @@ class ConfirmationServiceTest {
 
     assertThatThrownBy(() -> service.withdraw(7, COORDINATOR))
         .isInstanceOf(RecommendationException.class)
-        .hasMessage("the recommendation is not proposed any more");
+        .hasMessage("这条推荐已不是待决策状态");
   }
 
   @Test
@@ -105,7 +105,7 @@ class ConfirmationServiceTest {
 
     assertThatThrownBy(() -> service.confirm(7, LEAD))
         .isInstanceOf(RecommendationException.class)
-        .hasMessage("the person is taken; another post confirmed them and this proposal was voided");
+        .hasMessage("人员已被占用：另一岗位已确认该人员，这条推荐已作废");
   }
 
   @Test
@@ -115,7 +115,7 @@ class ConfirmationServiceTest {
 
     assertThatThrownBy(() -> service.confirm(7, LEAD))
         .isInstanceOf(RecommendationException.class)
-        .hasMessage("the recommendation is voided; only a proposed one can be confirmed");
+        .hasMessage("只有待决策的推荐可以确认：当前状态是 voided");
   }
 
   private void givenConfirmableProposal() {

@@ -62,7 +62,7 @@ class CrossRoleApiTest {
     List<Map<String, Object>> fallback = (List<Map<String, Object>>) answer.get("fallback");
 
     assertThat((List<?>) answer.get("suitable")).isEmpty();
-    assertThat((String) answer.get("fallbackReason")).isEqualTo("no QA person passes the gates");
+    assertThat((String) answer.get("fallbackReason")).isEqualTo("QA 角色没有人通过门槛");
     assertThat(fallback).singleElement().satisfies(
         row -> assertThat(row)
             .containsEntry("employeeNo", "E900")
@@ -116,7 +116,7 @@ class CrossRoleApiTest {
             row -> {
               assertThat(row).containsEntry("gate", "X1");
               assertThat((String) row.get("reason"))
-                  .isEqualTo("cross-role: level not above the requirement");
+                  .isEqualTo("跨角色：职级没有高于要求");
             });
     assertThat(count(post, "X1")).isEqualTo(1);
   }
@@ -137,7 +137,7 @@ class CrossRoleApiTest {
             row -> {
               assertThat(row).containsEntry("gate", "X2");
               assertThat((String) row.get("reason"))
-                  .isEqualTo("cross-role: no domain skill at Practitioner");
+                  .isEqualTo("跨角色：技能域内没有达到 Practitioner 的技能");
             });
     assertThat(count(post, "X2")).isEqualTo(1);
   }
@@ -158,7 +158,7 @@ class CrossRoleApiTest {
             row -> {
               assertThat(row).containsEntry("gate", "X1");
               assertThat((String) row.get("reason"))
-                  .isEqualTo("cross-role: no band sits above Principal");
+                  .isEqualTo("跨角色：没有高于 Principal 的职级");
             });
     assertThat(count(post, "X1")).isEqualTo(1);
   }
@@ -191,7 +191,9 @@ class CrossRoleApiTest {
         .containsEntry("band", "Practitioner");
     assertThat(fallback.get(0))
         .containsOnlyKeys(
-            "employeeNo", "name", "role", "jobLevel", "travel", "bandsAbove", "skill", "band");
+            "employeeNo", "name", "role", "jobLevel", "travel", "bandsAbove", "skill", "band",
+            "gates")
+        .containsEntry("gates", java.util.List.of("G1", "G5", "G6", "X1", "X2"));
 
     assertThat(
             jdbc.queryForObject(

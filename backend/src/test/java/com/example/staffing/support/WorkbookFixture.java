@@ -11,22 +11,27 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
- * Builds the two-sheet workbook the import contract describes, so a test says what the file holds
- * without talking about cells. Empty strings write no cell at all, which is how a blank cell looks
- * on the wire.
+ * Builds the one-sheet workbook the import contract describes, so a test says what the file holds
+ * without talking about cells. A row is one person plus that person's skills, written in the
+ * `skills` cell as `skill:band;skill:band`. Empty strings write no cell at all, which is how a blank
+ * cell looks on the wire.
  */
 public final class WorkbookFixture {
 
   public static final List<String> PEOPLE_HEADER =
-      List.of("employee_no", "name", "email", "role", "job_level", "travel_willingness", "active");
-  public static final List<String> SKILL_HEADER = List.of("employee_no", "skill", "proficiency");
+      List.of(
+          "employee_no",
+          "name",
+          "email",
+          "role",
+          "job_level",
+          "travel_willingness",
+          "active",
+          "skills");
 
   private final List<List<String>> people = new ArrayList<>();
-  private final List<List<String>> skills = new ArrayList<>();
   private List<String> peopleHeader = PEOPLE_HEADER;
-  private List<String> skillHeader = SKILL_HEADER;
   private boolean peopleSheet = true;
-  private boolean skillSheet = true;
   private boolean peopleHeaderRow = true;
 
   private WorkbookFixture() {}
@@ -40,23 +45,14 @@ public final class WorkbookFixture {
     return this;
   }
 
-  public WorkbookFixture skill(String... cells) {
-    skills.add(List.of(cells));
-    return this;
-  }
-
   /** A real export rarely spells headers the way the contract does. */
   public WorkbookFixture peopleHeader(String... header) {
     this.peopleHeader = List.of(header);
     return this;
   }
 
-  public WorkbookFixture onlyPeopleSheet() {
-    skillSheet = false;
-    return this;
-  }
-
-  public WorkbookFixture onlySkillsSheet() {
+  /** A workbook that carries some other sheet instead of people, for the refusal case. */
+  public WorkbookFixture noPeopleSheet() {
     peopleSheet = false;
     return this;
   }
@@ -76,9 +72,8 @@ public final class WorkbookFixture {
         } else {
           workbook.createSheet("people");
         }
-      }
-      if (skillSheet) {
-        sheet(workbook, "skills", skillHeader, skills);
+      } else {
+        workbook.createSheet("something-else");
       }
       workbook.write(out);
       return out.toByteArray();

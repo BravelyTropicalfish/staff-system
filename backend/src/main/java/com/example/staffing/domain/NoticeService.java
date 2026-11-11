@@ -33,10 +33,10 @@ public class NoticeService {
     requireCoordinator(actor);
     NoticeRepository.Row row = find(id);
     if (row.coordinatorId() != actor.id()) {
-      throw new AccessDeniedException("this notice is not in your list");
+      throw new AccessDeniedException("这条通知不在你的列表里");
     }
     if (row.dismissedAt() != null) {
-      throw new NoticeException(ALREADY_DISMISSED, "the notice is dismissed already");
+      throw new NoticeException(ALREADY_DISMISSED, "通知已经清除");
     }
     notices.dismiss(id, actor.id());
     return view(find(id));
@@ -44,12 +44,12 @@ public class NoticeService {
 
   private static void requireCoordinator(AuthenticatedUser actor) {
     if (!actor.isCoordinator()) {
-      throw new AccessDeniedException("the notice list belongs to the coordinator");
+      throw new AccessDeniedException("通知列表只属于协调员");
     }
   }
 
   private NoticeRepository.Row find(long id) {
-    return notices.findById(id).orElseThrow(() -> new NoSuchElementException("No notice " + id));
+    return notices.findById(id).orElseThrow(() -> new NoSuchElementException("没有通知 " + id));
   }
 
   private static NoticeView view(NoticeRepository.Row row) {

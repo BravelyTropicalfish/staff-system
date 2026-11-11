@@ -12,7 +12,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 
 /**
@@ -30,8 +29,8 @@ public class SecurityConfig {
   }
 
   @Bean
-  SecurityContextRepository securityContextRepository() {
-    return new HttpSessionSecurityContextRepository();
+  SecurityContextRepository securityContextRepository(SessionTokens tokens) {
+    return new SessionTokenRepository(tokens);
   }
 
   @Bean
@@ -59,7 +58,7 @@ public class SecurityConfig {
                             response,
                             HttpStatus.UNAUTHORIZED,
                             "unauthenticated",
-                            "Sign in to continue.")));
+                            "请先登录后再继续。")));
     return http.build();
   }
 

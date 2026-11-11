@@ -5,42 +5,40 @@ unit of work.
 
 ## ADDED Requirements
 
-### Requirement: One workbook, two sheets
+### Requirement: One workbook, one sheet
 
-The system SHALL accept exactly one `.xlsx` workbook per upload, with a `people` sheet
-carrying `employee_no`, `name`, `email`, `role`, `job_level`, `travel_willingness`, `active`
-and a `skills` sheet carrying `employee_no`, `skill`, `proficiency`. Both sheets SHALL be
-present. The `people` sheet MAY be empty so that a file refreshes skills only; a file with no
-data row in either sheet SHALL be rejected.
+The system SHALL accept exactly one `.xlsx` workbook per upload, holding one `people` sheet with
+the columns `employee_no`, `name`, `email`, `role`, `job_level`, `travel_willingness`, `active`
+and `skills`. A row SHALL be one person plus that person's skills: the `skills` cell holds
+`skill:band` pairs separated by semicolons (`后端开发:Practitioner;测试:Expert`) and MAY be blank
+for a person who carries no skill change. A file whose sheet holds no data row SHALL be rejected.
 
 **Traces:** proposal step 2; REQ-001 §5.1; S32.
 
-#### Scenario: Skills-only refresh is accepted
+#### Scenario: One row carries several skills
 
-- **GIVEN** a workbook whose `people` sheet is empty and whose `skills` rows name existing
-  employees with catalog skills
+- **GIVEN** a `people` row whose `skills` cell reads `Java:Novice; 测试:Practitioner`
 - **WHEN** the coordinator uploads it
-- **THEN** the batch is `applied`, the listed bands change and no person is created
+- **THEN** the batch is `applied`, the person carries both bands and nothing else changes
 
-#### Scenario: A workbook with one sheet is refused
+#### Scenario: A workbook without the people sheet is refused
 
-- **GIVEN** a workbook holding only a `people` sheet
+- **GIVEN** a workbook holding only some other sheet
 - **WHEN** the coordinator uploads it
 - **THEN** the upload is refused and no batch is recorded at all
 
 #### Scenario: An empty workbook is refused
 
-- **GIVEN** a workbook whose two sheets carry headers only
+- **GIVEN** a workbook whose `people` sheet carries headers only
 - **WHEN** the coordinator uploads it
 - **THEN** the upload is refused with a reason naming the empty file, and no batch is recorded
 
 ### Requirement: An import is atomic
 
-The system SHALL validate every row of both sheets before writing anything. If at least one
-row fails validation, the system SHALL write nothing — no person created, no band changed, no
-flag flipped — SHALL record the batch as `rejected`, and SHALL list every failing row with
-sheet, row number, key value and reason. A batch whose rows all validate SHALL be recorded as
-`applied`.
+The system SHALL validate every row of the sheet before writing anything. If at least one row
+fails validation, the system SHALL write nothing — no person created, no band changed, no flag
+flipped — SHALL record the batch as `rejected`, and SHALL list every failing row with sheet, row
+number, key value and reason. A batch whose rows all validate SHALL be recorded as `applied`.
 
 **Traces:** proposal step 2 and key rule "An import is all-or-nothing"; REQ-001 §5.1; S12,
 S14, S29, S31.
@@ -48,7 +46,7 @@ S14, S29, S31.
 #### Scenario: One bad row blocks the whole file
 
 - **GIVEN** a workbook of five `people` rows where one row carries `job_level` = `Mid` and
-  one `skills` row names skill `Kotlin`
+  another row's `skills` cell names skill `Kotlin`
 - **WHEN** the coordinator uploads it
 - **THEN** the batch is `rejected`
 - **AND** all five people keep exactly the data they had before the upload
@@ -72,23 +70,23 @@ S14, S29, S31.
 ### Requirement: Row validation rules
 
 Before anything is written, the system SHALL apply these rules to every row. `employee_no`,
-`name`, `role`, `job_level`, `travel_willingness` and `active` SHALL be non-blank in a
-`people` row, while `email` MAY be blank. `employee_no` SHALL be unique within the file.
-`role` SHALL be exactly one active catalog role — a cell naming two roles, or a delimited list,
-is a row error and is never split into two roles; `skill` SHALL be a catalog skill, `job_level` SHALL
-be one of the four bands, `proficiency` one of the five bands, `travel_willingness` one of
-`none` / `limited` / `full` and `active` one of `active` / `inactive`. A second `skills` row
-for the same employee number and skill SHALL be an error, and so SHALL a `skills` row whose
-employee number appears neither in the system nor in the file's `people` sheet. Cells SHALL
-be trimmed, and ASCII values SHALL match case-insensitively, the stored value being the
-catalog spelling.
+`name`, `role`, `job_level`, `travel_willingness` and `active` SHALL be non-blank, while `email`
+and `skills` MAY be blank. `employee_no` SHALL be unique within the file. `role` SHALL be exactly
+one active catalog role — a cell naming two roles, or a delimited list, is a row error and is
+never split into two roles. Each `skill:band` item in the `skills` cell SHALL name an active
+catalog skill and one of the five proficiency bands; an item without a colon, a skill the catalog
+does not hold, a band outside the five, or the same skill twice in one cell SHALL be a row error
+and SHALL reject the whole row. `job_level` SHALL be one of the four bands, `travel_willingness`
+one of `none` / `limited` / `full` and `active` one of `active` / `inactive`. Cells SHALL be
+trimmed, and ASCII values SHALL match case-insensitively, the stored value being the catalog
+spelling.
 
 **Traces:** proposal step 2; REQ-001 §5.1; S12, S14, S17, S29, S30, S31.
 
 #### Scenario: Lower case is normalised, not rejected
 
-- **GIVEN** a `people` row with `job_level` = `senior` and `active` = `Active`, and a
-  `skills` row with `proficiency` = `practitioner`
+- **GIVEN** a `people` row with `job_level` = `senior`, `active` = `Active` and `skills` =
+  `测试:practitioner`
 - **WHEN** the coordinator uploads the file
 - **THEN** the batch is `applied` and the profile stores `Senior`, `active` and
   `Practitioner`
@@ -107,18 +105,17 @@ catalog spelling.
 - **THEN** the batch is `rejected` with a row error on the `role` column for each row
 - **AND** no person is created or stored holding two roles, because the cell is never split
 
-#### Scenario: A duplicated skill row blocks the file
+#### Scenario: The same skill twice in one cell blocks the file
 
-- **GIVEN** two `skills` rows for the same employee number and skill `测试`
+- **GIVEN** a `people` row whose `skills` cell reads `测试:Novice;测试:Expert`
 - **WHEN** the coordinator uploads the file
-- **THEN** the batch is `rejected` and both row numbers appear in the error list
+- **THEN** the batch is `rejected` and the reason names the repeated skill on that row
 
-#### Scenario: An orphan skill row blocks the file
+#### Scenario: A skill outside the catalog blocks the file
 
-- **GIVEN** a `skills` row for employee number `E999`, absent from both the system and the
-  file's `people` sheet
+- **GIVEN** a `people` row whose `skills` cell names skill `Kotlin`
 - **WHEN** the coordinator uploads the file
-- **THEN** the batch is `rejected` with the reason `person not found` for that row
+- **THEN** the batch is `rejected` and the reason says the skill is not in the active catalog
 
 #### Scenario: A duplicated employee number blocks the file
 
@@ -130,8 +127,8 @@ catalog spelling.
 
 When every row validates, the system SHALL create a person for each unknown employee number,
 overwrite the stored values of the fields carried in the file, and insert or overwrite a
-proficiency band for each `skills` row. It SHALL NOT delete a person, a skill band or any
-other record, and SHALL store the batch as `applied` with its row counts.
+proficiency band for each `skill:band` item in the `skills` cell. It SHALL NOT delete a person, a
+skill band or any other record, and SHALL store the batch as `applied` with its row counts.
 
 **Traces:** proposal step 2; REQ-001 §5.1; S13, S15, S16.
 

@@ -25,6 +25,8 @@ type Props = {
   busy: boolean;
   error: string | null;
   submitLabel: string;
+  /** 协调员看到的是一张只读的岗位：每个字段都禁用，没有增删行，也没有保存按钮。 */
+  readOnly?: boolean;
   onChange: (patch: Partial<PostFormValue>) => void;
   onSkills: (rows: SkillRowValue[]) => void;
   onSubmit: () => void;
@@ -45,6 +47,7 @@ export default function PostForm({
   busy,
   error,
   submitLabel,
+  readOnly = false,
   onChange,
   onSkills,
   onSubmit,
@@ -71,21 +74,22 @@ export default function PostForm({
       ) : null}
 
       <label className="block">
-        <span className={LABEL}>Title</span>
+        <span className={LABEL}>岗位名称</span>
         <input
           className={FIELD}
           value={value.title}
+          disabled={readOnly}
           onChange={(event) => onChange({ title: event.target.value })}
         />
       </label>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="block">
-          <span className={LABEL}>Role</span>
+          <span className={LABEL}>角色</span>
           <select
             className={FIELD}
             value={value.role}
-            disabled={disabled(frozen, 'role')}
+            disabled={readOnly || disabled(frozen, 'role')}
             onChange={(event) => onChange({ role: event.target.value })}
           >
             {activeRoles.map((role) => (
@@ -97,11 +101,11 @@ export default function PostForm({
         </label>
 
         <label className="block">
-          <span className={LABEL}>Minimum job level</span>
+          <span className={LABEL}>最低职级</span>
           <select
             className={FIELD}
             value={value.minJobLevel}
-            disabled={disabled(frozen, 'minJobLevel')}
+            disabled={readOnly || disabled(frozen, 'minJobLevel')}
             onChange={(event) => onChange({ minJobLevel: event.target.value })}
           >
             {bands.jobLevels.map((level) => (
@@ -113,28 +117,29 @@ export default function PostForm({
         </label>
 
         <label className="block">
-          <span className={LABEL}>Headcount</span>
+          <span className={LABEL}>招聘名额</span>
           <input
             className={FIELD}
             type="number"
             min={floor}
             step={1}
             value={value.headcount}
+            disabled={readOnly}
             onChange={(event) => onChange({ headcount: event.target.value })}
           />
           <span className="mt-1 block text-xs text-slate-500">
             {floor > 1
-              ? `${floor} people are confirmed; the headcount cannot fall below them.`
-              : 'A whole number of at least 1.'}
+              ? `已有 ${floor} 人确认，名额不能低于这个数。`
+              : '至少为 1 的整数。'}
           </span>
         </label>
 
         <label className="block">
-          <span className={LABEL}>Travel</span>
+          <span className={LABEL}>差旅要求</span>
           <select
             className={FIELD}
             value={value.travel}
-            disabled={disabled(frozen, 'travel')}
+            disabled={readOnly || disabled(frozen, 'travel')}
             onChange={(event) => onChange({ travel: event.target.value })}
           >
             {bands.travel.map((travel) => (
@@ -146,32 +151,32 @@ export default function PostForm({
         </label>
 
         <label className="block">
-          <span className={LABEL}>Start date</span>
+          <span className={LABEL}>开始日期</span>
           <input
             className={FIELD}
             type="date"
             value={value.startDate}
-            disabled={disabled(frozen, 'startDate')}
+            disabled={readOnly || disabled(frozen, 'startDate')}
             onChange={(event) => onChange({ startDate: event.target.value })}
           />
         </label>
 
         <label className="block">
-          <span className={LABEL}>End date</span>
+          <span className={LABEL}>结束日期</span>
           <input
             className={FIELD}
             type="date"
             value={value.endDate}
-            disabled={disabled(frozen, 'endDate')}
+            disabled={readOnly || disabled(frozen, 'endDate')}
             onChange={(event) => onChange({ endDate: event.target.value })}
           />
         </label>
       </div>
 
       <fieldset className="rounded border border-slate-200 p-3">
-        <legend className={`${LABEL} px-1`}>Skills</legend>
+        <legend className={`${LABEL} px-1`}>技能要求</legend>
         {value.skills.length === 0 ? (
-          <p className="note">No skill requirement.</p>
+          <p className="note">没有技能要求。</p>
         ) : (
           <ul className="space-y-2">
             {value.skills.map((row, index) => (
@@ -179,7 +184,9 @@ export default function PostForm({
                 <select
                   className={FIELD}
                   value={row.skill}
-                  disabled={row.kind === 'required' && disabled(frozen, 'requiredSkills')}
+                  disabled={
+                    readOnly || (row.kind === 'required' && disabled(frozen, 'requiredSkills'))
+                  }
                   onChange={(event) => changeRow(index, { skill: event.target.value })}
                 >
                   {activeSkills.map((skill) => (
@@ -191,18 +198,22 @@ export default function PostForm({
                 <select
                   className={FIELD}
                   value={row.kind}
-                  disabled={row.kind === 'required' && disabled(frozen, 'requiredSkills')}
+                  disabled={
+                    readOnly || (row.kind === 'required' && disabled(frozen, 'requiredSkills'))
+                  }
                   onChange={(event) =>
                     changeRow(index, { kind: event.target.value === 'bonus' ? 'bonus' : 'required' })
                   }
                 >
-                  <option value="required">required</option>
-                  <option value="bonus">bonus</option>
+                  <option value="required">required 必备</option>
+                  <option value="bonus">bonus 加分</option>
                 </select>
                 <select
                   className={FIELD}
                   value={row.band}
-                  disabled={row.kind === 'required' && disabled(frozen, 'requiredSkills')}
+                  disabled={
+                    readOnly || (row.kind === 'required' && disabled(frozen, 'requiredSkills'))
+                  }
                   onChange={(event) => changeRow(index, { band: event.target.value })}
                 >
                   {bands.proficiencies.map((band) => (
@@ -211,47 +222,53 @@ export default function PostForm({
                     </option>
                   ))}
                 </select>
-                <button
-                  type="button"
-                  className="justify-self-start rounded border border-slate-300 px-2 py-1 text-sm text-slate-700 disabled:text-slate-400"
-                  disabled={row.kind === 'required' && disabled(frozen, 'requiredSkills')}
-                  onClick={() => onSkills(value.skills.filter((_, at) => at !== index))}
-                >
-                  Remove
-                </button>
+                {readOnly ? null : (
+                  <button
+                    type="button"
+                    className="justify-self-start rounded border border-slate-300 px-2 py-1 text-sm text-slate-700 disabled:text-slate-400"
+                    disabled={row.kind === 'required' && disabled(frozen, 'requiredSkills')}
+                    onClick={() => onSkills(value.skills.filter((_, at) => at !== index))}
+                  >
+                    删除
+                  </button>
+                )}
               </li>
             ))}
           </ul>
         )}
-        <button
-          type="button"
-          className="mt-3 rounded border border-slate-300 px-2 py-1 text-sm text-slate-700"
-          onClick={() =>
-            onSkills([
-              ...value.skills,
-              {
-                skill: activeSkills[0]?.name ?? '',
-                kind: 'required',
-                band: bands.proficiencies[2] ?? bands.proficiencies[0] ?? '',
-              },
-            ])
-          }
-        >
-          Add a skill row
-        </button>
+        {readOnly ? null : (
+          <button
+            type="button"
+            className="mt-3 rounded border border-slate-300 px-2 py-1 text-sm text-slate-700"
+            onClick={() =>
+              onSkills([
+                ...value.skills,
+                {
+                  skill: activeSkills[0]?.name ?? '',
+                  kind: 'required',
+                  band: bands.proficiencies[2] ?? bands.proficiencies[0] ?? '',
+                },
+              ])
+            }
+          >
+            增加技能行
+          </button>
+        )}
       </fieldset>
 
       {error ? (
         <p className="rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">{error}</p>
       ) : null}
 
-      <button
-        type="submit"
-        className="justify-self-start rounded bg-slate-900 px-3 py-1.5 text-sm font-medium text-white disabled:bg-slate-400"
-        disabled={busy}
-      >
-        {busy ? 'Saving…' : submitLabel}
-      </button>
+      {readOnly ? null : (
+        <button
+          type="submit"
+          className="justify-self-start rounded bg-slate-900 px-3 py-1.5 text-sm font-medium text-white disabled:bg-slate-400"
+          disabled={busy}
+        >
+          {busy ? '保存中…' : submitLabel}
+        </button>
+      )}
     </form>
   );
 }

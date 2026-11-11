@@ -73,6 +73,11 @@ public class RoleRepository {
     jdbc.update("UPDATE role SET active = ? WHERE id = ?", active, id);
   }
 
+  /** Only the service calls this, and only after it counted the references. */
+  public void delete(long id) {
+    jdbc.update("DELETE FROM role WHERE id = ?", id);
+  }
+
   /** People and posts that already point at the role; a rename is refused while either exists. */
   public int countReferences(long id) {
     Integer people =

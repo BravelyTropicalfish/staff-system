@@ -62,10 +62,11 @@ public class CatalogController {
     return catalog.updateRole(id, body.name(), body.active());
   }
 
+  /** A role nobody points at is deleted; the answer is the row as it was before the delete. */
   @DeleteMapping("/roles/{id}")
-  void deleteRole(@PathVariable long id, Authentication authentication) {
+  RoleView deleteRole(@PathVariable long id, Authentication authentication) {
     Auth.coordinator(authentication);
-    throw catalog.refuseRoleDelete(id);
+    return catalog.deleteRole(id);
   }
 
   @GetMapping("/skills")
@@ -89,10 +90,11 @@ public class CatalogController {
     return catalog.updateSkill(id, body.name(), body.roleDomainId(), body.active());
   }
 
+  /** A skill nobody points at is deleted; the answer is the row as it was before the delete. */
   @DeleteMapping("/skills/{id}")
-  void deleteSkill(@PathVariable long id, Authentication authentication) {
+  SkillView deleteSkill(@PathVariable long id, Authentication authentication) {
     Auth.coordinator(authentication);
-    throw catalog.refuseSkillDelete(id);
+    return catalog.deleteSkill(id);
   }
 
   record RoleName(@NotBlank @Size(max = 40) String name) {}

@@ -41,9 +41,9 @@ export default function PersonScreen() {
 
   return (
     <div>
-      <p className="text-sm">
-        <Link className="text-slate-700 underline" to="/people">
-          People
+      <p>
+        <Link className="btn btn-sm" to="/people">
+          ← 返回人员池
         </Link>
       </p>
       {error ? (
@@ -52,7 +52,7 @@ export default function PersonScreen() {
         </p>
       ) : null}
       {person === null ? (
-        error === null ? <p className="mt-4 text-sm text-slate-600">Reading the profile…</p> : null
+        error === null ? <p className="mt-4 text-sm text-slate-600">正在读取档案…</p> : null
       ) : (
         <>
           <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900">
@@ -61,25 +61,25 @@ export default function PersonScreen() {
           <p className="lede">{profileNote(person)}</p>
 
           <section className="card">
-            <h2>Master data</h2>
+            <h2>主数据</h2>
             <dl className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
-              <dt className="text-slate-500">Employee</dt>
+              <dt className="text-slate-500">工号</dt>
               <dd className="text-slate-800">{person.employeeNo}</dd>
-              <dt className="text-slate-500">Role</dt>
+              <dt className="text-slate-500">角色</dt>
               <dd className="text-slate-800">{person.role}</dd>
-              <dt className="text-slate-500">Job level</dt>
+              <dt className="text-slate-500">职级</dt>
               <dd className="text-slate-800">{person.jobLevel}</dd>
-              <dt className="text-slate-500">Travel willingness</dt>
+              <dt className="text-slate-500">差旅接受度</dt>
               <dd className="text-slate-800">{person.travel}</dd>
-              <dt className="text-slate-500">Email</dt>
+              <dt className="text-slate-500">邮箱</dt>
               <dd className="text-slate-800">{person.email ?? '—'}</dd>
             </dl>
           </section>
 
           <section className="card">
-            <h2>Skills</h2>
+            <h2>技能</h2>
             {person.skills.length === 0 ? (
-              <p className="mt-2 text-sm text-slate-600">No skill is recorded for this person.</p>
+              <p className="mt-2 text-sm text-slate-600">这个人没有记录任何技能。</p>
             ) : (
               <ul className="mt-2 space-y-1 text-sm text-slate-800">
                 {person.skills.map((skill) => (
@@ -90,10 +90,10 @@ export default function PersonScreen() {
           </section>
 
           <section className="card">
-            <h2>Occupancy</h2>
+            <h2>占用</h2>
             {person.allocations.length === 0 ? (
               <p className="mt-2 text-sm text-slate-600">
-                No allocation is recorded for this person.
+                这个人员没有记录任何占用。
               </p>
             ) : (
               <ul className="mt-2 space-y-1 text-sm text-slate-800">

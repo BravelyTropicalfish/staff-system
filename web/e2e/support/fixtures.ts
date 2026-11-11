@@ -5,7 +5,7 @@ import { workbook, type PersonRow, type SkillRow } from './workbook';
 /**
  * T26, the fixtures. Every state the specs need is created through the same routes a user drives,
  * so a fixture can never build something the server would refuse: the coordinator imports the
- * workbook, creates the project and proposes people; the lead creates its posts and confirms.
+ * workbook and proposes people; the lead opens its own project, creates its posts and confirms.
  */
 
 export type Project = {
@@ -85,20 +85,29 @@ export async function importWorkbook(
   return (await response.json()) as ImportBatch;
 }
 
+/**
+ * A project is opened by its own lead, so this signs in as lead.one whatever context is handed in:
+ * the caller's context may be the coordinator, who reads projects and opens none.
+ */
 export async function createProject(
-  context: APIRequestContext,
+  _context: APIRequestContext,
   body: { name: string; lead?: string; startDate?: string; endDate?: string },
 ): Promise<Project> {
-  const response = await context.post('/api/projects', {
-    data: {
-      name: body.name,
-      lead: body.lead ?? 'lead.one',
-      startDate: body.startDate ?? '2027-01-01',
-      endDate: body.endDate ?? '2027-12-31',
-    },
-  });
-  expect(response.status(), 'the project is created').toBe(201);
-  return (await response.json()) as Project;
+  const lead = await leadOne();
+  try {
+    const response = await lead.post('/api/projects', {
+      data: {
+        name: body.name,
+        lead: body.lead ?? 'lead.one',
+        startDate: body.startDate ?? '2027-01-01',
+        endDate: body.endDate ?? '2027-12-31',
+      },
+    });
+    expect(response.status(), 'the project is created').toBe(201);
+    return (await response.json()) as Project;
+  } finally {
+    await lead.dispose();
+  }
 }
 
 export async function createPost(

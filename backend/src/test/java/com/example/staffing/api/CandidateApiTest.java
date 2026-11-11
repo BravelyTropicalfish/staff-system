@@ -69,7 +69,7 @@ class CandidateApiTest {
             row -> {
               assertThat(row).containsEntry("employeeNo", "E100").containsEntry("gate", "G3");
               assertThat((String) row.get("reason"))
-                  .isEqualTo("the job level Junior is below the required Senior");
+                  .isEqualTo("职级 Junior 低于要求的 Senior");
             });
     assertThat(count(post, "G3")).isEqualTo(1);
   }

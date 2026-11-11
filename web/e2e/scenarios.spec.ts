@@ -34,28 +34,28 @@ test.describe('the project end', () => {
     await api.dispose();
 
     await page.goto(`/projects/${project.id}`);
-    await expect(page.getByText('1 post · 1 of 1 seats chosen · filled')).toBeVisible();
+    await expect(page.getByText('1 个岗位 · 1 / 1 已到位 · 已满')).toBeVisible();
 
-    await page.getByRole('button', { name: 'End the project' }).click();
+    await page.getByRole('button', { name: '结束项目' }).click();
     await expect(
       page.getByText(
-        `Ending ${project.name} cancels its 1 post and releases 1 confirmed person. It cannot be undone.`,
+        `结束 ${project.name} 会取消它的 1 个岗位，并释放 1 名已确认人员。不可撤销。`,
       ),
     ).toBeVisible();
-    await page.getByRole('button', { name: 'End it' }).click();
+    await page.getByRole('button', { name: '确认结束' }).click();
 
     await expect(
-      page.getByText('closed · every post is cancelled and every allocation of this project is gone'),
+      page.getByText('已结束 · 岗位全部取消，本项目的占用全部删除'),
     ).toBeVisible();
     const row = page.getByRole('row').filter({ hasText: post.title ?? '' });
     await expect(row).toContainText('cancelled');
-    await expect(page.getByRole('button', { name: 'End the project' })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: '结束项目' })).toHaveCount(0);
 
     // The release is visible where the people are: the coordinator's profile of the same person.
     const coordinatorContext = await browser.newContext({ storageState: COORDINATOR, baseURL: APP });
     const coordinatorPage = await coordinatorContext.newPage();
     await coordinatorPage.goto(`/people/${person.employeeNo}`);
-    await expect(coordinatorPage.getByText('No allocation is recorded for this person.')).toBeVisible();
+    await expect(coordinatorPage.getByText('这个人员没有记录任何占用。')).toBeVisible();
     await coordinatorContext.close();
   });
 });
@@ -71,7 +71,7 @@ test.describe('the person profile', () => {
     await page.goto(`/people/${person.employeeNo}`);
     await expect(page.getByRole('heading', { name: person.name })).toBeVisible();
     await expect(
-      page.getByText('master data arrives by import, so this profile is read-only'),
+      page.getByText('主数据由报表导入，本页只读'),
     ).toBeVisible();
     await expect(page.locator('input, textarea, select, button')).toHaveCount(0);
   });
@@ -82,8 +82,8 @@ test.describe('the person profile', () => {
     await api.dispose();
 
     await page.goto(`/people/${person.employeeNo}`);
-    const skills = page.locator('section').filter({ has: page.getByRole('heading', { name: 'Skills' }) });
-    await expect(skills).toContainText('后端开发 · Practitioner · DEV domain');
+    const skills = page.locator('section').filter({ has: page.getByRole('heading', { name: '技能' }) });
+    await expect(skills).toContainText('后端开发 · Practitioner · DEV 域');
     expect(await skills.innerText(), 'a band is a name, never a digit').not.toMatch(/\d/);
   });
 
@@ -107,10 +107,10 @@ test.describe('the person profile', () => {
 
     await page.goto(`/people/${person.employeeNo}`);
     await expect(
-      page.getByText(`${project.name} · 2026-01-05 → 2026-03-27 · hand record · ended`),
+      page.getByText(`${project.name} · 2026-01-05 → 2026-03-27 · 手工登记 · 已结束`),
     ).toBeVisible();
     await expect(
-      page.getByText(`${project.name} · 2027-01-05 → 2027-03-27 · hand record`, { exact: true }),
+      page.getByText(`${project.name} · 2027-01-05 → 2027-03-27 · 手工登记`, { exact: true }),
     ).toBeVisible();
   });
 });
@@ -129,9 +129,9 @@ test.describe('the confirmation', () => {
     await lead.dispose();
     await api.dispose();
 
-    const seat = `${person.name} (${person.employeeNo}) · confirmed`;
+    const seat = `${person.name}（${person.employeeNo}）· 确认于`;
     await page.goto(`/posts/${post.id}`);
-    const gap = page.locator('section').filter({ has: page.getByRole('heading', { name: 'Gap' }) });
+    const gap = page.locator('section').filter({ has: page.getByRole('heading', { name: '缺口' }) });
     await expect(gap.getByText(seat, { exact: false })).toBeVisible();
 
     const coordinatorContext = await browser.newContext({ storageState: COORDINATOR, baseURL: APP });
@@ -139,7 +139,7 @@ test.describe('the confirmation', () => {
     await coordinatorPage.goto(`/posts/${post.id}`);
     const coordinatorGap = coordinatorPage
       .locator('section')
-      .filter({ has: coordinatorPage.getByRole('heading', { name: 'Gap' }) });
+      .filter({ has: coordinatorPage.getByRole('heading', { name: '缺口' }) });
     await expect(coordinatorGap.getByText(seat, { exact: false })).toBeVisible();
     await coordinatorContext.close();
   });
@@ -155,7 +155,7 @@ test.describe('the confirmation', () => {
     await lead.dispose();
     await api.dispose();
 
-    const gap = '1 of 2 chosen · 1 still needed';
+    const gap = '1 / 2 已到位 · 还缺 1 人';
     await page.goto(`/posts/${post.id}`);
     await expect(page.getByText(gap)).toBeVisible();
 
@@ -187,16 +187,16 @@ test.describe('the search', () => {
 
     const suitable = page
       .locator('section')
-      .filter({ has: page.getByRole('heading', { name: 'Suitable people' }) });
+      .filter({ has: page.getByRole('heading', { name: '合适清单' }) });
     await expect(suitable.getByText(person.name)).toHaveCount(0);
 
     const excluded = page
       .locator('section')
-      .filter({ has: page.getByRole('heading', { name: 'Excluded people' }) });
+      .filter({ has: page.getByRole('heading', { name: '被排除的人' }) });
     const row = excluded.getByRole('row').filter({ hasText: person.name });
     await expect(row).toBeVisible();
     await expect(row).toContainText('G6');
-    await expect(row).toContainText('intersects the post');
+    await expect(row).toContainText('已有占用');
   });
 
   test('The notice list explains each loss', async ({ page }) => {
@@ -216,7 +216,7 @@ test.describe('the search', () => {
 
     await page.goto('/notices');
     const entry = page.getByRole('listitem').filter({ hasText: lostTitle });
-    await expect(entry).toContainText(`${person.name} (${person.employeeNo})`);
-    await expect(entry).toContainText('person taken');
+    await expect(entry).toContainText(`${person.name}（${person.employeeNo}）`);
+    await expect(entry).toContainText('人员已被占用');
   });
 });

@@ -31,16 +31,16 @@ class AllocationServiceTest {
 
     assertThatThrownBy(() -> service.create(null, 1, START, END))
         .isInstanceOf(AllocationException.class)
-        .hasMessage("person null is not in the pool");
+        .hasMessage("人员 null 不在人员池中");
   }
 
   @Test
   void anAllocationNeedsBothDates() {
     assertThatThrownBy(() -> service.update(1, null, END))
         .isInstanceOf(AllocationException.class)
-        .hasMessage("the allocation needs a start and an end date");
+        .hasMessage("占用必须填写起止日期");
     assertThatThrownBy(() -> service.update(1, START, null))
         .isInstanceOf(AllocationException.class)
-        .hasMessage("the allocation needs a start and an end date");
+        .hasMessage("占用必须填写起止日期");
   }
 }

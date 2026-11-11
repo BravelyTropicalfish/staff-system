@@ -85,6 +85,11 @@ public class SkillRepository {
     jdbc.update("UPDATE skill SET active = ? WHERE id = ?", active, id);
   }
 
+  /** Only the service calls this, and only after it counted the references. */
+  public void delete(long id) {
+    jdbc.update("DELETE FROM skill WHERE id = ?", id);
+  }
+
   /** People and posts that already carry the skill; a rename is refused while either exists. */
   public int countReferences(long id) {
     Integer people =

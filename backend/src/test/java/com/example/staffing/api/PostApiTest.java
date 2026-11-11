@@ -115,7 +115,7 @@ class PostApiTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
     assertThat(body(response))
         .containsEntry("code", "invalid post")
-        .containsEntry("message", "headcount must be a whole number of at least 1");
+        .containsEntry("message", "名额必须是至少为 1 的整数");
     assertThat(count("SELECT COUNT(*) FROM post")).isZero();
   }
 
@@ -230,7 +230,7 @@ class PostApiTest {
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
     assertThat(body(response)).containsEntry("code", "release first");
-    assertThat(body(response).get("message").toString()).contains("E100").contains("release");
+    assertThat(body(response).get("message").toString()).contains("E100").contains("解除");
     assertThat(postEndDate(post)).isEqualTo(LocalDate.parse("2027-06-30"));
     assertThat(jdbc.queryForObject("SELECT state FROM recommendation WHERE id = ?", String.class, pending))
         .isEqualTo("proposed");
@@ -470,7 +470,7 @@ class PostApiTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
     assertThat(body(response))
         .containsEntry("code", "project closed")
-        .containsEntry("message", "the project Atlas is closed");
+        .containsEntry("message", "项目 Atlas 已结束");
     assertThat(count("SELECT COUNT(*) FROM post")).isZero();
   }
 
@@ -491,6 +491,36 @@ class PostApiTest {
         .extracting(row -> ((Number) row.get("id")).longValue())
         .containsExactlyInAnyOrder(kept, cancelled);
     assertThat(gap).singleElement().satisfies(row -> assertThat(row).containsEntry("id", (int) kept));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void theGapBoardReadsEveryPostTheCallerMaySee() {
+    long atlas = givenProject("Atlas", "lead.one");
+    long borealis = givenProject("Borealis", "lead.two");
+    long mine = givenPost(atlas, "DEV", 2);
+    long theirs = givenPost(borealis, "QA", 1);
+    long cancelled = givenPost(atlas, "QA", 1);
+    lead.post("/api/posts/" + cancelled + "/cancel", null, Map.class);
+
+    List<Map<String, Object>> everyPost =
+        coordinator.get("/api/posts", List.class).getBody();
+    List<Map<String, Object>> mineOnly = lead.get("/api/posts", List.class).getBody();
+    List<Map<String, Object>> everyGap = coordinator.get("/api/gap", List.class).getBody();
+    List<Map<String, Object>> myGap = lead.get("/api/gap", List.class).getBody();
+
+    assertThat(everyPost)
+        .extracting(row -> ((Number) row.get("id")).longValue())
+        .containsExactly(mine, cancelled, theirs);
+    assertThat(mineOnly)
+        .as("a lead reads the posts of the projects they own and no other")
+        .extracting(row -> ((Number) row.get("id")).longValue())
+        .containsExactly(mine, cancelled);
+    assertThat(everyGap)
+        .as("the gap board leaves a cancelled post out")
+        .extracting(row -> ((Number) row.get("id")).longValue())
+        .containsExactly(mine, theirs);
+    assertThat(myGap).singleElement().satisfies(row -> assertThat(row).containsEntry("id", (int) mine));
   }
 
   @Test
@@ -544,11 +574,11 @@ class PostApiTest {
         lead.post("/api/projects/" + atlas + "/posts", namelessSkill, Map.class);
 
     assertThat(role.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
-    assertThat(body(role)).containsEntry("message", "role NOPE is not in the catalog");
+    assertThat(body(role)).containsEntry("message", "角色 NOPE 不在目录中");
     assertThat(skill.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
-    assertThat(body(skill)).containsEntry("message", "skill NOPE is not in the catalog");
+    assertThat(body(skill)).containsEntry("message", "技能 NOPE 不在目录中");
     assertThat(nameless.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
-    assertThat(body(nameless)).containsEntry("message", "skill  is not in the catalog");
+    assertThat(body(nameless)).containsEntry("message", "技能  不在目录中");
     assertThat(count("SELECT COUNT(*) FROM post")).isEqualTo(1);
   }
 
@@ -563,7 +593,7 @@ class PostApiTest {
     ResponseEntity<Map> response = lead.post("/api/projects/" + atlas + "/posts", body, Map.class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
-    assertThat(body(response)).containsEntry("message", "skill 测试 appears twice");
+    assertThat(body(response)).containsEntry("message", "技能 测试 重复出现");
     assertThat(count("SELECT COUNT(*) FROM post")).isZero();
   }
 
@@ -572,13 +602,13 @@ class PostApiTest {
     long atlas = givenProject("Atlas", "lead.one");
 
     assertThat(refusalFor(atlas, skillOnly(skillRow("测试", null, "Practitioner"))))
-        .containsEntry("message", "a skill row is required or bonus, not null");
+        .containsEntry("message", "技能类型只能是 required 或 bonus，不是 null");
     assertThat(refusalFor(atlas, skillOnly(skillRow("测试", "must", "Practitioner"))))
-        .containsEntry("message", "a skill row is required or bonus, not must");
+        .containsEntry("message", "技能类型只能是 required 或 bonus，不是 must");
     assertThat(refusalFor(atlas, skillOnly(skillRow("测试", "required", null))))
-        .containsEntry("message", " is not one of the five proficiency bands");
+        .containsEntry("message", " 不是五个熟练度档位之一");
     assertThat(refusalFor(atlas, skillOnly(skillRow("测试", "bonus", "Guru"))))
-        .containsEntry("message", "Guru is not one of the five proficiency bands");
+        .containsEntry("message", "Guru 不是五个熟练度档位之一");
     assertThat(count("SELECT COUNT(*) FROM post")).isZero();
   }
 
@@ -587,15 +617,15 @@ class PostApiTest {
     long atlas = givenProject("Atlas", "lead.one");
 
     assertThat(refusalOf(lead.post("/api/projects/" + atlas + "/posts", post("DEV", "Guru", 1, "none"), Map.class)))
-        .containsEntry("message", "Guru is not one of the four job level bands");
+        .containsEntry("message", "Guru 不是四个职级之一");
     assertThat(refusalOf(lead.post("/api/projects/" + atlas + "/posts", post("DEV", "Senior", 1, "sometimes"), Map.class)))
-        .containsEntry("message", "sometimes is not one of the three travel bands");
+        .containsEntry("message", "sometimes 不是三个差旅档位之一");
 
     Map<String, Object> inverted = post("DEV", "Senior", 1, "none");
     inverted.put("startDate", "2027-06-30");
     inverted.put("endDate", "2027-02-01");
     assertThat(refusalOf(lead.post("/api/projects/" + atlas + "/posts", inverted, Map.class)))
-        .containsEntry("message", "the end date cannot precede the start date");
+        .containsEntry("message", "结束日期不能早于开始日期");
     assertThat(count("SELECT COUNT(*) FROM post")).isZero();
   }
 
@@ -604,14 +634,14 @@ class PostApiTest {
     long atlas = givenProject("Atlas", "lead.one");
 
     assertThat(refusalOf(lead.post("/api/projects/" + atlas + "/posts", post("DEV", "Senior", 0, "none"), Map.class)))
-        .containsEntry("message", "headcount must be a whole number of at least 1");
+        .containsEntry("message", "名额必须是至少为 1 的整数");
     assertThat(
             refusalOf(
                 lead.post(
                     "/api/projects/" + atlas + "/posts",
                     post("DEV", "Senior", new java.math.BigDecimal("100000000000000000000"), "none"),
                     Map.class)))
-        .containsEntry("message", "headcount is too large");
+        .containsEntry("message", "名额过大");
     assertThat(count("SELECT COUNT(*) FROM post")).isZero();
   }
 

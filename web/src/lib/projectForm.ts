@@ -39,20 +39,20 @@ export function projectDraft(value: ProjectFormValue): ProjectFormValue {
   };
 }
 
-/** The refusals the form can name itself, worded as the server words them. */
+/** 表单自己能拦下的拒绝，措辞与服务端同义。 */
 export function projectProblem(value: ProjectFormValue): string | null {
   const draft = projectDraft(value);
   if (draft.name === '') {
-    return 'Give the project a name.';
+    return '请填写项目名称。';
   }
   if (draft.lead === '') {
-    return 'Name the project lead.';
+    return '请指定项目经理。';
   }
   if (draft.startDate === '' || draft.endDate === '') {
-    return 'Set the start and the end date.';
+    return '请填写起止日期。';
   }
   if (draft.endDate < draft.startDate) {
-    return 'The end date cannot precede the start date.';
+    return '结束日期不能早于开始日期。';
   }
   return null;
 }

@@ -84,7 +84,8 @@ class SessionApiTest {
     assertThat(signIn.getBody())
         .containsEntry("username", "coordinator")
         .containsEntry("role", "COORDINATOR")
-        .containsEntry("displayName", "Resource coordinator");
+        .containsEntry("displayName", "Resource coordinator")
+        .containsKey("token");
     assertThat(signIn.getHeaders().get(HttpHeaders.SET_COOKIE))
         .anySatisfy(cookie -> assertThat(cookie).startsWith("JSESSIONID=").contains("HttpOnly"));
 
@@ -102,6 +103,39 @@ class SessionApiTest {
     assertThat(signIn.getBody())
         .containsEntry("username", "lead.one")
         .containsEntry("role", "LEAD");
+  }
+
+  @Test
+  void aTokenOutranksTheCookieSoTwoTabsKeepTwoAccounts() {
+    String cookie = cookieOf(signIn("coordinator", DEMO_PASSWORD));
+    ResponseEntity<Map> second = signIn("lead.one", DEMO_PASSWORD);
+    String token = (String) second.getBody().get("token");
+    assertThat(token).isNotBlank();
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.add(HttpHeaders.COOKIE, cookie);
+    headers.add("X-Session-Token", token);
+
+    ResponseEntity<Map> current =
+        rest.exchange("/api/session", HttpMethod.GET, new HttpEntity<>(headers), Map.class);
+
+    assertThat(current.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(current.getBody()).containsEntry("username", "lead.one");
+  }
+
+  @Test
+  void aTokenTheServerForgotIsSignedOutRatherThanFallingBackToTheCookie() {
+    String cookie = cookieOf(signIn("coordinator", DEMO_PASSWORD));
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.add(HttpHeaders.COOKIE, cookie);
+    headers.add("X-Session-Token", "forgotten");
+
+    ResponseEntity<Map> current =
+        rest.exchange("/api/session", HttpMethod.GET, new HttpEntity<>(headers), Map.class);
+
+    assertThat(current.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+    assertThat(current.getBody()).containsEntry("code", "unauthenticated");
   }
 
   @Test

@@ -13,15 +13,23 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 /**
- * Turns the uploaded bytes into the two sheets the contract names, or refuses the file. Everything
- * here is about shape — sheets, header row, blank rows — because a file that has the wrong shape is
- * refused outright, while a file with the right shape and bad rows becomes a rejected batch.
+ * Turns the uploaded bytes into the one sheet the contract names, or refuses the file. Everything
+ * here is about shape — the sheet, its header row, blank rows — because a file that has the wrong
+ * shape is refused outright, while a file with the right shape and bad rows becomes a rejected
+ * batch. A person and their skills are one row: the `skills` cell holds `skill:band;skill:band`.
  */
 final class WorkbookParser {
 
   static final List<String> PEOPLE_COLUMNS =
-      List.of("employee_no", "name", "email", "role", "job_level", "travel_willingness", "active");
-  static final List<String> SKILL_COLUMNS = List.of("employee_no", "skill", "proficiency");
+      List.of(
+          "employee_no",
+          "name",
+          "email",
+          "role",
+          "job_level",
+          "travel_willingness",
+          "active",
+          "skills");
 
   private static final DataFormatter FORMATTER = new DataFormatter();
 
@@ -30,18 +38,14 @@ final class WorkbookParser {
   static ParsedWorkbook parse(byte[] content) {
     try (Workbook workbook = WorkbookFactory.create(new ByteArrayInputStream(content))) {
       Sheet people = sheet(workbook, "people");
-      Sheet skills = sheet(workbook, "skills");
       ColumnMap peopleColumns = columns(people, PEOPLE_COLUMNS);
-      ColumnMap skillColumns = columns(skills, SKILL_COLUMNS);
-      List<SheetRow> peopleRows = rows(people);
-      List<SheetRow> skillRows = rows(skills);
-      if (peopleRows.isEmpty() && skillRows.isEmpty()) {
-        throw new UnreadableWorkbookException(
-            "the workbook is empty: neither sheet holds a data row");
+      List<SheetRow> rows = rows(people);
+      if (rows.isEmpty()) {
+        throw new UnreadableWorkbookException("工作簿是空的：people 表里没有任何数据行");
       }
-      return new ParsedWorkbook(peopleColumns, peopleRows, skillColumns, skillRows);
+      return new ParsedWorkbook(peopleColumns, rows);
     } catch (IOException | UnsupportedFileFormatException e) {
-      throw new UnreadableWorkbookException("the file is not a readable .xlsx workbook");
+      throw new UnreadableWorkbookException("这个文件不是可读取的 .xlsx 工作簿");
     }
   }
 
@@ -52,7 +56,7 @@ final class WorkbookParser {
         return sheet;
       }
     }
-    throw new UnreadableWorkbookException("the workbook has no " + name + " sheet");
+    throw new UnreadableWorkbookException("工作簿里没有 " + name + " 工作表");
   }
 
   private static ColumnMap columns(Sheet sheet, List<String> fields) {
@@ -61,8 +65,9 @@ final class WorkbookParser {
         ColumnMap.of(header == null ? List.of() : cells(header), fields);
     if (!columns.missing().isEmpty()) {
       throw new UnreadableWorkbookException(
-          "the " + sheet.getSheetName() + " sheet has no " + String.join(", ", columns.missing())
-              + " column");
+          sheet.getSheetName()
+              + " 表缺少这些列："
+              + String.join("、", columns.missing()));
     }
     return columns;
   }

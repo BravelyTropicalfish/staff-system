@@ -45,33 +45,36 @@ public class ProjectService {
   @Transactional(readOnly = true)
   public ProjectView get(long id, AuthenticatedUser actor) {
     ProjectRepository.ProjectRow project =
-        projects.findById(id).orElseThrow(() -> new NoSuchElementException("No project " + id));
+        projects.findById(id).orElseThrow(() -> new NoSuchElementException("没有项目 " + id));
     if (!actor.isCoordinator() && !project.lead().equals(actor.username())) {
-      throw new AccessDeniedException("this project is not yours");
+      throw new AccessDeniedException("这个项目不属于你");
     }
     return view(project);
   }
 
   /**
-   * A lead opens a project of their own; the coordinator opens it for any lead. Naming someone else
-   * as the lead is therefore the coordinator's alone, and the refusal is the server's answer rather
+   * A project is opened by its own lead and by nobody else: the coordinator reads every project and
+   * opens none, and a lead may not name another lead. The refusal is the server's answer rather
    * than only the screen's.
    */
   @Transactional
   public ProjectView create(
       String name, String leadUsername, LocalDate start, LocalDate end, AuthenticatedUser actor) {
+    if (actor.isCoordinator()) {
+      throw new AccessDeniedException("只有项目经理可以新建项目");
+    }
     AppUserRepository.UserRow lead = leadOf(leadUsername);
-    if (!actor.isCoordinator() && !lead.username().equals(actor.username())) {
-      throw new AccessDeniedException("a lead creates only a project of their own");
+    if (!lead.username().equals(actor.username())) {
+      throw new AccessDeniedException("项目经理只能为自己新建项目");
     }
     if (name == null || name.isBlank()) {
-      throw invalid("the project needs a name");
+      throw invalid("项目必须填写名称");
     }
     if (start == null || end == null) {
-      throw invalid("the project needs a start and an end date");
+      throw invalid("项目必须填写起止日期");
     }
     if (end.isBefore(start)) {
-      throw invalid("the end date cannot precede the start date");
+      throw invalid("结束日期不能早于开始日期");
     }
     long id = projects.insert(name.trim(), lead.id(), start, end);
     return view(projects.findById(id).orElseThrow());
@@ -81,12 +84,12 @@ public class ProjectService {
   @Transactional
   public ProjectView end(long id, AuthenticatedUser actor) {
     ProjectRepository.ProjectRow project =
-        projects.findById(id).orElseThrow(() -> new NoSuchElementException("No project " + id));
+        projects.findById(id).orElseThrow(() -> new NoSuchElementException("没有项目 " + id));
     if (!project.lead().equals(actor.username())) {
-      throw new AccessDeniedException("only the project's lead ends it");
+      throw new AccessDeniedException("只有本项目的项目经理可以结束项目");
     }
     if (projects.close(id) == 0) {
-      throw new ProjectException("project closed", "The project is closed already.");
+      throw new ProjectException("project closed", "项目已经结束。");
     }
     for (ProjectRepository.PendingRow pending : projects.pendingRecommendations(id)) {
       projects.voidRecommendation(pending.id(), POST_CANCELLED);
@@ -102,9 +105,9 @@ public class ProjectService {
     AppUserRepository.UserRow lead =
         users
             .findByUsername(leadUsername == null ? "" : leadUsername.trim())
-            .orElseThrow(() -> invalid("lead " + leadUsername + " is not an account"));
+            .orElseThrow(() -> invalid("账号 " + leadUsername + " 不存在"));
     if (!AuthenticatedUser.LEAD.equals(lead.role())) {
-      throw invalid("lead " + leadUsername + " is not a lead account");
+      throw invalid("账号 " + leadUsername + " 不是项目经理账号");
     }
     return lead;
   }

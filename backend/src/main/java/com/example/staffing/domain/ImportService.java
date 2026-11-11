@@ -46,8 +46,8 @@ public class ImportService {
             filename,
             result.isRejected() ? "REJECTED" : "APPLIED",
             uploaderId,
-            workbook.people().size(),
-            workbook.skills().size(),
+            result.people().size(),
+            result.skills().size(),
             result.errors().size());
     if (result.isRejected()) {
       batches.insertErrors(batchId, errorsOf(result));
@@ -65,7 +65,7 @@ public class ImportService {
     ImportBatchRepository.BatchRow row =
         batches
             .findById(id)
-            .orElseThrow(() -> new NoSuchElementException("No import batch " + id));
+            .orElseThrow(() -> new NoSuchElementException("没有批次 " + id));
     return view(row, batches.findErrors(id));
   }
 

@@ -41,6 +41,18 @@ public class PostController {
     return posts.list(projectId, Auth.user(authentication));
   }
 
+  /** The one gap board: every post the caller may read, with the project each one belongs to. */
+  @GetMapping("/api/posts")
+  List<PostView> listAll(Authentication authentication) {
+    return posts.listAll(Auth.user(authentication));
+  }
+
+  /** The same board's gap numbers, so the board reads one list instead of one request per project. */
+  @GetMapping("/api/gap")
+  List<PostGapView> gapAll(Authentication authentication) {
+    return posts.gapAll(Auth.user(authentication));
+  }
+
   @GetMapping("/api/projects/{projectId}/gap")
   List<PostGapView> gap(@PathVariable long projectId, Authentication authentication) {
     return posts.gap(projectId, Auth.user(authentication));

@@ -44,7 +44,7 @@ class GatesTest {
     Gates.Evaluation evaluation = Gates.evaluate(candidate().active(false).build(), post().build());
 
     assertThat(evaluation.firstFailure().gate()).isEqualTo(Gate.ACTIVE);
-    assertThat(evaluation.firstFailure().reason()).isEqualTo("the person is not active");
+    assertThat(evaluation.firstFailure().reason()).isEqualTo("该人员已停用");
   }
 
   @Test
@@ -53,7 +53,7 @@ class GatesTest {
         Gates.evaluate(candidate().role(QA, "QA").band(TESTING, "Practitioner").build(), post().build());
 
     assertThat(evaluation.firstFailure().gate()).isEqualTo(Gate.ROLE);
-    assertThat(evaluation.firstFailure().reason()).isEqualTo("the role QA is not the post's DEV");
+    assertThat(evaluation.firstFailure().reason()).isEqualTo("角色 QA 不是岗位要求的 DEV");
   }
 
   @Test
@@ -71,8 +71,7 @@ class GatesTest {
         Gates.evaluate(candidate().jobLevel("Junior").build(), post().build());
 
     assertThat(evaluation.firstFailure().gate()).isEqualTo(Gate.JOB_LEVEL);
-    assertThat(evaluation.firstFailure().reason())
-        .isEqualTo("the job level Junior is below the required Senior");
+    assertThat(evaluation.firstFailure().reason()).isEqualTo("职级 Junior 低于要求的 Senior");
   }
 
   @Test
@@ -102,7 +101,7 @@ class GatesTest {
         Gates.evaluate(candidate().withoutBand(BACKEND).build(), post().build());
 
     assertThat(evaluation.firstFailure().gate()).isEqualTo(Gate.REQUIRED_SKILL);
-    assertThat(evaluation.firstFailure().reason()).isEqualTo("the person does not hold 后端开发");
+    assertThat(evaluation.firstFailure().reason()).isEqualTo("未持有 后端开发");
   }
 
   @Test
@@ -112,7 +111,7 @@ class GatesTest {
 
     assertThat(evaluation.firstFailure().gate()).isEqualTo(Gate.REQUIRED_SKILL);
     assertThat(evaluation.firstFailure().reason())
-        .isEqualTo("后端开发 at Advanced beginner is below the required Practitioner");
+        .isEqualTo("后端开发 档位 Advanced beginner 低于要求的 Practitioner");
   }
 
   @Test
@@ -123,7 +122,7 @@ class GatesTest {
             candidate().build(), post().requires(TESTING, "测试", "Practitioner").build());
 
     assertThat(evaluation.firstFailure().gate()).isEqualTo(Gate.REQUIRED_SKILL);
-    assertThat(evaluation.firstFailure().reason()).isEqualTo("the person does not hold 测试");
+    assertThat(evaluation.firstFailure().reason()).isEqualTo("未持有 测试");
   }
 
   @Test
@@ -140,7 +139,7 @@ class GatesTest {
 
     assertThat(evaluation.firstFailure().gate()).isEqualTo(Gate.TRAVEL);
     assertThat(evaluation.firstFailure().reason())
-        .isEqualTo("the travel willingness limited is below the required full");
+        .isEqualTo("差旅意愿 limited 低于要求的 full");
   }
 
   @Test
@@ -159,7 +158,7 @@ class GatesTest {
     assertThat(evaluation.firstFailure().gate()).isEqualTo(Gate.DATES);
     assertThat(evaluation.firstFailure().reason())
         .isEqualTo(
-            "the allocation 2027-03-01 to 2027-05-01 intersects the post's 2027-05-01 to 2027-07-31");
+            "已有占用 2027-03-01 至 2027-05-01，与岗位的 2027-05-01 至 2027-07-31 相交");
   }
 
   @Test

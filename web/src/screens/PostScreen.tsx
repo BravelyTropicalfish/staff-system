@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import PostForm from '../components/PostForm';
 import type { FrozenField } from '../components/PostForm';
 import { ApiError, getJson, sendJson } from '../lib/api';
@@ -35,9 +35,9 @@ type Ready = {
 };
 
 const ACTION_LABEL: Record<ProposalAction, string> = {
-  confirm: 'Confirm',
-  reject: 'Reject',
-  withdraw: 'Withdraw the proposal',
+  confirm: '确认',
+  reject: '驳回',
+  withdraw: '撤回推荐',
 };
 
 function failure(error: unknown): string {
@@ -48,38 +48,42 @@ function GapPanel({
   post,
   gap,
   busy,
+  canRelease,
   onRelease,
 }: {
   post: Post;
   gap: PostGap | null;
   busy: boolean;
+  canRelease: boolean;
   onRelease: (assignmentId: number) => void;
 }) {
   const numbers = gap ? gapNumbers(gap) : { chosen: post.confirmed, required: post.headcount, remaining: post.remaining };
   return (
     <section className="card">
-      <h2>Gap</h2>
+      <h2>缺口</h2>
       <p className="mt-1 text-sm text-slate-700">
-        {gap ? gapLabel(gap) : `${numbers.chosen} of ${numbers.required} chosen`}
+        {gap ? gapLabel(gap) : `${numbers.chosen} / ${numbers.required} 已到位`}
       </p>
       {gap && gap.people.length > 0 ? (
         <ul className="mt-2 space-y-1 text-sm text-slate-700">
           {gap.people.map((person) => (
             <li key={person.personNo} className="flex items-center justify-between gap-2">
               <span>{seatLabel(person)}</span>
-              <button
-                type="button"
-                className="rounded border border-slate-300 px-2 py-1 text-sm text-slate-700 disabled:text-slate-400"
-                disabled={busy}
-                onClick={() => onRelease(person.assignmentId)}
-              >
-                Release
-              </button>
+              {canRelease ? (
+                <button
+                  type="button"
+                  className="rounded border border-slate-300 px-2 py-1 text-sm text-slate-700 disabled:text-slate-400"
+                  disabled={busy}
+                  onClick={() => onRelease(person.assignmentId)}
+                >
+                  解除
+                </button>
+              ) : null}
             </li>
           ))}
         </ul>
       ) : (
-        <p className="mt-2 text-sm text-slate-600">Nobody is confirmed on this post yet.</p>
+        <p className="mt-2 text-sm text-slate-600">尚无确认人员。</p>
       )}
     </section>
   );
@@ -100,16 +104,16 @@ function ProposalPanel({
   const { open, closed } = splitProposals(proposals);
   return (
     <section className="card">
-      <h2>Proposals</h2>
+      <h2>推荐</h2>
       {open.length === 0 ? (
-        <p className="lede">No proposal is waiting on this post.</p>
+        <p className="lede">这个岗位还没有待决策的推荐。</p>
       ) : (
         <ul className="mt-2 space-y-3">
           {open.map((proposal) => (
             <li key={proposal.id} className="rounded border border-slate-200 p-3">
               <p className="text-sm font-medium text-slate-900">{proposalPerson(proposal)}</p>
               <p className="note">
-                proposed by {proposal.proposedBy} · {moment(proposal.proposedAt)}
+                推荐人 {proposal.proposedBy} · {moment(proposal.proposedAt)}
               </p>
               {proposal.snapshot ? (
                 <div className="mt-1 text-sm text-slate-700">
@@ -138,7 +142,7 @@ function ProposalPanel({
       )}
       {closed.length > 0 ? (
         <div className="mt-4">
-          <h3 className="text-sm font-semibold text-slate-900">History</h3>
+          <h3 className="text-sm font-semibold text-slate-900">历史</h3>
           <ul className="mt-1 space-y-1 text-sm text-slate-600">
             {closed.map((proposal) => (
               <li key={proposal.id}>
@@ -197,7 +201,12 @@ export default function PostScreen() {
   if (loadError) {
     return (
       <div>
-        <h1>Post {postId}</h1>
+        <div className="btn-row" style={{ marginBottom: 8 }}>
+          <Link className="btn btn-sm" to="/posts">
+            ← 返回岗位与缺口
+          </Link>
+        </div>
+        <h1>岗位 {postId}</h1>
         <p className="mt-4 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
           {loadError}
         </p>
@@ -208,14 +217,21 @@ export default function PostScreen() {
   if (!ready || !value) {
     return (
       <div>
-        <h1>Post {postId}</h1>
-        <p className="mt-2 text-sm text-slate-600">Reading the post…</p>
+        <div className="btn-row" style={{ marginBottom: 8 }}>
+          <Link className="btn btn-sm" to="/posts">
+            ← 返回岗位与缺口
+          </Link>
+        </div>
+        <h1>岗位 {postId}</h1>
+        <p className="mt-2 text-sm text-slate-600">正在读取岗位…</p>
       </div>
     );
   }
 
   const { post, gap, catalogs, proposals, viewer } = ready;
   const frozen = frozenFields(post) as FrozenField[];
+  // 只有岗位所属项目的项目经理能保存：协调员能读这一屏，但看到的是一张只读的岗位。
+  const canWrite = viewer.role === 'LEAD';
 
   const save = () => {
     setBusy(true);
@@ -266,12 +282,25 @@ export default function PostScreen() {
 
   return (
     <div>
+      <div className="btn-row" style={{ marginBottom: 8 }}>
+        <Link className="btn btn-sm" to="/posts">
+          ← 返回岗位与缺口
+        </Link>
+      </div>
       <h1>
-        Post {post.id} · {post.project}
+        岗位 {post.id} · {post.project}
       </h1>
       <p className="lede">
-        {post.role} · {post.status} · {post.startDate} to {post.endDate}
+        {post.role} · {post.status} · {post.startDate} 至 {post.endDate}
       </p>
+
+      {canWrite ? null : (
+        <div className="banner" style={{ marginBottom: 12 }}>
+          <div>
+            岗位由所属项目的项目经理维护，协调员只读：这里不能保存岗位要求，也不能取消岗位。要改，请用该项目的项目经理账号登录。
+          </div>
+        </div>
+      )}
 
       <PostForm
         value={value}
@@ -283,23 +312,24 @@ export default function PostScreen() {
         floor={headcountFloor(post)}
         busy={busy}
         error={error}
-        submitLabel="Save the post"
+        submitLabel="保存岗位"
+        readOnly={!canWrite}
         onChange={(patch) => setValue((current) => (current ? { ...current, ...patch } : current))}
         onSkills={(skills) => setValue((current) => (current ? { ...current, skills } : current))}
         onSubmit={save}
       />
 
-      {post.status === 'cancelled' ? null : (
+      {canWrite && post.status !== 'cancelled' ? (
         <button
           type="button"
           className="mt-4 rounded border border-red-300 px-3 py-1 text-sm text-red-700 disabled:text-red-300"
           disabled={busy || post.confirmed > 0}
-          title={post.confirmed > 0 ? 'release the confirmed people first' : undefined}
+          title={post.confirmed > 0 ? '请先解除已确认人员' : undefined}
           onClick={cancel}
         >
-          Cancel the post
+          取消岗位
         </button>
-      )}
+      ) : null}
 
       <ProposalPanel
         proposals={proposals}
@@ -308,7 +338,13 @@ export default function PostScreen() {
         onDecide={decide}
       />
 
-      <GapPanel post={post} gap={gap} busy={busy} onRelease={release} />
+      <GapPanel
+        post={post}
+        gap={gap}
+        busy={busy}
+        canRelease={canWrite}
+        onRelease={release}
+      />
     </div>
   );
 }

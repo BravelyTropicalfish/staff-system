@@ -79,9 +79,9 @@ Dates are `date` columns (no time). `headcount` is a positive integer. Everythin
 | `people-pool` | `GET/POST /api/roles`, `PATCH /api/roles/{id}`, `DELETE /api/roles/{id}`; `GET/POST /api/skills`, `PATCH /api/skills/{id}`, `DELETE /api/skills/{id}`; the two `DELETE` routes exist only to answer 409 "deactivated instead" (a catalog item is never deleted); `GET /api/people`, `GET /api/people/{employeeNo}` (read-only, coordinator only; person data arrives by import); `GET /api/bands` (the three scales — job levels, proficiencies, travel — so the post form never copies a vocabulary) |
 | `people-import` | `POST /api/imports` (multipart), `GET /api/imports`, `GET /api/imports/{id}` (batch + errors); the history answers counts only and leaves `errors` empty, so the error rows are read from the detail route — which is also the refusal-vs-rejection difference: a shape refusal answers 422 and records no batch, a bad-row file answers 201 with a `REJECTED` batch |
 | `allocation` | `GET/POST /api/projects`, `GET /api/projects/{id}` (the coordinator any project, a lead only its own — the project screen reads this), `POST /api/projects/{id}/end`; `POST /api/allocations`, `PATCH/DELETE /api/allocations/{id}`. `POST /api/projects` answers both roles: a lead creates a project whose lead is themselves, the coordinator creates one for any lead, and a lead naming another lead answers 403 |
-| `post-requirement` | `GET/POST /api/projects/{id}/posts`, `GET /api/posts/{id}` (the post's own lead or the coordinator), `PATCH /api/posts/{id}`, `POST /api/posts/{id}/cancel`, `GET /api/projects/{id}/gap` (each confirmed seat carries its assignment id, because a release names the assignment rather than the person) |
+| `post-requirement` | `GET/POST /api/projects/{id}/posts`, `GET /api/posts/{id}` (the post's own lead or the coordinator), `GET /api/posts` (every post the caller may read, with the project of each — the one gap board reads this), `GET /api/gap` (the same board's gap numbers, cancelled posts left out), `PATCH /api/posts/{id}`, `POST /api/posts/{id}/cancel`, `GET /api/projects/{id}/gap` (each confirmed seat carries its assignment id, because a release names the assignment rather than the person) |
 | `candidate-matching` | `GET /api/posts/{id}/candidates` (suitable, fallback, exclusions) |
-| `staffing-confirmation` | `GET /api/posts/{id}/recommendations` (the coordinator with each snapshot, the post's own lead without it), `POST /api/posts/{id}/recommendations`, `DELETE /api/recommendations/{id}`, `POST /api/recommendations/{id}/confirm`, `POST /api/recommendations/{id}/reject`, `POST /api/assignments/{id}/release`, `GET /api/notices`, `POST /api/notices/{id}/dismiss` |
+| `staffing-confirmation` | `GET /api/posts/{id}/recommendations` (the coordinator with each snapshot, the post's own lead without it), `GET /api/recommendations` (the decision inbox across projects: the coordinator reads every proposal with its snapshot, a lead only the proposals on the projects they own, without it), `POST /api/posts/{id}/recommendations`, `DELETE /api/recommendations/{id}`, `POST /api/recommendations/{id}/confirm`, `POST /api/recommendations/{id}/reject`, `POST /api/assignments/{id}/release`, `GET /api/notices`, `POST /api/notices/{id}/dismiss` |
 | auth | `POST /api/session`, `DELETE /api/session`, `GET /api/session` |
 
 Error shape: `{"code": "...", "message": "...", "details": [...]}` with codes the specs name
@@ -191,17 +191,31 @@ recorded in `docs/knowledge/architecture/adr-002-import-workbook.md`.
 
 ## 8. Front end
 
-Routes: `/login`, `/imports`, `/people`, `/people/:employeeNo`, `/projects`, `/projects/:projectId`,
-`/projects/:projectId/posts/new`, `/posts/:postId`, `/posts/:id/candidates`, `/catalogs`, `/notices`.
+Routes: `/login`, `/posts` (the board: three tiles, the projects, the posts and one post's detail),
+`/posts/:postId` (the edit form), `/posts/:id/candidates`, `/candidates` (the same search entered from
+the sidebar, with the still-short posts as chips), `/recommendations` (the decision inbox, with the
+coordinator's void notices inside it), `/projects/:projectId` (the end-of-project deep link),
+`/projects/:projectId/posts/new`, `/imports`, `/people`, `/people/:employeeNo`, `/catalogs`. `/` and
+`/projects` redirect to `/posts`; `/notices` stays reachable as the coordinator's plain list but is no
+longer a destination of its own.
 Signing in is `/login`: the requirement calls sign-in "a lightweight seeded account with a role", so
 the screen posts `POST /api/session` and goes to the shell — added after G2, because without it the
-only way in was posting that route by hand. The chrome is the prototype's, not a fresh design: a
-232px sidebar with the grouped links filtered by the role, a 56px top bar with the breadcrumb and the
-account, and a full-width view with no max-width, with the screens using the prototype's own class
-names (`.card`, `.kpi`, `.gate-grid`, `.grid-2`, `.grid-3`). `design.md` did not require that match
-when this section was written, which is how the drift happened; T32 closes it and every screen now
-lives inside the shell. The coordinator sees catalogs, import and the full pool; a lead sees
-only their own projects, the posts, the recommended candidates and the gap view. Hiding a control is convenience only — the server guard is the
+only way in was posting that route by hand. A screen reached without a session never draws its own
+chrome: the shell reads `GET /api/session`, and a refusal sends the browser to `/login`, which
+returns to that screen after a successful sign-in. The servlet session is one cookie for the whole
+browser, so every sign-in also issues a token that the tab keeps in `sessionStorage` and sends as
+`X-Session-Token`; the server answers a token-carrying request from the token alone and falls back
+to the cookie only when no token is present, which is what lets two tabs hold two accounts while the
+API clients and the test harness keep using the cookie. The chrome is the prototype's, not a fresh design: a
+232px sidebar with the prototype's three groups (project delivery, people, data) filtered by the role,
+a 56px top bar with the breadcrumb and the account, a full-width view with no max-width, and the
+screens using the prototype's own class names (`.card`, `.kpi`, `.gate-grid`, `.grid-2`, `.grid-3`,
+`.grid-kpi`, `.chips`, `.rec-grid`). The decisions link carries the count of proposals still waiting
+on the signed-in account, the way the prototype's sidebar does. `design.md` did not require that match
+when this section was written, which is how the drift happened; T32 closed the shell and T35 closed
+the information architecture. The coordinator sees catalogs, import, the search and the full pool; a
+lead sees the board and the recommendations, and only their own projects' rows in both. Hiding a
+control is convenience only — the server guard is the
 authority (`security-baseline` 1). Bands render as names; no numeric proficiency appears anywhere.
 
 ## 9. Tests and gates

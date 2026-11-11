@@ -148,7 +148,7 @@ class CatalogApiTest {
 
     ResponseEntity<Map> deleted = coordinator.delete("/api/skills/" + backend, Map.class);
     assertThat(deleted.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
-    assertThat(deleted.getBody()).containsEntry("code", "delete refused");
+    assertThat(deleted.getBody()).containsEntry("code", "referenced");
 
     ResponseEntity<Map> renamed =
         coordinator.patch("/api/skills/" + backend, Map.of("name", "后端"), Map.class);
@@ -172,29 +172,49 @@ class CatalogApiTest {
   }
 
   @Test
-  void aDeleteAlwaysOffersDeactivationInstead() {
-    long unreferenced = skillId("UI设计");
+  void anUnreferencedSkillIsDeleted() {
+    long ui = skillId("UI设计");
 
-    ResponseEntity<Map> deleted = coordinator.delete("/api/skills/" + unreferenced, Map.class);
+    ResponseEntity<Map> deleted = coordinator.delete("/api/skills/" + ui, Map.class);
 
-    assertThat(deleted.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
-    assertThat(deleted.getBody()).containsEntry("code", "delete refused");
-    assertThat((String) deleted.getBody().get("message")).contains("active flag");
+    assertThat(deleted.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat((String) deleted.getBody().get("name")).isEqualTo("UI设计");
+    assertThat(skills(false)).extracting(skill -> skill.get("name")).doesNotContain("UI设计");
   }
 
   @Test
-  void aRoleIsNeverDeletedEither() {
-    long qa = roleId("QA");
+  void aReferencedRoleIsNotDeletedAndAnUnreferencedOneIs() {
+    long dev = roleId("DEV");
+    personHolding("E100", dev, skillId("后端开发"));
     int before = count("SELECT COUNT(*) FROM role");
 
-    ResponseEntity<Map> deleted = coordinator.delete("/api/roles/" + qa, Map.class);
+    ResponseEntity<Map> refused = coordinator.delete("/api/roles/" + dev, Map.class);
     ResponseEntity<Map> byLead =
-        ApiSession.signIn(rest, "lead.one").delete("/api/roles/" + qa, Map.class);
+        ApiSession.signIn(rest, "lead.one").delete("/api/roles/" + dev, Map.class);
+    long sre = idOf(createRole("SRE"));
+    ResponseEntity<Map> deleted = coordinator.delete("/api/roles/" + sre, Map.class);
+
+    assertThat(refused.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+    assertThat(refused.getBody()).containsEntry("code", "referenced");
+    assertThat(byLead.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+    assertThat(deleted.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat((String) deleted.getBody().get("name")).isEqualTo("SRE");
+    assertThat(roles()).extracting(row -> row.get("name")).doesNotContain("SRE");
+    assertThat(count("SELECT COUNT(*) FROM role")).isEqualTo(before);
+  }
+
+  @Test
+  void aRoleThatHoldsSkillsIsNotDeleted() {
+    long sre = idOf(createRole("SRE"));
+    coordinator.post(
+        "/api/skills", Map.of("name", "站点可靠性", "roleDomainId", sre), Map.class);
+
+    ResponseEntity<Map> deleted = coordinator.delete("/api/roles/" + sre, Map.class);
 
     assertThat(deleted.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
-    assertThat(deleted.getBody()).containsEntry("code", "delete refused");
-    assertThat(byLead.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-    assertThat(count("SELECT COUNT(*) FROM role")).isEqualTo(before);
+    assertThat(deleted.getBody()).containsEntry("code", "referenced");
+    assertThat((String) deleted.getBody().get("message")).contains("是 1 个技能的技能域");
+    assertThat(roleNamed("SRE")).containsEntry("name", "SRE");
   }
 
   @Test

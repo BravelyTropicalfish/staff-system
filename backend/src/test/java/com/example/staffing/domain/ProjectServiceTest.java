@@ -1,5 +1,6 @@
 package com.example.staffing.domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -15,8 +16,8 @@ import org.springframework.security.access.AccessDeniedException;
 /**
  * The project form's own guards. The route rejects a blank name or a missing date before the service
  * runs, so these branches answer only a caller inside the application — the service still refuses
- * rather than storing a nameless or dateless project. T33 adds the ownership guard: a lead opens a
- * project of their own, so naming another lead is the coordinator's alone.
+ * rather than storing a nameless or dateless project. T37 tightens the ownership guard: only a lead
+ * opens a project, and only their own.
  */
 class ProjectServiceTest {
 
@@ -49,20 +50,20 @@ class ProjectServiceTest {
   @Test
   void aProjectNeedsAName() {
     assertRefused(
-        () -> service.create(null, "lead.one", START, END, COORDINATOR), "the project needs a name");
+        () -> service.create(null, "lead.one", START, END, LEAD_ONE), "项目必须填写名称");
     assertRefused(
-        () -> service.create("   ", "lead.one", START, END, COORDINATOR),
-        "the project needs a name");
+        () -> service.create("   ", "lead.one", START, END, LEAD_ONE),
+        "项目必须填写名称");
   }
 
   @Test
   void aProjectNeedsBothDates() {
     assertRefused(
-        () -> service.create("Atlas", "lead.one", null, END, COORDINATOR),
-        "the project needs a start and an end date");
+        () -> service.create("Atlas", "lead.one", null, END, LEAD_ONE),
+        "项目必须填写起止日期");
     assertRefused(
-        () -> service.create("Atlas", "lead.one", START, null, COORDINATOR),
-        "the project needs a start and an end date");
+        () -> service.create("Atlas", "lead.one", START, null, LEAD_ONE),
+        "项目必须填写起止日期");
   }
 
   @Test
@@ -70,14 +71,51 @@ class ProjectServiceTest {
     when(users.findByUsername("")).thenReturn(Optional.empty());
 
     assertRefused(
-        () -> service.create("Atlas", null, START, END, COORDINATOR), "lead null is not an account");
+        () -> service.create("Atlas", null, START, END, LEAD_ONE), "账号 null 不存在");
   }
 
   @Test
   void aLeadOpensAProjectOfTheirOwnOnly() {
     assertThatThrownBy(() -> service.create("Atlas", "lead.two", START, END, LEAD_ONE))
         .isInstanceOf(AccessDeniedException.class)
-        .hasMessage("a lead creates only a project of their own");
+        .hasMessage("项目经理只能为自己新建项目");
+  }
+
+  @Test
+  void theCoordinatorDoesNotOpenAProject() {
+    assertThatThrownBy(() -> service.create("Atlas", "lead.one", START, END, COORDINATOR))
+        .isInstanceOf(AccessDeniedException.class)
+        .hasMessage("只有项目经理可以新建项目");
+  }
+
+  @Test
+  void aLeadOpensAProjectOfTheirOwn() {
+    when(projects.insert("Atlas", 2L, START, END)).thenReturn(5L);
+    when(projects.findById(5L))
+        .thenReturn(
+            Optional.of(
+                new ProjectRepository.ProjectRow(
+                    5L, "Atlas", "lead.one", "Project lead one", "OPEN", START, END)));
+
+    ProjectView view = service.create("Atlas", "lead.one", START, END, LEAD_ONE);
+
+    assertThat(view.id()).isEqualTo(5L);
+    assertThat(view.name()).isEqualTo("Atlas");
+    assertThat(view.lead()).isEqualTo("lead.one");
+    assertThat(view.status()).isEqualTo("OPEN");
+  }
+
+  @Test
+  void aLeadNameThatIsNotALeadAccountIsRefused() {
+    when(users.findByUsername("coordinator"))
+        .thenReturn(
+            Optional.of(
+                new AppUserRepository.UserRow(
+                    1L, "coordinator", "hash", AuthenticatedUser.COORDINATOR, "Resource coordinator")));
+
+    assertRefused(
+        () -> service.create("Atlas", "coordinator", START, END, LEAD_ONE),
+        "账号 coordinator 不是项目经理账号");
   }
 
   private static void assertRefused(Runnable call, String message) {

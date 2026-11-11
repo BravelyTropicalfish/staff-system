@@ -30,6 +30,9 @@ public class MatchingService {
 
   private static final String X1 = "X1";
   private static final String X2 = "X2";
+
+  /** 跨角色人选实际跑过的门槛：硬门槛三条加 X1、X2；前端直接读，不自己拼。 */
+  private static final List<String> FALLBACK_GATES = List.of("G1", "G5", "G6", X1, X2);
   private static final int PRACTITIONER = Bands.rank(Bands.PROFICIENCIES, "Practitioner");
 
   /**
@@ -87,7 +90,7 @@ public class MatchingService {
     List<FallbackRow> fallback = new ArrayList<>();
     String fallbackReason = null;
     if (suitable.isEmpty()) {
-      fallbackReason = "no " + post.role() + " person passes the gates";
+      fallbackReason = post.role() + " 角色没有人通过门槛";
       List<SkillRepository.SkillRow> domain = skills.findByDomain(post.roleId());
       for (Candidate candidate : otherRoles(post, everyone, bands, occupancy)) {
         Qualifying qualifying = qualifying(candidate, domain);
@@ -109,7 +112,8 @@ public class MatchingService {
                 candidate.travel(),
                 bandsAbove(candidate, post),
                 qualifying.skill(),
-                qualifying.band()));
+                qualifying.band(),
+                FALLBACK_GATES));
       }
     }
     return new CandidateSearchView(
@@ -152,43 +156,40 @@ public class MatchingService {
       boolean domainEmpty,
       Qualifying qualifying) {
     if (!candidate.active()) {
-      return new Refusal("G1", "the person is not active");
+      return new Refusal("G1", "该人员已停用");
     }
     if (!Bands.meets(Bands.TRAVEL, candidate.travel(), post.travel())) {
       return new Refusal(
-          "G5",
-          "the travel willingness "
-              + candidate.travel()
-              + " is below the required "
-              + post.travel());
+          "G5", "差旅意愿 " + candidate.travel() + " 低于要求的 " + post.travel());
     }
     for (Candidate.Allocation allocation : candidate.allocations()) {
       if (Ranges.intersects(allocation.start(), allocation.end(), post.startDate(), post.endDate())) {
         return new Refusal(
             "G6",
-            "the allocation "
+            "已有占用 "
                 + allocation.start()
-                + " to "
+                + " 至 "
                 + allocation.end()
-                + " intersects the post's "
+                + "，与岗位的 "
                 + post.startDate()
-                + " to "
-                + post.endDate());
+                + " 至 "
+                + post.endDate()
+                + " 相交");
       }
     }
     if (bandsAbove(candidate, post) < 1) {
       return new Refusal(
           X1,
           Bands.rank(Bands.JOB_LEVELS, post.minJobLevel()) == Bands.JOB_LEVELS.size() - 1
-              ? "cross-role: no band sits above " + post.minJobLevel()
-              : "cross-role: level not above the requirement");
+              ? "跨角色：没有高于 " + post.minJobLevel() + " 的职级"
+              : "跨角色：职级没有高于要求");
     }
     if (qualifying == null) {
       return new Refusal(
           X2,
           domainEmpty
-              ? "cross-role: " + post.role() + " has no skill to qualify on"
-              : "cross-role: no domain skill at Practitioner");
+              ? "跨角色：" + post.role() + " 没有可用于达标的技能"
+              : "跨角色：技能域内没有达到 Practitioner 的技能");
     }
     return null;
   }

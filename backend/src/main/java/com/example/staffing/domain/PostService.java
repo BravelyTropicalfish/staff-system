@@ -59,12 +59,35 @@ public class PostService {
     return posts.findByProject(projectId).stream().map(this::view).toList();
   }
 
+  /**
+   * Every post the caller may read, for the one gap board: the coordinator reads every project's, a
+   * lead only the posts of the projects they own. The board shows the project of each row, so the
+   * screen does not have to walk the projects one request at a time.
+   */
+  @Transactional(readOnly = true)
+  public List<PostView> listAll(AuthenticatedUser actor) {
+    List<PostRepository.PostRow> rows =
+        actor.isCoordinator() ? posts.findAll() : posts.findByLead(actor.username());
+    return rows.stream().map(this::view).toList();
+  }
+
+  /** The gap numbers of every post the caller may read, cancelled posts left out. */
+  @Transactional(readOnly = true)
+  public List<PostGapView> gapAll(AuthenticatedUser actor) {
+    List<PostRepository.PostRow> rows =
+        actor.isCoordinator() ? posts.findAll() : posts.findByLead(actor.username());
+    return rows.stream()
+        .filter(row -> !PostStatus.CANCELLED.equals(row.status()))
+        .map(this::gapView)
+        .toList();
+  }
+
   /** One post for the screen that edits it: the coordinator reads any, a lead only its own. */
   @Transactional(readOnly = true)
   public PostView get(long postId, AuthenticatedUser actor) {
     PostRepository.PostRow row = find(postId);
     if (!actor.isCoordinator() && !row.projectLead().equals(actor.username())) {
-      throw new AccessDeniedException("this post is not yours");
+      throw new AccessDeniedException("这个岗位不属于你");
     }
     return view(row);
   }
@@ -83,10 +106,10 @@ public class PostService {
     ProjectRepository.ProjectRow project = visibleProject(projectId, actor);
     // visibleProject already answered a lead that does not own the project; only the role is left.
     if (actor.isCoordinator()) {
-      throw new AccessDeniedException("only the project's lead creates its posts");
+      throw new AccessDeniedException("只有项目的项目经理可以新增岗位");
     }
     if (!"OPEN".equals(project.status())) {
-      throw new ProjectException("project closed", "the project " + project.name() + " is closed");
+      throw new ProjectException("project closed", "项目 " + project.name() + " 已结束");
     }
     RoleRepository.RoleRow role = activeRole(draft.role());
     String level = jobLevel(draft.minJobLevel());
@@ -113,9 +136,9 @@ public class PostService {
   @Transactional
   public PostView update(long postId, PostDraft change, AuthenticatedUser actor) {
     PostRepository.PostRow current = find(postId);
-    requireOwningLead(current, actor, "changes");
+    requireOwningLead(current, actor, "修改");
     if (PostStatus.CANCELLED.equals(current.status())) {
-      throw new PostException(POST_CANCELLED, "the post is cancelled; nothing about it can change");
+      throw new PostException(POST_CANCELLED, "岗位已取消，不能再修改");
     }
 
     String title = change.title() == null ? current.title() : title(change.title());
@@ -142,20 +165,20 @@ public class PostService {
     if (current.confirmed() > 0 && !locked.isEmpty()) {
       throw new PostException(
           RELEASE_FIRST,
-          "release "
+          "请先解除 "
               + names(current)
-              + " first; "
+              + "；已有确认人员时，"
               + locked
-              + " cannot change while a person is confirmed");
+              + "不能修改");
     }
     if (headcount < current.confirmed()) {
       throw new PostException(
           RELEASE_FIRST,
-          "release "
+          "请先解除 "
               + names(current)
-              + " first; the headcount cannot fall below the "
+              + "；名额不能低于已确认的 "
               + current.confirmed()
-              + " confirmed");
+              + " 人");
     }
 
     boolean changed =
@@ -190,16 +213,16 @@ public class PostService {
   @Transactional
   public PostView cancel(long postId, AuthenticatedUser actor) {
     PostRepository.PostRow current = find(postId);
-    requireOwningLead(current, actor, "cancels");
+    requireOwningLead(current, actor, "取消");
     if (current.confirmed() > 0) {
       throw new PostException(
           RELEASE_FIRST,
-          "release "
+          "请先解除 "
               + names(current)
-              + " first; a post with a confirmed person cannot be cancelled");
+              + "；已有确认人员的岗位不能取消");
     }
     if (posts.cancel(postId) == 0) {
-      throw new PostException(POST_CANCELLED, "the post is cancelled already");
+      throw new PostException(POST_CANCELLED, "岗位已经取消");
     }
     voidPending(postId, POST_CANCELLED);
     return view(find(postId));
@@ -217,24 +240,24 @@ public class PostService {
       List<PostRepository.SkillRow> after) {
     List<String> locked = new java.util.ArrayList<>();
     if (roleChanged) {
-      locked.add("the role");
+      locked.add("角色");
     }
     if (!level.equals(current.minJobLevel())) {
-      locked.add("the required job level");
+      locked.add("最低职级");
     }
     if (!required(before).equals(required(after))) {
-      locked.add("a required skill row");
+      locked.add("必备技能行");
     }
     if (!start.equals(current.startDate())) {
-      locked.add("the start date");
+      locked.add("开始日期");
     }
     if (!end.equals(current.endDate())) {
-      locked.add("the end date");
+      locked.add("结束日期");
     }
     if (!travel.equals(current.travel())) {
-      locked.add("the travel requirement");
+      locked.add("差旅要求");
     }
-    return String.join(", ", locked);
+    return String.join("、", locked);
   }
 
   /** The rows that gate eligibility; a bonus row is informational and never part of the lock. */
@@ -252,24 +275,24 @@ public class PostService {
   }
 
   private PostRepository.PostRow find(long postId) {
-    return posts.findById(postId).orElseThrow(() -> new NoSuchElementException("No post " + postId));
+    return posts.findById(postId).orElseThrow(() -> new NoSuchElementException("没有岗位 " + postId));
   }
 
   private ProjectRepository.ProjectRow visibleProject(long projectId, AuthenticatedUser actor) {
     ProjectRepository.ProjectRow project =
         projects
             .findById(projectId)
-            .orElseThrow(() -> new NoSuchElementException("No project " + projectId));
+            .orElseThrow(() -> new NoSuchElementException("没有项目 " + projectId));
     if (!actor.isCoordinator() && !project.lead().equals(actor.username())) {
-      throw new AccessDeniedException("this project is not yours");
+      throw new AccessDeniedException("这个项目不属于你");
     }
     return project;
   }
 
   private static void requireOwningLead(
-      PostRepository.PostRow post, AuthenticatedUser actor, String verb) {
+      PostRepository.PostRow post, AuthenticatedUser actor, String action) {
     if (actor.isCoordinator() || !post.projectLead().equals(actor.username())) {
-      throw new AccessDeniedException("only the project's lead " + verb + " its posts");
+      throw new AccessDeniedException("只有项目的项目经理可以" + action + "本项目岗位");
     }
   }
 
@@ -282,9 +305,9 @@ public class PostService {
   private RoleRepository.RoleRow activeRole(String roleName) {
     String clean = roleName == null ? "" : roleName.trim();
     RoleRepository.RoleRow role =
-        roles.findByName(clean).orElseThrow(() -> invalid("role " + clean + " is not in the catalog"));
+        roles.findByName(clean).orElseThrow(() -> invalid("角色 " + clean + " 不在目录中"));
     if (!role.active()) {
-      throw invalid("role " + clean + " is deactivated");
+      throw invalid("角色 " + clean + " 已停用");
     }
     return role;
   }
@@ -299,12 +322,12 @@ public class PostService {
       SkillRepository.SkillRow skill =
           skills
               .findByName(name)
-              .orElseThrow(() -> invalid("skill " + name + " is not in the catalog"));
+              .orElseThrow(() -> invalid("技能 " + name + " 不在目录中"));
       PostRepository.SkillRow row =
           new PostRepository.SkillRow(
               skill.id(), skill.name(), kind(draft.kind()), band(draft.band()));
       if (rows.put(skill.id(), row) != null) {
-        throw invalid("skill " + name + " appears twice");
+        throw invalid("技能 " + name + " 重复出现");
       }
     }
     return List.copyOf(rows.values());
@@ -318,13 +341,13 @@ public class PostService {
     if ("bonus".equalsIgnoreCase(clean)) {
       return "BONUS";
     }
-    throw invalid("a skill row is required or bonus, not " + value);
+    throw invalid("技能类型只能是 required 或 bonus，不是 " + value);
   }
 
   private static String band(String value) {
     String clean = value == null ? "" : value.trim();
     if (!Bands.PROFICIENCIES.contains(clean)) {
-      throw invalid(clean + " is not one of the five proficiency bands");
+      throw invalid(clean + " 不是五个熟练度档位之一");
     }
     return clean;
   }
@@ -332,7 +355,7 @@ public class PostService {
   private static String jobLevel(String value) {
     String clean = value == null ? "" : value.trim();
     if (!Bands.JOB_LEVELS.contains(clean)) {
-      throw invalid(clean + " is not one of the four job level bands");
+      throw invalid(clean + " 不是四个职级之一");
     }
     return clean;
   }
@@ -340,31 +363,31 @@ public class PostService {
   private static String travel(String value) {
     String clean = value == null ? "" : value.trim();
     if (!Bands.TRAVEL.contains(clean)) {
-      throw invalid(clean + " is not one of the three travel bands");
+      throw invalid(clean + " 不是三个差旅档位之一");
     }
     return clean;
   }
 
   private static int headcount(BigDecimal value) {
     if (value == null) {
-      throw invalid("the post needs a headcount");
+      throw invalid("岗位必须填写名额");
     }
     if (value.stripTrailingZeros().scale() > 0 || value.compareTo(BigDecimal.ONE) < 0) {
-      throw invalid("headcount must be a whole number of at least 1");
+      throw invalid("名额必须是至少为 1 的整数");
     }
     try {
       return value.intValueExact();
     } catch (ArithmeticException tooLarge) {
-      throw invalid("headcount is too large");
+      throw invalid("名额过大");
     }
   }
 
   private static void requireRange(LocalDate start, LocalDate end) {
     if (start == null || end == null) {
-      throw invalid("the post needs a start and an end date");
+      throw invalid("岗位必须填写起止日期");
     }
     if (end.isBefore(start)) {
-      throw invalid("the end date cannot precede the start date");
+      throw invalid("结束日期不能早于开始日期");
     }
   }
 

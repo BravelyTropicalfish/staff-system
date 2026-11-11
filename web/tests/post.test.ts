@@ -73,12 +73,12 @@ test('the gap numbers are the three the server sent, never recomputed', () => {
 });
 
 test('one sentence per gap row says how many are chosen and what is still needed', () => {
-  assert.equal(gapLabel(gap()), '1 of 2 chosen · 1 still needed');
-  assert.equal(gapLabel(gap({ confirmed: 2, remaining: 0 })), '2 of 2 chosen · filled');
-  assert.equal(gapLabel(gap({ confirmed: 0, remaining: 2 })), '0 of 2 chosen · 2 still needed');
+  assert.equal(gapLabel(gap()), '1 / 2 已到位 · 还缺 1 人');
+  assert.equal(gapLabel(gap({ confirmed: 2, remaining: 0 })), '2 / 2 已到位 · 已满');
+  assert.equal(gapLabel(gap({ confirmed: 0, remaining: 2 })), '0 / 2 已到位 · 还缺 2 人');
   assert.equal(
     gapLabel(gap({ headcount: 1, confirmed: 0, remaining: 1 })),
-    '0 of 1 chosen · 1 still needed',
+    '0 / 1 已到位 · 还缺 1 人',
     'the singular and the plural read the same way',
   );
 });
@@ -96,10 +96,9 @@ test('a confirmation freezes the six gate-bearing fields and says why', () => {
   assert.equal(frozenReason({ confirmed: 0 }), null);
   assert.equal(
     frozenReason({ confirmed: 1 }),
-    'release the confirmed person first; the role, the job level, a required skill row, the ' +
-      'dates and the travel cannot change while a person is confirmed',
+    '先解除已确认的 1 人；在有人确认期间，角色、职级、required 技能行、日期与差旅不可修改',
   );
-  assert.match(frozenReason({ confirmed: 3 }) ?? '', /^release the 3 confirmed people first;/);
+  assert.match(frozenReason({ confirmed: 3 }) ?? '', /^先解除已确认的 3 人；/);
 });
 
 test('the headcount may rise under a confirmation but never fall below it', () => {
@@ -123,8 +122,11 @@ test('the still-short posts are the ones the server marked, in its order', () =>
 });
 
 test('a seat names the person, the day and the deactivation when the import has one', () => {
-  assert.equal(seatLabel(ada), 'Ada (E100) · confirmed 2027-05-01');
-  assert.equal(seatLabel({ ...ada, active: false }), 'Ada (E100) · confirmed 2027-05-01 · inactive');
+  assert.equal(seatLabel(ada), 'Ada（E100）· 确认于 2027-05-01');
+  assert.equal(
+    seatLabel({ ...ada, active: false }),
+    'Ada（E100）· 确认于 2027-05-01 · 已停用',
+  );
 });
 
 test('the form starts from the stored post and posts back the same body', () => {

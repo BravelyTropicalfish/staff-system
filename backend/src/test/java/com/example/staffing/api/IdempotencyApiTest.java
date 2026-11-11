@@ -64,8 +64,7 @@ class IdempotencyApiTest {
     givenBand("E100", "测试", "Novice");
     byte[] file =
         WorkbookFixture.workbook()
-            .person(person("E100", "DEV", "Senior", "full", "active"))
-            .skill("E100", "测试", "Expert")
+            .person(person("E100", "DEV", "Senior", "full", "active", "测试:Expert"))
             .xlsx();
 
     ResponseEntity<Map> first = upload(file);
@@ -238,9 +237,14 @@ class IdempotencyApiTest {
 
   private static String[] person(
       String employeeNo, String role, String level, String travel, String active) {
+    return person(employeeNo, role, level, travel, active, "");
+  }
+
+  private static String[] person(
+      String employeeNo, String role, String level, String travel, String active, String skills) {
     return new String[] {
       employeeNo, employeeNo, employeeNo.toLowerCase() + "@example.com", role, level, travel,
-      active
+      active, skills
     };
   }
 

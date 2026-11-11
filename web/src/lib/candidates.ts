@@ -29,7 +29,7 @@ export type ExclusionRow = {
   reason: string;
 };
 
-/** A cross-role person: the role, the bands above the requirement and the qualifying skill. */
+/** A cross-role person: the role, the bands above, the qualifying skill, and the gates that ran. */
 export type FallbackRow = {
   employeeNo: string;
   name: string;
@@ -39,6 +39,7 @@ export type FallbackRow = {
   bandsAbove: number;
   skill: string;
   band: string;
+  gates: string[];
 };
 
 export type CandidateSearch = {
@@ -54,14 +55,14 @@ export const GATE_ORDER = ['G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'X1', 'X2'] as co
 export type GateCode = (typeof GATE_ORDER)[number];
 
 const GATE_NAMES: Record<GateCode, string> = {
-  G1: 'active',
-  G2: 'role',
-  G3: 'job level',
-  G4: 'required skills',
-  G5: 'travel',
-  G6: 'dates',
-  X1: 'one band above',
-  X2: 'domain skill',
+  G1: '在职',
+  G2: '角色',
+  G3: '职级',
+  G4: '必备技能',
+  G5: '差旅',
+  G6: '占用',
+  X1: '高一档',
+  X2: '技能域',
 };
 
 export type GateChip = { code: GateCode; name: string; count: number };
@@ -88,16 +89,16 @@ export function crossRole(search: CandidateSearch): CrossRole {
   return { shown: true, rows: search.fallback, reason: search.fallbackReason };
 }
 
-/** A band is named, never numbered; a bonus row also names the target it misses. */
+/** 档位只以名字出现，从不用序号；bonus 行还会点名它差的目标档。 */
 export function skillLabel(skill: CandidateSkill): string {
-  const held = skill.band ?? 'not held';
+  const held = skill.band ?? '未持有';
   if (skill.kind === 'bonus' && skill.target) {
-    return `${skill.skill} · ${held} (needs ${skill.target})`;
+    return `${skill.skill} · ${held}（要求 ${skill.target}）`;
   }
   return `${skill.skill} · ${held}`;
 }
 
-/** How far above the post's minimum a cross-role person sits. */
+/** 跟角色人选比岗位最低要求高出几档。 */
 export function bandsAboveLabel(bandsAbove: number): string {
-  return bandsAbove === 1 ? '+1 band' : `+${bandsAbove} bands`;
+  return `+${bandsAbove} 档`;
 }

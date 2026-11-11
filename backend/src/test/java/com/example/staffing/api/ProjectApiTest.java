@@ -55,18 +55,7 @@ class ProjectApiTest {
         lead.post("/api/projects", project("Borealis", "lead.two"), Map.class);
 
     assertThat(own.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-    assertThat(body(own)).containsEntry("lead", "lead.one").containsEntry("status", "OPEN");
-    assertThat(forAnotherLead.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-    assertThat(body(forAnotherLead)).containsEntry("code", "forbidden");
-    assertThat(count("SELECT COUNT(*) FROM project")).isEqualTo(1);
-  }
-
-  @Test
-  void theCoordinatorCreatesAnOpenProject() {
-    ResponseEntity<Map> response = coordinator.post("/api/projects", project("Atlas", "lead.one"), Map.class);
-
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-    assertThat(body(response))
+    assertThat(body(own))
         .containsEntry("name", "Atlas")
         .containsEntry("lead", "lead.one")
         .containsEntry("leadName", "Project lead one")
@@ -75,6 +64,18 @@ class ProjectApiTest {
         .containsEntry("endDate", "2027-12-31");
     assertThat(jdbc.queryForObject("SELECT status FROM project WHERE name = 'Atlas'", String.class))
         .isEqualTo("OPEN");
+    assertThat(forAnotherLead.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+    assertThat(body(forAnotherLead)).containsEntry("code", "forbidden");
+    assertThat(count("SELECT COUNT(*) FROM project")).isEqualTo(1);
+  }
+
+  @Test
+  void theCoordinatorCannotCreateAProject() {
+    ResponseEntity<Map> response = coordinator.post("/api/projects", project("Atlas", "lead.one"), Map.class);
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+    assertThat(body(response)).containsEntry("code", "forbidden");
+    assertThat(count("SELECT COUNT(*) FROM project")).isZero();
   }
 
   @Test
@@ -83,24 +84,24 @@ class ProjectApiTest {
     body.put("startDate", "2027-06-01");
     body.put("endDate", "2027-03-31");
 
-    ResponseEntity<Map> response = coordinator.post("/api/projects", body, Map.class);
+    ResponseEntity<Map> response =
+        ApiSession.signIn(rest, "lead.one").post("/api/projects", body, Map.class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
     assertThat(body(response))
         .containsEntry("code", "invalid project")
-        .containsEntry("message", "the end date cannot precede the start date");
+        .containsEntry("message", "结束日期不能早于开始日期");
     assertThat(count("SELECT COUNT(*) FROM project")).isZero();
   }
 
   @Test
   void aProjectWhoseLeadIsNotALeadAccountIsRefused() {
-    ResponseEntity<Map> unknown = coordinator.post("/api/projects", project("Atlas", "nobody"), Map.class);
-    ResponseEntity<Map> wrongRole =
-        coordinator.post("/api/projects", project("Borealis", "coordinator"), Map.class);
+    ApiSession lead = ApiSession.signIn(rest, "lead.one");
+
+    ResponseEntity<Map> unknown = lead.post("/api/projects", project("Atlas", "nobody"), Map.class);
 
     assertThat(unknown.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
-    assertThat(wrongRole.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
-    assertThat(body(wrongRole).get("message").toString()).contains("not a lead account");
+    assertThat(body(unknown).get("message").toString()).contains("账号 nobody 不存在");
     assertThat(count("SELECT COUNT(*) FROM project")).isZero();
   }
 

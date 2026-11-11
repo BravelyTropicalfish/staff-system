@@ -139,8 +139,7 @@ class ConfirmationApiTest {
               assertThat(row).containsEntry("employeeNo", "E100").containsEntry("gate", "G6");
               assertThat((String) row.get("reason"))
                   .isEqualTo(
-                      "the allocation 2027-05-01 to 2027-07-31 intersects the post's"
-                          + " 2027-06-01 to 2027-08-31");
+                      "已有占用 2027-05-01 至 2027-07-31，与岗位的 2027-06-01 至 2027-08-31 相交");
             });
 
     long later = qaPost(CETUS, 1, "2027-09-01", "2027-10-31");
@@ -196,7 +195,7 @@ class ConfirmationApiTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
     assertThat(body(response))
         .containsEntry("code", "G1")
-        .containsEntry("message", "the person is not active");
+        .containsEntry("message", "该人员已停用");
     assertThat(stateOf(proposal)).isEqualTo("proposed");
     assertThat(count("SELECT COUNT(*) FROM assignment")).isZero();
   }
@@ -221,8 +220,7 @@ class ConfirmationApiTest {
         .containsEntry("code", "person taken")
         .containsEntry(
             "message",
-            "the allocation 2027-04-01 to 2027-06-01 intersects the post's"
-                + " 2027-05-01 to 2027-07-31");
+            "已有占用 2027-04-01 至 2027-06-01，与岗位的 2027-05-01 至 2027-07-31 相交");
     assertThat(stateOf(proposal)).isEqualTo("proposed");
     assertThat(count("SELECT COUNT(*) FROM assignment")).isZero();
   }
@@ -380,7 +378,7 @@ class ConfirmationApiTest {
     assertThat(refused.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
     assertThat(body(refused))
         .containsEntry("code", "post filled")
-        .containsEntry("message", "the post is filled; there is no remaining slot to confirm");
+        .containsEntry("message", "岗位已满，没有可确认的名额");
     assertThat(stateOf(second)).isEqualTo("proposed");
     assertThat(count("SELECT COUNT(*) FROM assignment")).isEqualTo(1);
   }

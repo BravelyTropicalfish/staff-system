@@ -12,7 +12,8 @@ import org.springframework.stereotype.Service;
 /**
  * The catalogs. A name is free to change until a person or a post points at the item; after that
  * only the `active` flag may move, because deactivating hides an item from new work without
- * rewriting what already refers to it. Nothing here deletes: the catalog is history.
+ * rewriting what already refers to it. An item nobody points at may be deleted; a referenced one
+ * is refused with `referenced`, since deleting it would strand the work that names it.
  */
 @Service
 public class CatalogService {
@@ -56,7 +57,7 @@ public class CatalogService {
   public RoleView createRole(String name) {
     String clean = requireName(name, ROLE_NAME_MAX, "role");
     if (roles.existsByName(clean)) {
-      throw new CatalogException("duplicate name", "A role named " + clean + " already exists.");
+      throw new CatalogException("duplicate name", "角色 " + clean + " 已存在。");
     }
     return role(roles.insert(clean));
   }
@@ -68,12 +69,11 @@ public class CatalogService {
     if (roles.countReferences(id) > 0) {
       throw new CatalogException(
           "referenced",
-          "Role " + role.name() + " is used by people or posts; deactivate it instead of renaming"
-              + " it.");
+          "角色 " + role.name() + " 已被人员或岗位使用；请改为停用，而不是重命名。");
     }
     if (!role.name().equals(clean)) {
       if (roles.existsByName(clean)) {
-        throw new CatalogException("duplicate name", "A role named " + clean + " already exists.");
+        throw new CatalogException("duplicate name", "角色 " + clean + " 已存在。");
       }
       roles.rename(id, clean);
     }
@@ -86,10 +86,22 @@ public class CatalogService {
     return role(id);
   }
 
-  /** Never deletes: an unknown id is a 404, a known one the refusal the route throws. */
-  public CatalogException refuseRoleDelete(long id) {
-    roles.findById(id).orElseThrow(() -> missing("role"));
-    return deleteRefused();
+  /** An unreferenced role is deleted; a referenced one, or one that holds skills, is refused. */
+  public RoleView deleteRole(long id) {
+    RoleView view = role(id);
+    if (roles.countReferences(id) > 0) {
+      throw new CatalogException(
+          "referenced",
+          "角色 " + view.name() + " 已被人员或岗位使用；请改为停用，而不是删除。");
+    }
+    long domainSkills = skills.findAll().stream().filter(skill -> skill.roleDomainId() == id).count();
+    if (domainSkills > 0) {
+      throw new CatalogException(
+          "referenced",
+          "角色 " + view.name() + " 是 " + domainSkills + " 个技能的技能域；请先移走或删除这些技能。");
+    }
+    roles.delete(id);
+    return view;
   }
 
   /** A partial edit: a null field is left as it is. A refused rename leaves the flag untouched. */
@@ -108,7 +120,7 @@ public class CatalogService {
     String clean = requireName(name, SKILL_NAME_MAX, "skill");
     roles.findById(roleDomainId).orElseThrow(() -> unknownDomain(roleDomainId));
     if (skills.existsByName(clean)) {
-      throw new CatalogException("duplicate name", "A skill named " + clean + " already exists.");
+      throw new CatalogException("duplicate name", "技能 " + clean + " 已存在。");
     }
     return skill(skills.insert(clean, roleDomainId));
   }
@@ -120,12 +132,11 @@ public class CatalogService {
     if (skills.countReferences(id) > 0) {
       throw new CatalogException(
           "referenced",
-          "Skill " + skill.name() + " is used by people or posts; deactivate it instead of renaming"
-              + " it.");
+          "技能 " + skill.name() + " 已被人员或岗位使用；请改为停用，而不是重命名。");
     }
     if (!skill.name().equals(clean)) {
       if (skills.existsByName(clean)) {
-        throw new CatalogException("duplicate name", "A skill named " + clean + " already exists.");
+        throw new CatalogException("duplicate name", "技能 " + clean + " 已存在。");
       }
       skills.rename(id, clean);
     }
@@ -146,10 +157,16 @@ public class CatalogService {
     return skill(id);
   }
 
-  /** Never deletes: an unknown id is a 404, a known one the refusal the route throws. */
-  public CatalogException refuseSkillDelete(long id) {
-    skills.findById(id).orElseThrow(() -> missing("skill"));
-    return deleteRefused();
+  /** An unreferenced skill is deleted; a referenced one is refused with `referenced`. */
+  public SkillView deleteSkill(long id) {
+    SkillView view = skill(id);
+    if (skills.countReferences(id) > 0) {
+      throw new CatalogException(
+          "referenced",
+          "技能 " + view.name() + " 已被人员或岗位使用；请改为停用，而不是删除。");
+    }
+    skills.delete(id);
+    return view;
   }
 
   /** A partial edit: a null field is left as it is, including the domain. */
@@ -190,22 +207,21 @@ public class CatalogService {
     String clean = raw == null ? "" : raw.trim();
     if (clean.isEmpty() || clean.length() > max) {
       throw new CatalogException(
-          "invalid name", "A " + kind + " name must be 1 to " + max + " characters.");
+          "invalid name", kindWord(kind) + "名称必须为 1 到 " + max + " 个字符。");
     }
     return clean;
   }
 
   private static CatalogException missing(String kind) {
-    return new CatalogException("not found", "No such " + kind + ".");
+    return new CatalogException("not found", "找不到该" + kindWord(kind) + "。");
   }
 
   private static CatalogException unknownDomain(long roleDomainId) {
     return new CatalogException(
-        "invalid role domain", "No role " + roleDomainId + " can hold this skill.");
+        "invalid role domain", "没有角色 " + roleDomainId + " 可以承载这个技能。");
   }
 
-  private static CatalogException deleteRefused() {
-    return new CatalogException(
-        "delete refused", "Catalog items are deactivated, never deleted; use the active flag.");
+  private static String kindWord(String kind) {
+    return "role".equals(kind) ? "角色" : "技能";
   }
 }

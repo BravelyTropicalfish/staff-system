@@ -47,25 +47,28 @@ class ImportApiTest {
   }
 
   @Test
-  void aSkillsOnlyRefreshIsAcceptedAndCreatesNoPerson() {
+  void theSkillsCellIsWrittenWithItsPerson() {
     givenPerson("E100", "DEV", "Senior", "limited", true);
     givenBand("E100", "测试", "Novice");
 
     ResponseEntity<Map> response =
-        upload(WorkbookFixture.workbook().skill("E100", "测试", "Expert").xlsx());
+        upload(
+            WorkbookFixture.workbook()
+                .person("E100", "E100", "", "DEV", "Senior", "limited", "active", "测试:Expert")
+                .xlsx());
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     assertThat(body(response))
         .containsEntry("status", "APPLIED")
-        .containsEntry("personRows", 0)
+        .containsEntry("personRows", 1)
         .containsEntry("skillRows", 1);
     assertThat(band("E100", "测试")).isEqualTo("Expert");
     assertThat(peopleCount()).isEqualTo(1);
   }
 
   @Test
-  void aWorkbookWithOneSheetIsRefusedAndLeavesNoBatch() {
-    byte[] file = WorkbookFixture.workbook().person(person("E200", "DEV")).onlyPeopleSheet().xlsx();
+  void aWorkbookWithoutThePeopleSheetIsRefusedAndLeavesNoBatch() {
+    byte[] file = WorkbookFixture.workbook().noPeopleSheet().xlsx();
 
     ResponseEntity<Map> response = upload(file);
 
@@ -79,7 +82,7 @@ class ImportApiTest {
     ResponseEntity<Map> response = upload(WorkbookFixture.workbook().xlsx());
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
-    assertThat(body(response).get("message").toString()).contains("empty");
+    assertThat(body(response).get("message").toString()).contains("空的");
     assertThat(history()).isEmpty();
   }
 
@@ -87,24 +90,23 @@ class ImportApiTest {
   void oneBadRowBlocksTheWholeFile() {
     byte[] file =
         WorkbookFixture.workbook()
-            .person(person("E201", "DEV"))
+            .person(person("E201", "DEV", "Kotlin:Novice"))
             .person(person("E202", "DEV"))
             .person(person("E203", "DEV"))
             .person(person("E204", "DEV"))
             .person("E205", "E205", "", "DEV", "Mid", "full", "active")
-            .skill("E201", "Kotlin", "Novice")
             .xlsx();
 
     ResponseEntity<Map> response = upload(file);
 
     assertThat(body(response))
         .containsEntry("status", "REJECTED")
-        .containsEntry("personRows", 5)
-        .containsEntry("skillRows", 1)
+        .containsEntry("personRows", 3)
+        .containsEntry("skillRows", 0)
         .containsEntry("errorCount", 2);
     assertThat(errorsOf(response))
         .extracting(error -> error.get("sheet") + "!" + error.get("rowNo"))
-        .containsExactly("people!6", "skills!2");
+        .containsExactly("people!2", "people!6");
     assertThat(peopleCount()).isZero();
   }
 
@@ -140,7 +142,7 @@ class ImportApiTest {
         .containsEntry("filename", "people.xlsx")
         .containsEntry("uploader", "Resource coordinator")
         .containsEntry("status", "REJECTED")
-        .containsEntry("personRows", 1)
+        .containsEntry("personRows", 0)
         .containsEntry("skillRows", 0)
         .containsEntry("errorCount", 1);
     assertThat(batch.get("uploadedAt")).isNotNull();
@@ -162,8 +164,7 @@ class ImportApiTest {
     ResponseEntity<Map> response =
         upload(
             WorkbookFixture.workbook()
-                .person("E200", "E200", "", "dev", "senior", "FULL", "Active")
-                .skill("E200", "测试", "practitioner")
+                .person("E200", "E200", "", "dev", "senior", "FULL", "Active", "测试:practitioner")
                 .xlsx());
 
     assertThat(body(response)).containsEntry("status", "APPLIED");
@@ -186,7 +187,7 @@ class ImportApiTest {
     assertThat(errorsOf(response))
         .singleElement()
         .satisfies(
-            error -> assertThat(error.get("message").toString()).contains("BA, DEV, PM, QA, UX"));
+            error -> assertThat(error.get("message").toString()).contains("BA、DEV、PM、QA、UX"));
   }
 
   @Test
@@ -204,38 +205,29 @@ class ImportApiTest {
         .allSatisfy(
             error ->
                 assertThat(error.get("message").toString())
-                    .contains("exactly one active catalog role"));
+                    .contains("必须是目录中启用的一个角色"));
     assertThat(peopleCount()).isZero();
   }
 
   @Test
-  void aDuplicatedSkillRowPutsBothRowsInTheHistory() {
+  void theSameSkillTwiceInOneCellBlocksTheFile() {
     givenPerson("E100", "QA", "Senior", "none", true);
 
     ResponseEntity<Map> response =
         upload(
             WorkbookFixture.workbook()
-                .skill("E100", "测试", "Novice")
-                .skill("E100", "测试", "Expert")
+                .person("E100", "E100", "", "QA", "Senior", "none", "active", "测试:Novice;测试:Expert")
                 .xlsx());
-
-    assertThat(body(response)).containsEntry("status", "REJECTED");
-    assertThat(errorsOf(response))
-        .extracting(error -> error.get("rowNo"))
-        .containsExactly(2, 3);
-    assertThat(band("E100", "测试")).isNull();
-  }
-
-  @Test
-  void anOrphanSkillRowSaysPersonNotFound() {
-    ResponseEntity<Map> response =
-        upload(WorkbookFixture.workbook().skill("E999", "测试", "Novice").xlsx());
 
     assertThat(body(response)).containsEntry("status", "REJECTED");
     assertThat(errorsOf(response))
         .singleElement()
         .satisfies(
-            error -> assertThat(error.get("message")).isEqualTo("person not found"));
+            error -> {
+              assertThat(error.get("rowNo")).isEqualTo(2);
+              assertThat(error.get("message").toString()).contains("出现两次");
+            });
+    assertThat(band("E100", "测试")).isNull();
   }
 
   @Test
@@ -358,15 +350,14 @@ class ImportApiTest {
     ResponseEntity<Map> response =
         upload(
             WorkbookFixture.workbook()
-                .person(person("E200", "QA"))
-                .skill("E200", "测试", "Novice")
+                .person(person("E200", "QA", "测试:Novice"))
                 .xlsx());
 
     assertThat(body(response)).containsEntry("status", "REJECTED").containsEntry("errorCount", 2);
     assertThat(errorsOf(response))
         .extracting(error -> error.get("message").toString())
-        .anySatisfy(message -> assertThat(message).contains("role QA must be exactly one active catalog role"))
-        .anySatisfy(message -> assertThat(message).contains("skill 测试 is not in the active catalog"));
+        .anySatisfy(message -> assertThat(message).contains("角色 QA 必须是目录中启用的一个角色"))
+        .anySatisfy(message -> assertThat(message).contains("技能 测试 不在启用的目录中"));
     assertThat(peopleCount()).isZero();
   }
 
@@ -442,9 +433,13 @@ class ImportApiTest {
   }
 
   private static String[] person(String employeeNo, String role) {
+    return person(employeeNo, role, "");
+  }
+
+  private static String[] person(String employeeNo, String role, String skills) {
     return new String[] {
       employeeNo, employeeNo, employeeNo.toLowerCase() + "@example.com", role, "Senior", "full",
-      "active"
+      "active", skills
     };
   }
 

@@ -20,15 +20,20 @@ public record RecommendationView(
 
   /** The stored row and its snapshot, read back together; one mapping for every route that answers one. */
   public static RecommendationView of(RecommendationRepository.Row row, ObjectMapper json) {
+    return new RecommendationView(
+        row.id(),
+        row.postId(),
+        row.personNo(),
+        row.state(),
+        snapshotOf(row.snapshotJson(), json),
+        row.proposedBy(),
+        row.proposedAt().toString());
+  }
+
+  /** The reason snapshot exactly as it was stored, for the routes that answer it on its own. */
+  public static RecommendationSnapshot snapshotOf(String snapshotJson, ObjectMapper json) {
     try {
-      return new RecommendationView(
-          row.id(),
-          row.postId(),
-          row.personNo(),
-          row.state(),
-          json.readValue(row.snapshotJson(), RecommendationSnapshot.class),
-          row.proposedBy(),
-          row.proposedAt().toString());
+      return json.readValue(snapshotJson, RecommendationSnapshot.class);
     } catch (JsonProcessingException broken) {
       throw new IllegalStateException("the stored reason snapshot is unreadable", broken);
     }

@@ -44,27 +44,26 @@ export type PersonProfile = {
   allocations: PersonAllocation[];
 };
 
-/** The import's active flag, said in a word. */
+/** 导入的在职标记，说成一个词。 */
 export function stateLabel(person: Pick<PersonSummary, 'active'>): string {
-  return person.active ? 'active' : 'inactive';
+  return person.active ? '在职' : '已停用';
 }
 
 /**
- * The line above a profile: where the data comes from, with the deactivation the import set when
- * there is one. Nothing on this screen writes, because nothing here has a route to write to.
+ * 档案上方那句话：数据从哪来，以及导入是否把它标为停用。本页没有任何写入口，因为服务端也没有。
  */
 export function profileNote(person: Pick<PersonProfile, 'active'>): string {
-  const state = person.active ? 'active' : 'inactive — the import marked it';
-  return `${state} · master data arrives by import, so this profile is read-only`;
+  const state = person.active ? '在职' : '已停用 · 由导入标记';
+  return `${state} · 主数据由报表导入，本页只读`;
 }
 
-/** One skill as the profile names it: the skill, the band by name, and the domain it sits in. */
+/** 一项技能在档案里的写法：技能、档位名，以及它所属的技能域。 */
 export function bandLabel(skill: PersonSkill): string {
-  return `${skill.skill} · ${skill.band} · ${skill.roleDomain} domain`;
+  return `${skill.skill} · ${skill.band} · ${skill.roleDomain} 域`;
 }
 
-/** One occupancy: the project, the inclusive range, how it came about, and the ended mark. */
+/** 一段占用：项目、闭区间日期、来历，以及已结束的标记。 */
 export function occupancyLabel(row: PersonAllocation): string {
-  const source = row.source === 'CONFIRMATION' ? 'confirmed seat' : 'hand record';
-  return `${row.project} · ${row.startDate} → ${row.endDate} · ${source}${row.ended ? ' · ended' : ''}`;
+  const source = row.source === 'CONFIRMATION' ? '确认座位' : '手工登记';
+  return `${row.project} · ${row.startDate} → ${row.endDate} · ${source}${row.ended ? ' · 已结束' : ''}`;
 }

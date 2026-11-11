@@ -33,12 +33,12 @@ public class ReleaseService {
     AssignmentRepository.Row seat = find(assignmentId);
     PostRepository.PostRow post = findPost(seat.postId());
     if (!actor.isCoordinator() && !post.projectLead().equals(actor.username())) {
-      throw new AccessDeniedException("the coordinator or the post's own lead releases a person");
+      throw new AccessDeniedException("只有协调员或岗位所属项目的项目经理可以解除人员");
     }
 
     allocations.deleteByAssignment(assignmentId);
     if (assignments.delete(assignmentId) == 0) {
-      throw new NoSuchElementException("No assignment " + assignmentId);
+      throw new NoSuchElementException("没有指派 " + assignmentId);
     }
 
     PostRepository.PostRow after = findPost(post.id());
@@ -54,10 +54,10 @@ public class ReleaseService {
   private AssignmentRepository.Row find(long assignmentId) {
     return assignments
         .findById(assignmentId)
-        .orElseThrow(() -> new NoSuchElementException("No assignment " + assignmentId));
+        .orElseThrow(() -> new NoSuchElementException("没有指派 " + assignmentId));
   }
 
   private PostRepository.PostRow findPost(long postId) {
-    return posts.findById(postId).orElseThrow(() -> new NoSuchElementException("No post " + postId));
+    return posts.findById(postId).orElseThrow(() -> new NoSuchElementException("没有岗位 " + postId));
   }
 }

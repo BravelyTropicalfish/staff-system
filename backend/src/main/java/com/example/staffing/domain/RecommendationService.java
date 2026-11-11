@@ -59,27 +59,57 @@ public class RecommendationService {
   public RecommendationView recommend(long postId, String employeeNo, AuthenticatedUser actor) {
     PostRepository.PostRow post =
         posts.findById(postId)
-            .orElseThrow(() -> new NoSuchElementException("No post " + postId));
+            .orElseThrow(() -> new NoSuchElementException("没有岗位 " + postId));
     if (PostStatus.CANCELLED.equals(post.status())) {
       throw new RecommendationException(
-          POST_CANCELLED, "the post is cancelled; nothing can be proposed for it");
+          POST_CANCELLED, "岗位已取消，不能为它推荐");
     }
     if (post.confirmed() >= post.headcount()) {
       throw new RecommendationException(
-          POST_FILLED, "the post is filled; a recommendation needs a remaining slot");
+          POST_FILLED, "岗位已满，推荐需要剩余名额");
     }
 
     RecommendationSnapshot snapshot = snapshot(matching.search(postId), post, employeeNo);
     if (recommendations.pendingFor(postId, employeeNo)) {
       throw new RecommendationException(
-          ALREADY_PROPOSED, "the person is proposed for this post already");
+          ALREADY_PROPOSED, "这个人员已推荐到该岗位");
     }
     long id = recommendations.insert(postId, employeeNo, write(snapshot), actor.id());
     return RecommendationView.of(
         recommendations
             .findById(id)
-            .orElseThrow(() -> new NoSuchElementException("No recommendation " + id)),
+            .orElseThrow(() -> new NoSuchElementException("没有推荐 " + id)),
         json);
+  }
+
+  /**
+   * The decision inbox: every proposal the caller may decide on. The coordinator reads every one with
+   * its reason snapshot; a lead reads only the proposals on the projects they own, without it.
+   */
+  @Transactional(readOnly = true)
+  public List<RecommendationInboxView> inbox(AuthenticatedUser actor) {
+    List<RecommendationRepository.InboxRow> rows =
+        actor.isCoordinator()
+            ? recommendations.findAll()
+            : recommendations.findByLead(actor.username());
+    boolean withSnapshot = actor.isCoordinator();
+    return rows.stream()
+        .map(
+            row ->
+                new RecommendationInboxView(
+                    row.id(),
+                    row.postId(),
+                    row.postTitle(),
+                    row.project(),
+                    row.personNo(),
+                    row.personName(),
+                    row.personActive(),
+                    row.state(),
+                    row.voidReason(),
+                    withSnapshot ? RecommendationView.snapshotOf(row.snapshotJson(), json) : null,
+                    row.proposedBy(),
+                    row.proposedAt().toString()))
+        .toList();
   }
 
   /**
@@ -90,9 +120,9 @@ public class RecommendationService {
   public List<PostRecommendationView> list(long postId, AuthenticatedUser actor) {
     PostRepository.PostRow post =
         posts.findById(postId)
-            .orElseThrow(() -> new NoSuchElementException("No post " + postId));
+            .orElseThrow(() -> new NoSuchElementException("没有岗位 " + postId));
     if (!actor.isCoordinator() && !post.projectLead().equals(actor.username())) {
-      throw new AccessDeniedException("this post is not yours");
+      throw new AccessDeniedException("这个岗位不属于你");
     }
     boolean withSnapshot = actor.isCoordinator();
     return recommendations.findByPost(postId).stream()
@@ -150,15 +180,13 @@ public class RecommendationService {
       }
     }
     if (people.findByEmployeeNo(employeeNo).isEmpty()) {
-      throw new NoSuchElementException("No person " + employeeNo);
+      throw new NoSuchElementException("没有人员 " + employeeNo);
     }
     throw new RecommendationException(
         NOT_A_CANDIDATE,
-        "the person is not a candidate for "
+        "该人员不是 "
             + post.role()
-            + "; the cross-role section is closed while a "
-            + post.role()
-            + " person is suitable");
+            + " 的候选人；同角色有人合适时跨角色兜底关闭");
   }
 
   private String write(RecommendationSnapshot snapshot) {

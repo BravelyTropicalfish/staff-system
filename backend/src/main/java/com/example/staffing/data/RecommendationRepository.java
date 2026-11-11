@@ -23,6 +23,22 @@ public class RecommendationRepository {
           + " FROM recommendation r JOIN app_user u ON u.id = r.proposed_by"
           + " JOIN person pe ON pe.employee_no = r.person_no";
 
+  /** The inbox query: one row per proposal with the post and the project it belongs to. */
+  private static final String SELECT_INBOX =
+      "SELECT r.id, r.post_id, p.title AS post_title, pr.name AS project,"
+          + " r.person_no, pe.name AS person_name, pe.active AS person_active,"
+          + " r.state, r.void_reason, r.snapshot_json, u.username AS proposed_by, r.created_at"
+          + " FROM recommendation r"
+          + " JOIN post p ON p.id = r.post_id"
+          + " JOIN project pr ON pr.id = p.project_id"
+          + " JOIN app_user lu ON lu.id = pr.lead_user_id"
+          + " JOIN person pe ON pe.employee_no = r.person_no"
+          + " JOIN app_user u ON u.id = r.proposed_by";
+
+  /** Pending first, then the closed history, each group newest first — the order every screen reads. */
+  private static final String INBOX_ORDER =
+      " ORDER BY CASE r.state WHEN 'proposed' THEN 0 ELSE 1 END, r.created_at DESC, r.id DESC";
+
   private final JdbcTemplate jdbc;
 
   public RecommendationRepository(JdbcTemplate jdbc) {
@@ -65,6 +81,19 @@ public class RecommendationRepository {
             + " r.created_at DESC, r.id DESC",
         (rs, row) -> row(rs),
         postId);
+  }
+
+  /** Every proposal, for the coordinator's decision inbox. */
+  public List<InboxRow> findAll() {
+    return jdbc.query(SELECT_INBOX + INBOX_ORDER, (rs, row) -> inboxRow(rs));
+  }
+
+  /** The proposals on the projects one lead owns, for that lead's decision inbox. */
+  public List<InboxRow> findByLead(String leadUsername) {
+    return jdbc.query(
+        SELECT_INBOX + " WHERE lu.username = ?" + INBOX_ORDER,
+        (rs, row) -> inboxRow(rs),
+        leadUsername);
   }
 
   /** Whether the person already holds a pending proposal on this post; a post is never proposed twice. */
@@ -146,6 +175,37 @@ public class RecommendationRepository {
   public record Row(
       long id,
       long postId,
+      String personNo,
+      String personName,
+      boolean personActive,
+      String state,
+      String voidReason,
+      String snapshotJson,
+      String proposedBy,
+      LocalDateTime proposedAt) {}
+
+  private static InboxRow inboxRow(java.sql.ResultSet rs) throws java.sql.SQLException {
+    return new InboxRow(
+        rs.getLong("id"),
+        rs.getLong("post_id"),
+        rs.getString("post_title"),
+        rs.getString("project"),
+        rs.getString("person_no"),
+        rs.getString("person_name"),
+        rs.getBoolean("person_active"),
+        rs.getString("state"),
+        rs.getString("void_reason"),
+        rs.getString("snapshot_json"),
+        rs.getString("proposed_by"),
+        rs.getTimestamp("created_at").toLocalDateTime());
+  }
+
+  /** One proposal with the post and project it belongs to, the shape the decision inbox reads. */
+  public record InboxRow(
+      long id,
+      long postId,
+      String postTitle,
+      String project,
       String personNo,
       String personName,
       boolean personActive,

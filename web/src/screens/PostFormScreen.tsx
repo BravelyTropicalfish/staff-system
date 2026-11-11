@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import PostForm from '../components/PostForm';
 import { ApiError, getJson, sendJson } from '../lib/api';
+import type { SessionView } from '../lib/confirmation';
 import type { Bands, Post, PostFormValue, RoleOption, SkillOption } from '../lib/post';
 import { postDraft } from '../lib/post';
 
-type Loaded = { bands: Bands; roles: RoleOption[]; skills: SkillOption[] };
+type Loaded = { bands: Bands; roles: RoleOption[]; skills: SkillOption[]; viewer: SessionView };
 
 const EMPTY: PostFormValue = {
   title: '',
@@ -38,12 +39,13 @@ export default function PostFormScreen() {
       getJson<Bands>('/api/bands'),
       getJson<RoleOption[]>('/api/roles'),
       getJson<SkillOption[]>('/api/skills?active=true'),
+      getJson<SessionView>('/api/session'),
     ])
-      .then(([bands, roles, skills]) => {
+      .then(([bands, roles, skills, viewer]) => {
         if (cancelled) {
           return;
         }
-        setLoaded({ bands, roles, skills });
+        setLoaded({ bands, roles, skills, viewer });
         setValue((current) => ({
           ...current,
           role: current.role || (roles.find((role) => role.active)?.name ?? ''),
@@ -72,8 +74,13 @@ export default function PostFormScreen() {
 
   return (
     <div>
+      <div className="btn-row" style={{ marginBottom: 8 }}>
+        <Link className="btn btn-sm" to={`/projects/${projectId}`}>
+          ← 返回项目
+        </Link>
+      </div>
       <h1>
-        A new post on project {projectId}
+        项目 {projectId} 的新岗位
       </h1>
       {loadError ? (
         <p className="mt-4 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
@@ -81,23 +88,29 @@ export default function PostFormScreen() {
         </p>
       ) : null}
       {loaded ? (
-        <PostForm
-          value={value}
-          bands={loaded.bands}
-          roles={loaded.roles}
-          skills={loaded.skills}
-          frozen={[]}
-          frozenReason={null}
-          floor={1}
-          busy={busy}
-          error={error}
-          submitLabel="Create the post"
-          onChange={(patch) => setValue((current) => ({ ...current, ...patch }))}
-          onSkills={(skills) => setValue((current) => ({ ...current, skills }))}
-          onSubmit={save}
-        />
+        loaded.viewer.role === 'LEAD' ? (
+          <PostForm
+            value={value}
+            bands={loaded.bands}
+            roles={loaded.roles}
+            skills={loaded.skills}
+            frozen={[]}
+            frozenReason={null}
+            floor={1}
+            busy={busy}
+            error={error}
+            submitLabel="创建岗位"
+            onChange={(patch) => setValue((current) => ({ ...current, ...patch }))}
+            onSkills={(skills) => setValue((current) => ({ ...current, skills }))}
+            onSubmit={save}
+          />
+        ) : (
+          <div className="banner danger">
+            只有项目自己的项目经理可以新增岗位；协调员只读。
+          </div>
+        )
       ) : loadError ? null : (
-        <p className="mt-2 text-sm text-slate-600">Reading the catalogs…</p>
+        <p className="mt-2 text-sm text-slate-600">正在读取目录…</p>
       )}
     </div>
   );

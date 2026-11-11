@@ -253,3 +253,47 @@ None. The decision is Pass, so no remediation is owed at this gate.
 
 P4 continues with T33 and T34 (already applied in the same change), then `/sdd:local-verify-report`
 and the G2 addendum recorded in `g2-decision.md`.
+
+## G1 rev 13 — 2026-11-11, creation, deletion and the one-sheet import — **Pass**
+
+> `spec-gates` rule 5: a delta that has been agreed is not rewritten without a new record. This is
+> the record for rev 13. The owner instructed the agent to record the two signatures below; the
+> agent itself signs nothing.
+
+**What the product owner asked for.** In one instruction: a project is opened by its own lead only
+(the coordinator no longer opens one); the coordinator stays read-only on projects and posts while
+keeping the import, the catalog and the recommendation; the import is one sheet, with a person and
+their skills on one row; a catalog item nothing references may be deleted; and a screen's data must
+come from the server rather than being pieced together in the browser.
+
+**What the delta now says.**
+
+- `allocation` — *A project is opened by its lead*: a lead opens their own and refuses another
+  lead; the coordinator opens none. Same two scenarios, one extra **AND** inside the first.
+- `people-pool` — *Referenced catalog items freeze; an unreferenced one may be deleted*: a
+  referenced item is still refused with `referenced`, an unreferenced one (and a role that holds
+  no skill in its domain) may be deleted, and the catalog screen offers add and delete. The rename
+  scenario became *Rename and delete are allowed before the first reference*; the count is
+  unchanged at 17.
+- `people-import` — *One workbook, one sheet*: `people` with `employee_no`, `name`, `email`,
+  `role`, `job_level`, `travel_willingness`, `active`, `skills`; the `skills` cell is
+  `skill:band;skill:band`. The three sheet-level scenarios were reworded in place, so the count is
+  unchanged at 15. A role or a skill the catalog does not hold (or has deactivated) rejects the
+  row and the batch, which is the rule the owner restated.
+- `candidate-matching` — no prose change; the fallback row now carries the gates it ran, so the
+  screen reads them instead of hard-coding `G1 G5 G6 X1 X2`.
+
+**Evidence.** `mvnw verify` 287 tests with "All coverage checks have been met."; `npm test`
+53/53; `npx playwright test` 19/19; `npm run lint` 0 problems; `npx tsc --noEmit` clean; `npm run
+build` green. `traceability.md` maps the reworded scenarios to their renamed test ids; the per-
+capability counts stay 11/15/15/17/14/18 and the 90-row total holds.
+
+**Signature (human only).**
+
+| Role | Name | Date |
+|---|---|---|
+| IO | raylen | 2026-11-11 |
+| SA | kyrie | 2026-11-11 |
+
+The product owner's instruction named `kyrie` and `raylen`; the spellings follow the rev 11–12
+records so one person keeps one name across the gate.

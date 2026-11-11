@@ -76,11 +76,11 @@ public class ConfirmationService {
     requireConfirmable(row);
     PersonRepository.PersonRow person = person(row.personNo());
     if (!person.active()) {
-      throw new RecommendationException("G1", "the person is not active");
+      throw new RecommendationException("G1", "该人员已停用");
     }
     if (post.confirmed() >= post.headcount()) {
       throw new RecommendationException(
-          POST_FILLED, "the post is filled; there is no remaining slot to confirm");
+          POST_FILLED, "岗位已满，没有可确认的名额");
     }
     for (PersonRepository.AllocationRow allocation : people.allocationsOf(row.personNo())) {
       if (Ranges.intersects(
@@ -97,7 +97,7 @@ public class ConfirmationService {
     String status = PostStatus.of(post.headcount(), post.confirmed() + 1);
     posts.setStatus(post.id(), status);
     if (recommendations.markConfirmed(id) == 0) {
-      throw new RecommendationException(NOT_PROPOSED, "the recommendation is not proposed any more");
+      throw new RecommendationException(NOT_PROPOSED, "这条推荐已不是待决策状态");
     }
     List<VoidedView> voided =
         voidOthers(row.personNo(), id, post.startDate(), post.endDate());
@@ -114,9 +114,9 @@ public class ConfirmationService {
   public RecommendationView reject(long id, String note, AuthenticatedUser actor) {
     RecommendationRepository.Row row = find(id);
     requireOwningLead(post(row.postId()), actor);
-    requireProposed(row, "rejected");
+    requireProposed(row, "驳回");
     if (recommendations.markRejected(id, note) == 0) {
-      throw new RecommendationException(NOT_PROPOSED, "the recommendation is not proposed any more");
+      throw new RecommendationException(NOT_PROPOSED, "这条推荐已不是待决策状态");
     }
     return view(find(id));
   }
@@ -125,11 +125,11 @@ public class ConfirmationService {
   public RecommendationView withdraw(long id, AuthenticatedUser actor) {
     RecommendationRepository.Row row = find(id);
     if (!actor.isCoordinator() || !row.proposedBy().equals(actor.username())) {
-      throw new AccessDeniedException("only the coordinator who proposed it withdraws it");
+      throw new AccessDeniedException("只有发起这条推荐的协调员可以撤回");
     }
-    requireProposed(row, "withdrawn");
+    requireProposed(row, "撤回");
     if (recommendations.markWithdrawn(id) == 0) {
-      throw new RecommendationException(NOT_PROPOSED, "the recommendation is not proposed any more");
+      throw new RecommendationException(NOT_PROPOSED, "这条推荐已不是待决策状态");
     }
     return view(find(id));
   }
@@ -155,20 +155,20 @@ public class ConfirmationService {
   /** The G6 wording the exclusion list already prints, so both reads refuse in one voice. */
   private static String allocationReason(
       PersonRepository.AllocationRow allocation, PostRepository.PostRow post) {
-    return "the allocation "
+    return "已有占用 "
         + allocation.startDate()
-        + " to "
+        + " 至 "
         + allocation.endDate()
-        + " intersects the post's "
+        + "，与岗位的 "
         + post.startDate()
-        + " to "
-        + post.endDate();
+        + " 至 "
+        + post.endDate()
+        + " 相交";
   }
 
   private static void requireOwningLead(PostRepository.PostRow post, AuthenticatedUser actor) {
     if (actor.isCoordinator() || !post.projectLead().equals(actor.username())) {
-      throw new AccessDeniedException(
-          "only the lead of the post's project confirms or rejects a recommendation");
+      throw new AccessDeniedException("只有岗位所属项目的项目经理可以确认或驳回推荐");
     }
   }
 
@@ -181,33 +181,32 @@ public class ConfirmationService {
     if ("voided".equals(row.state()) && PERSON_TAKEN.equals(row.voidReason())) {
       throw new RecommendationException(
           PERSON_TAKEN,
-          "the person is taken; another post confirmed them and this proposal was voided");
+          "人员已被占用：另一岗位已确认该人员，这条推荐已作废");
     }
-    requireProposed(row, "confirmed");
+    requireProposed(row, "确认");
   }
 
-  private static void requireProposed(RecommendationRepository.Row row, String verb) {
+  private static void requireProposed(RecommendationRepository.Row row, String action) {
     if (!"proposed".equals(row.state())) {
       throw new RecommendationException(
-          NOT_PROPOSED,
-          "the recommendation is " + row.state() + "; only a proposed one can be " + verb);
+          NOT_PROPOSED, "只有待决策的推荐可以" + action + "：当前状态是 " + row.state());
     }
   }
 
   private RecommendationRepository.Row find(long id) {
     return recommendations
         .findById(id)
-        .orElseThrow(() -> new NoSuchElementException("No recommendation " + id));
+        .orElseThrow(() -> new NoSuchElementException("没有推荐 " + id));
   }
 
   private PostRepository.PostRow post(long id) {
-    return posts.findById(id).orElseThrow(() -> new NoSuchElementException("No post " + id));
+    return posts.findById(id).orElseThrow(() -> new NoSuchElementException("没有岗位 " + id));
   }
 
   private PersonRepository.PersonRow person(String employeeNo) {
     return people
         .findByEmployeeNo(employeeNo)
-        .orElseThrow(() -> new NoSuchElementException("No person " + employeeNo));
+        .orElseThrow(() -> new NoSuchElementException("没有人员 " + employeeNo));
   }
 
   private RecommendationView view(RecommendationRepository.Row row) {

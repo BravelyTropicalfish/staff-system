@@ -9,7 +9,11 @@ import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 
-/** Every row rule of the import contract, applied to both sheets before anything is written. */
+/**
+ * Every row rule of the import contract, applied to the one sheet before anything is written. One
+ * row is one person plus that person's skills, written as `skill:band;skill:band`; a role or a skill
+ * the catalog does not hold rejects the row.
+ */
 class ImportValidatorTest {
 
   private static final ImportReference REFERENCE =
@@ -26,8 +30,7 @@ class ImportValidatorTest {
     ImportResult result =
         validate(
             WorkbookFixture.workbook()
-                .person("E200", "Ann", "", "dev", "senior", "full", "Active")
-                .skill("E200", "java", "practitioner"));
+                .person("E200", "Ann", "", "dev", "senior", "full", "Active", "java:practitioner"));
 
     assertThat(result.errors()).isEmpty();
     assertThat(result.people())
@@ -39,7 +42,38 @@ class ImportValidatorTest {
               assertThat(person.travel()).isEqualTo("full");
               assertThat(person.active()).isTrue();
             });
-    assertThat(result.skills()).singleElement().satisfies(skill -> assertThat(skill.band()).isEqualTo("Practitioner"));
+    assertThat(result.skills())
+        .singleElement()
+        .satisfies(
+            skill -> {
+              assertThat(skill.employeeNo()).isEqualTo("E200");
+              assertThat(skill.skillId()).isEqualTo(1);
+              assertThat(skill.band()).isEqualTo("Practitioner");
+            });
+  }
+
+  @Test
+  void oneSkillsCellMayCarrySeveralSkills() {
+    ImportResult result =
+        validate(
+            WorkbookFixture.workbook()
+                .person("E200", "Ann", "", "DEV", "Senior", "full", "active", "Java:Novice; 测试:Practitioner"));
+
+    assertThat(result.errors()).isEmpty();
+    assertThat(result.people()).hasSize(1);
+    assertThat(result.skills())
+        .extracting(SkillImportRow::skillId)
+        .containsExactly(1L, 2L);
+  }
+
+  @Test
+  void anEmptySkillsCellMeansThePersonCarriesNoSkill() {
+    ImportResult result =
+        validate(WorkbookFixture.workbook().person("E200", "Ann", "", "DEV", "Senior", "full", "active"));
+
+    assertThat(result.errors()).isEmpty();
+    assertThat(result.people()).hasSize(1);
+    assertThat(result.skills()).isEmpty();
   }
 
   @Test
@@ -52,9 +86,52 @@ class ImportValidatorTest {
         .satisfies(
             error -> {
               assertThat(error.sheet()).isEqualTo("people");
-              assertThat(error.message()).contains("DEV, PM, QA");
+              assertThat(error.message()).contains("DEV").contains("PM").contains("QA");
             });
     assertThat(result.people()).isEmpty();
+    assertThat(result.skills()).isEmpty();
+  }
+
+  @Test
+  void aSkillOutsideTheCatalogBlocksTheFile() {
+    ImportResult result =
+        validate(
+            WorkbookFixture.workbook()
+                .person("E200", "Ann", "", "DEV", "Senior", "full", "active", "Kotlin:Novice"));
+
+    assertThat(result.errors())
+        .singleElement()
+        .satisfies(error -> assertThat(error.message()).contains("Kotlin").contains("启用的目录"));
+    assertThat(result.people()).isEmpty();
+    assertThat(result.skills()).isEmpty();
+  }
+
+  @Test
+  void aSkillsCellWithoutABandIsRefusedByItsShape() {
+    ImportResult result =
+        validate(
+            WorkbookFixture.workbook()
+                .person("E200", "Ann", "", "DEV", "Senior", "full", "active", "Java"));
+
+    assertThat(result.errors())
+        .singleElement()
+        .satisfies(
+            error ->
+                assertThat(error.message()).isEqualTo("技能格需写成 技能:档位，多项用分号分隔"));
+  }
+
+  @Test
+  void theSameSkillTwiceInOneCellIsRefused() {
+    ImportResult result =
+        validate(
+            WorkbookFixture.workbook()
+                .person("E200", "Ann", "", "DEV", "Senior", "full", "active", "测试:Novice;测试:Expert"));
+
+    assertThat(result.errors())
+        .singleElement()
+        .satisfies(
+            error -> assertThat(error.message()).contains("测试").contains("出现两次"));
+    assertThat(result.skills()).isEmpty();
   }
 
   @Test
@@ -67,46 +144,8 @@ class ImportValidatorTest {
 
     assertThat(result.errors()).extracting(RowError::rowNo).containsExactly(2, 3);
     assertThat(result.errors())
-        .allSatisfy(error -> assertThat(error.message()).contains("exactly one active catalog role"));
+        .allSatisfy(error -> assertThat(error.message()).contains("必须是目录中启用的一个角色"));
     assertThat(result.people()).isEmpty();
-  }
-
-  @Test
-  void aDuplicatedSkillRowPutsBothRowNumbersInTheErrorList() {
-    ImportResult result =
-        validate(
-            WorkbookFixture.workbook()
-                .skill("E100", "测试", "Novice")
-                .skill("E100", "测试", "Expert"));
-
-    assertThat(result.errors()).extracting(RowError::rowNo).containsExactly(2, 3);
-    assertThat(result.isRejected()).isTrue();
-  }
-
-  @Test
-  void anOrphanSkillRowSaysPersonNotFound() {
-    ImportResult result = validate(WorkbookFixture.workbook().skill("E999", "Java", "Novice"));
-
-    assertThat(result.errors())
-        .singleElement()
-        .satisfies(
-            error -> {
-              assertThat(error.rowNo()).isEqualTo(2);
-              assertThat(error.key()).isEqualTo("E999");
-              assertThat(error.message()).isEqualTo("person not found");
-            });
-  }
-
-  @Test
-  void aSkillRowForAPersonCreatedByTheSameFileIsAccepted() {
-    ImportResult result =
-        validate(
-            WorkbookFixture.workbook()
-                .person("E200", "Ann", "", "DEV", "Senior", "full", "active")
-                .skill("E200", "Java", "Novice"));
-
-    assertThat(result.errors()).isEmpty();
-    assertThat(result.skills()).singleElement().satisfies(skill -> assertThat(skill.employeeNo()).isEqualTo("E200"));
   }
 
   @Test
@@ -122,8 +161,9 @@ class ImportValidatorTest {
         .satisfies(
             error -> {
               assertThat(error.rowNo()).isEqualTo(3);
-              assertThat(error.message()).contains("E200").contains("row 2");
+              assertThat(error.message()).contains("E200").contains("第 2 行");
             });
+    assertThat(result.people()).hasSize(1);
   }
 
   @Test
@@ -133,16 +173,11 @@ class ImportValidatorTest {
 
     assertThat(result.errors())
         .singleElement()
-        .satisfies(error -> assertThat(error.message()).contains("job_level").contains("Junior, Senior, Lead, Principal"));
-  }
-
-  @Test
-  void aSkillOutsideTheCatalogBlocksTheFile() {
-    ImportResult result = validate(WorkbookFixture.workbook().skill("E100", "Kotlin", "Novice"));
-
-    assertThat(result.errors())
-        .singleElement()
-        .satisfies(error -> assertThat(error.message()).contains("Kotlin").contains("active catalog"));
+        .satisfies(
+            error ->
+                assertThat(error.message())
+                    .contains("job_level")
+                    .contains("Junior、Senior、Lead、Principal"));
   }
 
   @Test
@@ -155,15 +190,15 @@ class ImportValidatorTest {
     assertThat(missingCells.errors())
         .extracting(RowError::message)
         .containsExactly(
-            "name is required",
-            "role is required",
-            "job_level is required",
-            "travel_willingness is required",
-            "active is required");
+            "name 不能为空",
+            "角色不能为空",
+            "job_level 不能为空",
+            "travel_willingness 不能为空",
+            "active 不能为空");
   }
 
   @Test
-  void aPeopleRowWithoutAnEmployeeNumberIsRefusedByThatColumn() {
+  void aRowWithoutAnEmployeeNumberIsRefusedByThatColumn() {
     ImportResult result =
         validate(WorkbookFixture.workbook().person("", "Ann", "", "DEV", "Senior", "full", "active"));
 
@@ -172,37 +207,17 @@ class ImportValidatorTest {
         .satisfies(
             error -> {
               assertThat(error.rowNo()).isEqualTo(2);
-              assertThat(error.message()).isEqualTo("employee_no is required");
+              assertThat(error.message()).isEqualTo("employee_no 不能为空");
             });
     assertThat(result.people()).isEmpty();
   }
 
   @Test
-  void aSkillRowWithoutAnEmployeeNumberIsOneError() {
-    ImportResult result = validate(WorkbookFixture.workbook().skill("", "Java", "Novice"));
-
-    assertThat(result.errors())
-        .singleElement()
-        .satisfies(
-            error -> {
-              assertThat(error.sheet()).isEqualTo("skills");
-              assertThat(error.key()).isEmpty();
-              assertThat(error.message()).isEqualTo("employee_no is required");
-            });
-  }
-
-  @Test
-  void aSkillRowWithoutASkillSaysSkillIsRequired() {
-    ImportResult result = validate(WorkbookFixture.workbook().skill("E100", "", "Novice"));
-
-    assertThat(result.errors())
-        .singleElement()
-        .satisfies(error -> assertThat(error.message()).isEqualTo("skill is required"));
-  }
-
-  @Test
   void aProficiencyOutsideTheFiveBandsBlocksTheFile() {
-    ImportResult result = validate(WorkbookFixture.workbook().skill("E100", "Java", "Guru"));
+    ImportResult result =
+        validate(
+            WorkbookFixture.workbook()
+                .person("E200", "Ann", "", "DEV", "Senior", "full", "active", "Java:Guru"));
 
     assertThat(result.errors())
         .singleElement()
@@ -210,24 +225,69 @@ class ImportValidatorTest {
             error ->
                 assertThat(error.message())
                     .isEqualTo(
-                        "proficiency must be one of Novice, Advanced beginner, Practitioner,"
-                            + " Proficient, Expert"));
+                        "proficiency 必须是以下之一：Novice、Advanced beginner、Practitioner、"
+                            + "Proficient、Expert"));
     assertThat(result.skills()).isEmpty();
   }
 
   @Test
-  void aThirdRowOfOneSkillDoesNotRepeatTheFirstRowsError() {
+  void theWideColonSeparatesANameFromItsBandToo() {
     ImportResult result =
         validate(
             WorkbookFixture.workbook()
-                .skill("E100", "测试", "Novice")
-                .skill("E100", "测试", "Expert")
-                .skill("E100", "测试", "Proficient"));
+                .person("E200", "Ann", "", "DEV", "Senior", "full", "active", "测试：Expert"));
 
-    assertThat(result.errors()).extracting(RowError::rowNo).containsExactly(2, 3, 4);
+    assertThat(result.errors()).isEmpty();
+    assertThat(result.skills())
+        .singleElement()
+        .satisfies(
+            skill -> {
+              assertThat(skill.skillId()).isEqualTo(2);
+              assertThat(skill.band()).isEqualTo("Expert");
+            });
+  }
+
+  @Test
+  void aSkillsCellWithoutANameOrWithoutABandIsRefused() {
+    ImportResult noName =
+        validate(
+            WorkbookFixture.workbook()
+                .person("E200", "Ann", "", "DEV", "Senior", "full", "active", ":Novice"));
+    ImportResult noBand =
+        validate(
+            WorkbookFixture.workbook()
+                .person("E300", "Bo", "", "DEV", "Senior", "full", "active", "Java:"));
+
+    assertThat(noName.errors())
+        .singleElement()
+        .satisfies(
+            error -> assertThat(error.message()).isEqualTo("技能格要先写技能名再写档位"));
+    assertThat(noBand.errors())
+        .singleElement()
+        .satisfies(error -> assertThat(error.message()).isEqualTo("proficiency 不能为空"));
+  }
+
+  @Test
+  void aBandWithBothColonsKeepsTheFirstOneAsTheSeparator() {
+    ImportResult result =
+        validate(
+            WorkbookFixture.workbook()
+                .person("E200", "Ann", "", "DEV", "Senior", "full", "active", "测试：Expert:Novice"));
+
     assertThat(result.errors())
-        .extracting(RowError::message)
-        .allSatisfy(message -> assertThat(message).contains("appears twice"));
+        .singleElement()
+        .satisfies(error -> assertThat(error.message()).contains("proficiency 必须是以下之一"));
+  }
+
+  @Test
+  void anEmptySegmentBetweenSemicolonsIsIgnored() {
+    ImportResult result =
+        validate(
+            WorkbookFixture.workbook()
+                .person("E200", "Ann", "", "DEV", "Senior", "full", "active", "Java:Novice;;测试:Expert;"));
+
+    assertThat(result.errors()).isEmpty();
+    assertThat(result.skills()).extracting(SkillImportRow::skillId).containsExactly(1L, 2L);
   }
 
   private static ImportResult validate(WorkbookFixture fixture) {

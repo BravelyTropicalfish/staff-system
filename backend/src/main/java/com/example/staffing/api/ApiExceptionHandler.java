@@ -25,14 +25,12 @@ public class ApiExceptionHandler {
 
   @ExceptionHandler(BadCredentialsException.class)
   ResponseEntity<Map<String, Object>> wrongCredentials() {
-    return error(
-        HttpStatus.UNAUTHORIZED, "invalid credentials", "The username or the password is wrong.");
+    return error(HttpStatus.UNAUTHORIZED, "invalid credentials", "账号或密码不正确。");
   }
 
   @ExceptionHandler(AccessDeniedException.class)
   ResponseEntity<Map<String, Object>> notYours() {
-    return error(
-        HttpStatus.FORBIDDEN, "forbidden", "This action is not yours to take.");
+    return error(HttpStatus.FORBIDDEN, "forbidden", "这个动作不属于你。");
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -45,15 +43,14 @@ public class ApiExceptionHandler {
         .body(
             Map.of(
                 "code", "invalid",
-                "message", "The request is not valid.",
+                "message", "请求内容不合法。",
                 "details", details));
   }
 
   /** A body that does not parse, or carries a field no request record declares. */
   @ExceptionHandler(HttpMessageNotReadableException.class)
   ResponseEntity<Map<String, Object>> unreadableBody() {
-    return error(
-        HttpStatus.BAD_REQUEST, "unreadable body", "The request body could not be read.");
+    return error(HttpStatus.BAD_REQUEST, "unreadable body", "请求体无法解析。");
   }
 
   @ExceptionHandler(CatalogException.class)

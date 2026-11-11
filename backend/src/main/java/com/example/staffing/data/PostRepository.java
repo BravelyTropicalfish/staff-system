@@ -101,6 +101,20 @@ public class PostRepository {
         SELECT_POST + " WHERE p.project_id = ? ORDER BY p.id", (rs, row) -> row(rs), projectId);
   }
 
+  /** Every post of every project, for the gap board the coordinator reads. */
+  public List<PostRow> findAll() {
+    return jdbc.query(
+        SELECT_POST + " ORDER BY p.project_id, p.id", (rs, row) -> row(rs));
+  }
+
+  /** Every post of the projects one lead owns, for that lead's own gap board. */
+  public List<PostRow> findByLead(String leadUsername) {
+    return jdbc.query(
+        SELECT_POST + " WHERE u.username = ? ORDER BY p.project_id, p.id",
+        (rs, row) -> row(rs),
+        leadUsername);
+  }
+
   /**
    * Takes the post's row lock for the rest of the transaction, so two confirmations on one post
    * queue before either counts the seats. The caller has already resolved the post.

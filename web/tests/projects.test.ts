@@ -40,17 +40,17 @@ const seats = [
 ];
 
 test('a project reads as its lead, its inclusive range and its state', () => {
-  assert.equal(projectLine(atlas), 'Project lead one · 2027-01-01 → 2027-12-31 · open');
-  assert.equal(projectLine({ ...atlas, status: 'CLOSED' }), 'Project lead one · 2027-01-01 → 2027-12-31 · closed');
-  assert.equal(projectState({ status: 'CLOSED' }), 'closed');
+  assert.equal(projectLine(atlas), 'Project lead one · 2027-01-01 → 2027-12-31 · 进行中');
+  assert.equal(
+    projectLine({ ...atlas, status: 'CLOSED' }),
+    'Project lead one · 2027-01-01 → 2027-12-31 · 已结束',
+  );
+  assert.equal(projectState({ status: 'CLOSED' }), '已结束');
 });
 
 test('the note names what the state means for the posts and the allocations', () => {
-  assert.equal(projectNote(atlas), 'open · the posts below are the live requirement');
-  assert.equal(
-    projectNote({ status: 'CLOSED' }),
-    'closed · every post is cancelled and every allocation of this project is gone',
-  );
+  assert.equal(projectNote(atlas), '进行中 · 下列岗位是当前需求');
+  assert.equal(projectNote({ status: 'CLOSED' }), '已结束 · 岗位全部取消，本项目的占用全部删除');
 });
 
 test('the gap numbers of a project are sums of its rows', () => {
@@ -59,9 +59,9 @@ test('the gap numbers of a project are sums of its rows', () => {
 });
 
 test('the project sentence carries counts, a singular post and the filled case', () => {
-  assert.equal(gapSummary(seats), '2 posts · 3 of 5 seats chosen · 2 seats still needed');
-  assert.equal(gapSummary([seats[1]]), '1 post · 1 of 3 seats chosen · 2 seats still needed');
-  assert.equal(gapSummary([seats[0]]), '1 post · 2 of 2 seats chosen · filled');
+  assert.equal(gapSummary(seats), '2 个岗位 · 3 / 5 已到位 · 还缺 2 人');
+  assert.equal(gapSummary([seats[1]]), '1 个岗位 · 1 / 3 已到位 · 还缺 2 人');
+  assert.equal(gapSummary([seats[0]]), '1 个岗位 · 2 / 2 已到位 · 已满');
 });
 
 test('only the project lead, and only while it is open, is offered the end', () => {
@@ -74,13 +74,13 @@ test('only the project lead, and only while it is open, is offered the end', () 
 test('the confirmation names the project, its posts and the people it releases', () => {
   assert.equal(
     endConfirmation(atlas, seats),
-    'Ending Atlas cancels its 2 posts and releases 3 confirmed people. It cannot be undone.',
+    '结束 Atlas 会取消它的 2 个岗位，并释放 3 名已确认人员。不可撤销。',
   );
   assert.equal(
     endConfirmation(atlas, [seats[0]]),
-    'Ending Atlas cancels its 1 post and releases 2 confirmed people. It cannot be undone.',
+    '结束 Atlas 会取消它的 1 个岗位，并释放 2 名已确认人员。不可撤销。',
   );
-  assert.ok(endConfirmation(atlas, seats).includes('cannot be undone'));
+  assert.ok(endConfirmation(atlas, seats).includes('不可撤销'));
 });
 
 test('a lead opens a project of their own; the coordinator names the lead', () => {
@@ -124,11 +124,11 @@ test('the form names its own refusals before anything is sent', () => {
   };
 
   assert.equal(projectProblem(filled), null);
-  assert.equal(projectProblem({ ...filled, name: '   ' }), 'Give the project a name.');
-  assert.equal(projectProblem({ ...filled, lead: ' ' }), 'Name the project lead.');
-  assert.equal(projectProblem({ ...filled, startDate: '' }), 'Set the start and the end date.');
+  assert.equal(projectProblem({ ...filled, name: '   ' }), '请填写项目名称。');
+  assert.equal(projectProblem({ ...filled, lead: ' ' }), '请指定项目经理。');
+  assert.equal(projectProblem({ ...filled, startDate: '' }), '请填写起止日期。');
   assert.equal(
     projectProblem({ ...filled, endDate: '2026-12-31' }),
-    'The end date cannot precede the start date.',
+    '结束日期不能早于开始日期。',
   );
 });

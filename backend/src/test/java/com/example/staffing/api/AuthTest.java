@@ -27,14 +27,14 @@ class AuthTest {
     assertThat(Auth.coordinator(token(COORDINATOR))).isEqualTo(COORDINATOR);
     assertThatThrownBy(() -> Auth.coordinator(token(LEAD)))
         .isInstanceOf(AccessDeniedException.class)
-        .hasMessage("this action is the coordinator's");
+        .hasMessage("这个动作只属于协调员。");
   }
 
   @Test
   void aPrincipalThatIsNotAnAccountIsRefusedRatherThanCast() {
     assertThatThrownBy(() -> Auth.coordinator(token("someone-else")))
         .isInstanceOf(AccessDeniedException.class)
-        .hasMessage("this action is the coordinator's");
+        .hasMessage("这个动作只属于协调员。");
   }
 
   @Test

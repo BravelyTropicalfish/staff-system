@@ -49,8 +49,8 @@ people-pool 17, post-requirement 14, staffing-confirmation 18.
 
 | Scenario | Layer | Test id | Companion |
 |---|---|---|---|
-| Skills-only refresh is accepted | API | `ImportApiTest#aSkillsOnlyRefreshIsAcceptedAndCreatesNoPerson` | — |
-| A workbook with one sheet is refused | API | `ImportApiTest#aWorkbookWithOneSheetIsRefusedAndLeavesNoBatch` | `WorkbookParserTest#aWorkbookWithoutTheSkillsSheetIsRefused` |
+| One row carries several skills | API | `ImportApiTest#theSkillsCellIsWrittenWithItsPerson` | `ImportValidatorTest#oneSkillsCellMayCarrySeveralSkills`, `ImportValidatorTest#anEmptySkillsCellMeansThePersonCarriesNoSkill` |
+| A workbook without the people sheet is refused | API | `ImportApiTest#aWorkbookWithoutThePeopleSheetIsRefusedAndLeavesNoBatch` | `WorkbookParserTest#aWorkbookWithoutThePeopleSheetIsRefused` |
 | An empty workbook is refused | API | `ImportApiTest#anEmptyWorkbookIsRefusedByName` | `WorkbookParserTest#aWorkbookWithHeadersOnlyIsRefusedAsEmpty` |
 | One bad row blocks the whole file | API | `ImportApiTest#oneBadRowBlocksTheWholeFile` | — |
 | The corrected file is a new batch | API | `ImportApiTest#theCorrectedFileIsANewBatchWhileTheRejectedOneKeepsItsErrors` | — |
@@ -58,8 +58,8 @@ people-pool 17, post-requirement 14, staffing-confirmation 18.
 | Lower case is normalised, not rejected | API | `ImportApiTest#lowerCaseIsNormalisedNotRejected` | `ImportValidatorTest#lowerCaseIsNormalisedToTheCatalogSpelling` |
 | A role outside the catalog blocks the file | API | `ImportApiTest#aRoleOutsideTheCatalogBlocksTheFileAndListsTheAcceptedRoles` | `ImportValidatorTest#aRoleOutsideTheCatalogBlocksTheFileAndNamesTheAcceptedRoles` |
 | A multi-role cell is a row error, never two roles | API | `ImportApiTest#aMultiRoleCellIsARowErrorAndNeverTwoRoles` | `ImportValidatorTest#aMultiRoleCellIsOneRowErrorTwiceAndNeverTwoRoles` |
-| A duplicated skill row blocks the file | API | `ImportApiTest#aDuplicatedSkillRowPutsBothRowsInTheHistory` | `ImportValidatorTest#aDuplicatedSkillRowPutsBothRowNumbersInTheErrorList` |
-| An orphan skill row blocks the file | API | `ImportApiTest#anOrphanSkillRowSaysPersonNotFound` | `ImportValidatorTest#anOrphanSkillRowSaysPersonNotFound` |
+| The same skill twice in one cell blocks the file | API | `ImportApiTest#theSameSkillTwiceInOneCellBlocksTheFile` | `ImportValidatorTest#theSameSkillTwiceInOneCellIsRefused` |
+| A skill outside the catalog blocks the file | API | `ImportApiTest#aDeactivatedRoleOrSkillIsInvisibleToTheNextFile` | `ImportValidatorTest#aSkillOutsideTheCatalogBlocksTheFile` |
 | A duplicated employee number blocks the file | API | `ImportApiTest#aDuplicatedEmployeeNumberBlocksTheFile` | `ImportValidatorTest#aDuplicatedEmployeeNumberNamesTheNumber` |
 | New and existing people in one file | API | `ImportApiTest#newAndExistingPeopleAreWrittenInOneFile` | — |
 | An inactive person is reactivated by the report | API | `ImportApiTest#anInactivePersonIsReactivatedByTheReport` | — |
@@ -78,7 +78,7 @@ people-pool 17, post-requirement 14, staffing-confirmation 18.
 | A domain change reuses stored data untouched | API | `CatalogApiTest#aDomainChangeReusesStoredDataUntouched` | — |
 | Delete and rename are both refused on a referenced skill | API | `CatalogApiTest#deleteAndRenameAreBothRefusedOnAReferencedSkill` | — |
 | Deactivation hides an item from new work only | API | `CatalogApiTest#deactivationHidesAnItemFromNewWorkOnly` | — |
-| Rename is allowed before the first reference | API | `CatalogApiTest#renameIsAllowedBeforeTheFirstReference` | — |
+| Rename and delete are allowed before the first reference | API | `CatalogApiTest#renameIsAllowedBeforeTheFirstReference` | `CatalogApiTest#anUnreferencedSkillIsDeleted`, `CatalogApiTest#aReferencedRoleIsNotDeletedAndAnUnreferencedOneIs` |
 | A person holds exactly one role | API | `PeopleApiTest#aPersonHoldsOneRoleAndASkillOfAnotherDomainAddsNoSecondOne` | `SchemaSeedTest#aPersonCarriesOneRoleByConstruction` |
 | The profile is read-only | E2E | `scenarios.spec.ts` — The profile is read-only | `PeopleApiTest#theProfileAnswersNoWriteMethod` |
 | A band is displayed, never a number | E2E | `scenarios.spec.ts` — A band is displayed, never a number | `PeopleApiTest#everyBandIsShownByNameAndNeverAsANumber` |

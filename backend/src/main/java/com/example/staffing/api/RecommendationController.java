@@ -3,6 +3,7 @@ package com.example.staffing.api;
 import com.example.staffing.domain.ConfirmationService;
 import com.example.staffing.domain.ConfirmationView;
 import com.example.staffing.domain.PostRecommendationView;
+import com.example.staffing.domain.RecommendationInboxView;
 import com.example.staffing.domain.RecommendationService;
 import com.example.staffing.domain.RecommendationView;
 import jakarta.validation.Valid;
@@ -39,6 +40,12 @@ public class RecommendationController {
   @GetMapping("/api/posts/{id}/recommendations")
   List<PostRecommendationView> list(@PathVariable long id, Authentication authentication) {
     return recommendations.list(id, Auth.user(authentication));
+  }
+
+  /** The decision inbox: every proposal the caller may decide on, across the projects they can see. */
+  @GetMapping("/api/recommendations")
+  List<RecommendationInboxView> inbox(Authentication authentication) {
+    return recommendations.inbox(Auth.user(authentication));
   }
 
   @PostMapping("/api/posts/{id}/recommendations")

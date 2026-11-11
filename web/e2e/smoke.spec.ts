@@ -28,11 +28,14 @@ test.describe('the shell', () => {
   test('a signed-in lead opens it with the links the role can use', async ({ page }) => {
     await page.goto('/');
 
-    await expect(page.getByRole('heading', { name: 'Staffing' })).toBeVisible();
-    // The sidebar is the prototype's: grouped, and filtered by the role the server named, so a lead
-    // is offered the projects and nothing a lead would be refused on.
-    await expect(page.getByRole('link', { name: 'Projects and their posts' })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'The people pool' })).toHaveCount(0);
-    await expect(page.getByRole('navigation').getByText('Delivery', { exact: true })).toBeVisible();
+    // The board is where the app lands, so the shell is read together with its first heading.
+    await expect(page.getByRole('heading', { name: '我的岗位' })).toBeVisible();
+    // The sidebar is the prototype's: three groups, filtered by the role the server named, so a
+    // lead is offered the two delivery links and nothing a lead would be refused on.
+    await expect(page.getByRole('link', { name: '岗位与缺口' })).toBeVisible();
+    await expect(page.getByRole('link', { name: /推荐与确认/ })).toBeVisible();
+    await expect(page.getByRole('link', { name: '人员池' })).toHaveCount(0);
+    await expect(page.getByRole('link', { name: '候选人搜索' })).toHaveCount(0);
+    await expect(page.getByRole('navigation').getByText('项目交付', { exact: true })).toBeVisible();
   });
 });

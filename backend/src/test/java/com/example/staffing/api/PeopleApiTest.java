@@ -68,7 +68,10 @@ class PeopleApiTest {
     givenPerson("E100", "Anna", "anna@example.com", "DEV", "Senior", "limited", true);
     givenBand("E100", "后端开发", "Novice");
 
-    upload(WorkbookFixture.workbook().skill("E100", "后端开发", "Practitioner").xlsx());
+    upload(
+        WorkbookFixture.workbook()
+            .person("E100", "Anna", "anna@example.com", "DEV", "Senior", "limited", "active", "后端开发:Practitioner")
+            .xlsx());
 
     assertThat(skills(profile("E100")))
         .singleElement()
@@ -80,7 +83,10 @@ class PeopleApiTest {
     givenPerson("E100", "Anna", "anna@example.com", "DEV", "Senior", "limited", true);
     givenBand("E100", "测试", "Proficient");
 
-    upload(WorkbookFixture.workbook().skill("E100", "后端开发", "Novice").xlsx());
+    upload(
+        WorkbookFixture.workbook()
+            .person("E100", "Anna", "anna@example.com", "DEV", "Senior", "limited", "active", "后端开发:Novice")
+            .xlsx());
 
     assertThat(skills(profile("E100")))
         .extracting(row -> row.get("skill") + "=" + row.get("band"))
