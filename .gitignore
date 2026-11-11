@@ -1,0 +1,37 @@
+# macOS
+.DS_Store
+
+# IDE workspaces (IntelliJ IDEA, VS Code, Visual Studio, Eclipse, NetBeans)
+.idea/
+*.iml
+.vscode/
+.vs/
+.settings/
+.classpath
+.project
+.metadata/
+nbproject/private/
+
+# Java and Gradle compilation outputs and local caches
+target/
+build/
+out/
+.gradle/
+*.class
+
+# Frontend dependencies, build outputs, and bundler caches
+node_modules/
+dist/
+.vite/
+.next/
+.parcel-cache/
+*.tsbuildinfo
+
+# Coverage and end-to-end test reports
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+
+# Local installer state (portable host assets are committed)
+.agents/
