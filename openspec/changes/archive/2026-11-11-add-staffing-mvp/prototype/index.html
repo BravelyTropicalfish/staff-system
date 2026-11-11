@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Staffing MVP · 原型（add-staffing-mvp）</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="signed-out">
+<div id="login" class="login-wrap"></div>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">S</span>
+      <div>
+        <div class="brand-name">Staffing</div>
+        <div class="brand-sub">MVP 原型 · rev 11</div>
+      </div>
+    </div>
+    <nav id="nav" class="nav"></nav>
+    <div class="sidebar-foot">
+      <div class="muted small">静态原型，无后端。数据为评审用样例，规则见 delta spec。<br>登录页可切换账号：刘敏（协调员）与陈立（项目经理）是两个独立账号，每个账号只有一个角色。<br>候选搜索里，本角色无人时会另给一栏「跨角色兜底」：职级高 1 档 + 技能域内至少一项 Practitioner。<br>占用带起止日期：只有与本岗位日期相交才挡住人；项目经理可在「项目」一栏结束项目，整批释放（不可重开）。</div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="crumbs" id="crumbs"></div>
+      <div class="topbar-right">
+        <div class="account" id="account"></div>
+      </div>
+    </header>
+    <main id="view" class="view"></main>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

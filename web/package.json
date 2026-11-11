@@ -1,0 +1,36 @@
+{
+  "name": "staffing-web",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "lint": "eslint src tests e2e",
+    "build": "tsc --noEmit && vite build",
+    "test": "node --test tests/candidates.test.ts tests/post.test.ts tests/confirmation.test.ts tests/catalog.test.ts tests/imports.test.ts tests/people.test.ts tests/projects.test.ts tests/session.test.ts tests/nav.test.ts",
+    "test:e2e": "playwright test",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.1.1",
+    "tailwind-merge": "^3.0.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "@playwright/test": "^1.65.0",
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/node": "^22.10.5",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.39.5",
+    "exceljs": "^4.4.0",
+    "tailwindcss": "^4.0.0",
+    "typescript": "~5.7.2",
+    "typescript-eslint": "^8.72.2",
+    "vite": "^6.0.7"
+  }
+}
