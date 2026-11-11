@@ -235,10 +235,10 @@ this change and `docs/feedback/verification-commands.md` is filled in the same c
 workflow holds no deploy job. Two environment facts were learned from the first run rather than
 assumed: `web/package-lock.json` has to resolve from `registry.npmjs.org`, because a runner cannot
 reach the internal Artifactory that the developer machine uses (npm rewrites the public host back to
-the configured mirror, so a local install keeps working); and `dependency-review-action` runs only on
-a public repository, because GitHub answers "Dependency review is not supported on this repository"
-for a private one without Advanced Security, so `npm audit --audit-level=high` stays the enforced
-scan there. The repository had no linter, so ESLint 9 (with `typescript-eslint`)
+the configured mirror, so a local install keeps working); and `dependency-review-action` needs
+GitHub Advanced Security unless the repository is public — it is public, so the review runs on every
+pull request, and the private attempt that failed first is why this gate is not softened with
+`continue-on-error`. The repository had no linter, so ESLint 9 (with `typescript-eslint`)
 was added for the lint check instead of a command that always passes; `web/playwright.config.ts`
 picks `mvnw.cmd` on Windows and `./mvnw` elsewhere, so the acceptance job starts the backend on
 Linux.

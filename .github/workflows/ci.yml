@@ -127,12 +127,11 @@ jobs:
       # The web tree is audited against the registry; high and critical findings fail the check.
       - run: npm audit --audit-level=high
         working-directory: web
-      # Dependency review needs GitHub Advanced Security: a private repository without it answers
-      # "Dependency review is not supported on this repository" and fails the job instead of
-      # skipping. So the step runs where the platform can analyse the manifests (a public
-      # repository) and `npm audit` above stays the enforced scan everywhere. On a private
-      # repository that buys GHAS, drop the `private` clause from this condition.
+      # The dependency graph covers both the npm and the Maven manifests of the pull request.
+      # This repository is public, so the action needs no GitHub Advanced Security licence and the
+      # review really runs; a private repository without that licence refuses the action outright,
+      # which is why the gate is never softened with `continue-on-error`.
       - uses: actions/dependency-review-action@v4
-        if: github.event_name == 'pull_request' && !github.event.repository.private
+        if: github.event_name == 'pull_request'
         with:
           fail-on-severity: high

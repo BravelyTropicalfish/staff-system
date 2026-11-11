@@ -42,10 +42,9 @@ cd backend && ./mvnw -B verify
 cd web && npx playwright install --with-deps chromium && npm run test:e2e
 
 # dependency and security scan — the registry audit of the web tree fails on
-# high or critical findings. GitHub's dependency review covers the npm and Maven
-# manifests too, but only on a public repository: a private one without Advanced
-# Security answers "not supported on this repository" and the job would fail, so
-# the workflow gates that step on `!github.event.repository.private`.
+# high or critical findings; GitHub's dependency review covers the npm and
+# Maven manifests of a pull request. The repository is public, so the action
+# needs no GitHub Advanced Security licence and the review really runs.
 cd web && npm audit --audit-level=high
 ```
 
@@ -57,7 +56,7 @@ cd web && npm audit --audit-level=high
 | type check | CI job `type check` | `npx tsc --noEmit`; `./mvnw -B -DskipTests compile` |
 | unit tests | CI job `unit tests` | `npm test`; `./mvnw -B test` |
 | acceptance tests for the changed behaviour | CI job `acceptance tests` | `./mvnw -B verify` (API scenarios + JaCoCo gate); `npm run test:e2e` |
-| dependency and security scan | CI job `dependency and security scan` | `npm audit --audit-level=high`; `dependency-review-action` (`fail-on-severity: high`) on a public repository — a private one without Advanced Security refuses the action |
+| dependency and security scan | CI job `dependency and security scan` | `npm audit --audit-level=high`; `dependency-review-action` (`fail-on-severity: high`) — the repository is public, so no Advanced Security licence is needed |
 
 The workflow runs on every pull request and never deploys. Coverage and
 Playwright reports are uploaded with a 30-day retention, matching
