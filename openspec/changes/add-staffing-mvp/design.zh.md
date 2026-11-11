@@ -76,7 +76,7 @@ data/           JPA 实体、仓储、schema.sql。除约束外不放规则。
 |---|---|
 | `people-pool` | `GET/POST /api/roles`、`PATCH /api/roles/{id}`、`DELETE /api/roles/{id}`；`GET/POST /api/skills`、`PATCH /api/skills/{id}`、`DELETE /api/skills/{id}`；两个 `DELETE` 路由只为回答 409「请改用停用」（目录项从不删除）；`GET /api/people`、`GET /api/people/{employeeNo}`（只读、仅协调员；人员数据由导入写入）；`GET /api/bands`（三套刻度——职级、熟练度、出差——岗位表单因此不必复制一份词表） |
 | `people-import` | `POST /api/imports`（multipart）、`GET /api/imports`、`GET /api/imports/{id}`（批次 + 错误清单）；历史列表只回计数、`errors` 为空，错误行从详情路由读取——这也正是「拒绝」与「退回」之别：形状不合格回 422 且不建批次，行有错的文件回 201 并留下一个 `REJECTED` 批次 |
-| `allocation` | `GET/POST /api/projects`、`GET /api/projects/{id}`（协调员读任意项目、lead 只读自己的——项目页面读的正是它）、`POST /api/projects/{id}/end`；`POST /api/allocations`、`PATCH/DELETE /api/allocations/{id}` |
+| `allocation` | `GET/POST /api/projects`、`GET /api/projects/{id}`（协调员读任意项目、lead 只读自己的——项目页面读的正是它）、`POST /api/projects/{id}/end`；`POST /api/allocations`、`PATCH/DELETE /api/allocations/{id}`。`POST /api/projects` 对两个角色都作答：项目经理创建以自己为项目经理的项目，协调员为任意项目经理创建，项目经理指定他人为项目经理时返回 403 |
 | `post-requirement` | `GET/POST /api/projects/{id}/posts`、`GET /api/posts/{id}`（岗位自己的 lead 或协调员）、`PATCH /api/posts/{id}`、`POST /api/posts/{id}/cancel`、`GET /api/projects/{id}/gap`（每个已确认座位带自己的指派 id，因为释放命名的是指派而不是人） |
 | `candidate-matching` | `GET /api/posts/{id}/candidates`（合适列表、兜底、排除清单） |
 | `staffing-confirmation` | `GET /api/posts/{id}/recommendations`（协调员带每行快照，岗位自己的 lead 不带）、`POST /api/posts/{id}/recommendations`、`DELETE /api/recommendations/{id}`、`POST /api/recommendations/{id}/confirm`、`POST /api/recommendations/{id}/reject`、`POST /api/assignments/{id}/release`、`GET /api/notices`、`POST /api/notices/{id}/dismiss` |

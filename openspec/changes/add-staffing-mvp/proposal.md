@@ -53,8 +53,9 @@ the following end-to-end behaviour:
    value outside the controlled sets rejects the batch. A skill left out of the report
    keeps its stored proficiency. Every cell is validated against the controlled value
    sets: five roles, four job levels, the seeded skills and five proficiency bands.
-3. The coordinator also maintains **projects** (with their lead) and **allocations**: a
-   person occupied by a project for an inclusive date range. Confirmation writes an
+3. A project is opened by its own **lead**, or by the coordinator on that lead's behalf, and
+   the coordinator also maintains **allocations**: a person occupied by a project for an
+   inclusive date range. Confirmation writes an
    allocation from the post's dates and the coordinator may record one by hand; two
    hand-entered ranges may overlap, and the overlap is stored as a fact rather than refused. The
    project lead ends a project once: the project becomes `closed`, its posts are
@@ -248,8 +249,9 @@ stage is demoable against the previous one.
    catalogs are curated in the app and the report cannot extend them.
 9. The import runs synchronously at MVP scale (a few thousand rows per file), so no
    queue or background worker is introduced.
-10. Projects and their lead are maintained by the coordinator; a project lead cannot
-   create projects or move a post to another project.
+10. A lead opens a project of their own and cannot open one for another lead or move a
+   post to another project; the coordinator opens a project for any lead and maintains
+   the project list.
 11. A skill's role domain is catalog configuration, not person data: the report never
    carries it, and changing it affects future searches only.
 

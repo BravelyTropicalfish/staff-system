@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Projects. The list answers both roles with what each may see (the coordinator everything, a lead
- * only its own); creation is the coordinator's and the end is the owning lead's, so each refusal is
- * the server's answer and not only the screen's.
+ * only its own); a lead opens a project of their own and the coordinator opens one for any lead; the
+ * end is the owning lead's. Each refusal is the server's answer and not only the screen's.
  */
 @RestController
 @RequestMapping("/api/projects")
@@ -46,8 +46,8 @@ public class ProjectController {
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   ProjectView create(@Valid @RequestBody ProjectCreate body, Authentication authentication) {
-    Auth.coordinator(authentication);
-    return projects.create(body.name(), body.lead(), body.startDate(), body.endDate());
+    return projects.create(
+        body.name(), body.lead(), body.startDate(), body.endDate(), Auth.user(authentication));
   }
 
   @PostMapping("/{id}/end")

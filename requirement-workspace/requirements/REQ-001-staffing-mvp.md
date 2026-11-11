@@ -1,7 +1,7 @@
 # REQ-001 — Staffing MVP: match people to project posts
 
 - **ID:** REQ-001
-- **Status:** ready — rev 11 (an allocation covers the post's inclusive dates, so only an intersecting range blocks; the project end still releases the whole team)
+- **Status:** ready — rev 12 (a lead opens a project of their own; the coordinator opens one for any lead. Rev 11: an allocation covers the post's inclusive dates, so only an intersecting range blocks; the project end still releases the whole team)
 - **Source:** `intents/INT-001-staffing.md`
 - **OpenSpec change:** `openspec/changes/add-staffing-mvp/`
 - **Date:** 2026-11-11
@@ -17,8 +17,8 @@ people and both sides share one view of who is staffed and what is still missing
 
 | Actor | May do | May not do |
 |---|---|---|
-| Project lead | Create / edit / cancel posts of own projects; end an own project (terminal: cancels its posts and releases everyone staffed on it); view the candidates recommended to them with the reasons snapshot; confirm or reject recommendations; release a confirmed person from a post; view chosen people and remaining gaps | Edit the people pool, edit allocations, recommend people, browse the full candidate pool or its suitable list |
-| Resource coordinator | Maintain role and skill catalogs (add, activate, deactivate); upload the people master report (identity, role, job level, travel willingness, active flag, skills) and read its error list; maintain projects and their lead; record an allocation for a person staffed outside the app; search the pool and read the suitable list; recommend / withdraw recommendations; release a confirmed person from a post; view all projects' posts and gaps | Confirm a recommendation; edit posts; end a project; create or change a person's master data by hand; delete a referenced catalog item or rename it; cancel a post that still has a confirmed person |
+| Project lead | Create a project of their own (they are its lead); create / edit / cancel posts of own projects; end an own project (terminal: cancels its posts and releases everyone staffed on it); view the candidates recommended to them with the reasons snapshot; confirm or reject recommendations; release a confirmed person from a post; view chosen people and remaining gaps | Create a project for another lead; edit the people pool, edit allocations, recommend people, browse the full candidate pool or its suitable list |
+| Resource coordinator | Maintain role and skill catalogs (add, activate, deactivate); upload the people master report (identity, role, job level, travel willingness, active flag, skills) and read its error list; create a project for any lead and maintain projects and their lead; record an allocation for a person staffed outside the app; search the pool and read the suitable list; recommend / withdraw recommendations; release a confirmed person from a post; view all projects' posts and gaps | Confirm a recommendation; edit posts; end a project; create or change a person's master data by hand; delete a referenced catalog item or rename it; cancel a post that still has a confirmed person |
 | System | Compute eligibility and list the suitable people; write the allocation on confirmation; release a project's people when the project is ended; keep post remaining count and status consistent | Decide who is recommended or confirmed |
 
 Visibility: a project lead sees only projects they own, and inside those projects
@@ -35,8 +35,8 @@ a lightweight seeded account with a role; SSO is deferred.
 - Role and skill catalogs maintained in the app, each item `active` or `inactive`; a
   name freezes once anything references it, and an item is deactivated rather than
   deleted. A report can reference catalog items but never create them.
-- Projects with a lead, start and end dates, created and maintained by the
-  coordinator. The project lead ends a project exactly once.
+- Projects with a lead, start and end dates, opened by that lead or by the coordinator on
+the lead's behalf. The project lead ends a project exactly once.
 - Project allocations: a person occupied by a project for an inclusive date range. An
   allocation is written by confirmation for the post's dates, or entered by the
   coordinator for a person staffed outside the app; the coordinator may correct or
@@ -309,6 +309,7 @@ Catalog lifecycle:
 | S38 | The `QA` post above has nobody; a `Lead` `DEV` holds 测试 at `Practitioner`. | The person appears only in the cross-role section, with the +1 band gap and the qualifying skill shown; they never appear in the same-role list, and recommending them carries that evidence to the lead. |
 | S39 | Lead ends a project that has two confirmed people, one `open` post and one pending recommendation. | The project becomes `closed`; both posts are `cancelled`; the pending recommendation is `voided` with reason `post cancelled`; both allocations are gone, so both people are suitable again for posts whose dates do not intersect their old ranges. |
 | S40 | The coordinator tries to end a project; after the lead ends it, the lead tries to reopen it. | The coordinator's action is refused and the project stays `running`; reopening is refused because `closed` is terminal. |
+| S41 | A lead saves a project naming themselves as its lead, then one naming another lead. | The first is stored `open` with that lead; the second is refused and nothing is stored. |
 
 ## 8. Display contract
 
@@ -325,7 +326,7 @@ Notifications: none in the MVP. Surfaces to be specified in the delta spec:
 | Person profile | Coordinator | Master data, every skill with proficiency, current and future allocations with their project and dates; no in-app edit of master data |
 | Role and skill catalogs | Coordinator | Items with their active / inactive state; rename only while unreferenced; no delete action |
 | Project gap view | Both | Per post: headcount, filled count, chosen people, remaining |
-| Project list | Both | Name, lead, status; the end-project action only for the project's lead |
+| Project list | Both | Name, lead, status; a lead opens a project of their own and the coordinator opens one for any lead; the end-project action only for the project's lead |
 
 ## 9. Constraints and dependencies
 

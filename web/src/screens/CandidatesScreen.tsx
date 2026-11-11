@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
-import { useParams } from 'react-router-dom';
-import { ApiError, getJson } from '../lib/api';
+import { Link, useParams } from 'react-router-dom';
+import { ApiError, getJson, sendJson } from '../lib/api';
 import type { CandidateSearch, ExclusionRow, FallbackRow, SuitableRow } from '../lib/candidates';
 import { bandsAboveLabel, crossRole, gateChips, skillLabel } from '../lib/candidates';
 
@@ -9,6 +9,13 @@ type State =
   | { kind: 'loading' }
   | { kind: 'failed'; status: number; code: string; message: string }
   | { kind: 'ready'; search: CandidateSearch };
+
+/** Who a row proposes: the employee number is the key, the name is what the reader recognises. */
+type RecommendTarget = { employeeNo: string; name: string };
+
+function failure(error: unknown): string {
+  return error instanceof ApiError ? `${error.code}: ${error.message}` : String(error);
+}
 
 function failureText(status: number): string | null {
   if (status === 401) {
@@ -58,7 +65,41 @@ function Section({
   );
 }
 
-function SuitableTable({ rows }: { rows: SuitableRow[] }) {
+function RecommendButton({
+  person,
+  proposed,
+  busy,
+  onRecommend,
+}: {
+  person: RecommendTarget;
+  proposed: string[];
+  busy: boolean;
+  onRecommend: (person: RecommendTarget) => void;
+}) {
+  const done = proposed.includes(person.employeeNo);
+  return (
+    <button
+      type="button"
+      className="btn btn-sm btn-primary"
+      disabled={busy || done}
+      onClick={() => onRecommend(person)}
+    >
+      {done ? 'Proposed' : 'Recommend'}
+    </button>
+  );
+}
+
+function SuitableTable({
+  rows,
+  proposed,
+  busy,
+  onRecommend,
+}: {
+  rows: SuitableRow[];
+  proposed: string[];
+  busy: boolean;
+  onRecommend: (person: RecommendTarget) => void;
+}) {
   return (
     <table className="mt-3 w-full text-left text-sm">
       <thead className="text-xs uppercase tracking-wide text-slate-500">
@@ -69,7 +110,8 @@ function SuitableTable({ rows }: { rows: SuitableRow[] }) {
           <th scope="col" className="py-1 pr-3">Job level</th>
           <th scope="col" className="py-1 pr-3">Travel</th>
           <th scope="col" className="py-1 pr-3">Gates passed</th>
-          <th scope="col" className="py-1">Skills</th>
+          <th scope="col" className="py-1 pr-3">Skills</th>
+          <th scope="col" className="py-1">Decision</th>
         </tr>
       </thead>
       <tbody>
@@ -87,7 +129,7 @@ function SuitableTable({ rows }: { rows: SuitableRow[] }) {
                 ))}
               </span>
             </td>
-            <td className="py-2">
+            <td className="py-2 pr-3">
               <ul className="space-y-0.5">
                 {row.skills.map((skill) => (
                   <li
@@ -100,6 +142,14 @@ function SuitableTable({ rows }: { rows: SuitableRow[] }) {
                 ))}
               </ul>
             </td>
+            <td className="py-2">
+              <RecommendButton
+                person={{ employeeNo: row.employeeNo, name: row.name }}
+                proposed={proposed}
+                busy={busy}
+                onRecommend={onRecommend}
+              />
+            </td>
           </tr>
         ))}
       </tbody>
@@ -107,7 +157,17 @@ function SuitableTable({ rows }: { rows: SuitableRow[] }) {
   );
 }
 
-function FallbackTable({ rows }: { rows: FallbackRow[] }) {
+function FallbackTable({
+  rows,
+  proposed,
+  busy,
+  onRecommend,
+}: {
+  rows: FallbackRow[];
+  proposed: string[];
+  busy: boolean;
+  onRecommend: (person: RecommendTarget) => void;
+}) {
   return (
     <table className="mt-3 w-full text-left text-sm">
       <thead className="text-xs uppercase tracking-wide text-slate-500">
@@ -117,7 +177,8 @@ function FallbackTable({ rows }: { rows: FallbackRow[] }) {
           <th scope="col" className="py-1 pr-3">Role</th>
           <th scope="col" className="py-1 pr-3">Job level</th>
           <th scope="col" className="py-1 pr-3">Above requirement</th>
-          <th scope="col" className="py-1">Qualifying skill</th>
+          <th scope="col" className="py-1 pr-3">Qualifying skill</th>
+          <th scope="col" className="py-1">Decision</th>
         </tr>
       </thead>
       <tbody>
@@ -130,8 +191,16 @@ function FallbackTable({ rows }: { rows: FallbackRow[] }) {
             </td>
             <td className="py-2 pr-3">{row.jobLevel}</td>
             <td className="py-2 pr-3">{bandsAboveLabel(row.bandsAbove)}</td>
-            <td className="py-2">
+            <td className="py-2 pr-3">
               {row.skill} · {row.band}
+            </td>
+            <td className="py-2">
+              <RecommendButton
+                person={{ employeeNo: row.employeeNo, name: row.name }}
+                proposed={proposed}
+                busy={busy}
+                onRecommend={onRecommend}
+              />
             </td>
           </tr>
         ))}
@@ -169,7 +238,23 @@ function ExclusionTable({ rows }: { rows: ExclusionRow[] }) {
   );
 }
 
-function Ready({ postId, search }: { postId: string; search: CandidateSearch }) {
+function Ready({
+  postId,
+  search,
+  proposed,
+  busy,
+  note,
+  error,
+  onRecommend,
+}: {
+  postId: string;
+  search: CandidateSearch;
+  proposed: string[];
+  busy: boolean;
+  note: string | null;
+  error: string | null;
+  onRecommend: (person: RecommendTarget) => void;
+}) {
   const cross = crossRole(search);
   const chips = gateChips(search);
 
@@ -182,7 +267,15 @@ function Ready({ postId, search }: { postId: string; search: CandidateSearch }) 
             {search.suitable.length} suitable · {search.excluded.length} excluded
           </div>
         </div>
+        <div className="btn-row">
+          <Link className="btn" to={`/posts/${postId}`}>
+            Open the post
+          </Link>
+        </div>
       </div>
+
+      {note ? <div className="banner">{note}</div> : null}
+      {error ? <div className="banner danger">{error}</div> : null}
 
       <section className="card" style={{ marginBottom: 12 }}>
         <div className="card-head">
@@ -211,7 +304,12 @@ function Ready({ postId, search }: { postId: string; search: CandidateSearch }) 
           {search.suitable.length === 0 ? (
             <p className="empty">Nobody of the post's role passes the gates.</p>
           ) : (
-            <SuitableTable rows={search.suitable} />
+            <SuitableTable
+              rows={search.suitable}
+              proposed={proposed}
+              busy={busy}
+              onRecommend={onRecommend}
+            />
           )}
         </Section>
 
@@ -222,7 +320,12 @@ function Ready({ postId, search }: { postId: string; search: CandidateSearch }) 
                 Nobody of another role qualifies either — the exclusion list says why.
               </p>
             ) : (
-              <FallbackTable rows={cross.rows} />
+              <FallbackTable
+                rows={cross.rows}
+                proposed={proposed}
+                busy={busy}
+                onRecommend={onRecommend}
+              />
             )}
           </Section>
         ) : null}
@@ -246,10 +349,34 @@ export default function CandidatesScreen() {
   const { id } = useParams();
   const postId = id ?? '';
   const [state, setState] = useState<State>({ kind: 'loading' });
+  const [proposed, setProposed] = useState<string[]>([]);
+  const [note, setNote] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  const recommend = (person: RecommendTarget) => {
+    setBusy(true);
+    setError(null);
+    setNote(null);
+    sendJson<{ id: number }>('POST', `/api/posts/${encodeURIComponent(postId)}/recommendations`, {
+      personNo: person.employeeNo,
+    })
+      .then(() => {
+        setProposed((current) => [...current, person.employeeNo]);
+        setNote(
+          `${person.name} is recommended to the project lead, who confirms or rejects it on the post.`,
+        );
+      })
+      .catch((caught: unknown) => setError(failure(caught)))
+      .finally(() => setBusy(false));
+  };
 
   useEffect(() => {
     let cancelled = false;
     setState({ kind: 'loading' });
+    setProposed([]);
+    setNote(null);
+    setError(null);
     getJson<CandidateSearch>(`/api/posts/${encodeURIComponent(postId)}/candidates`)
       .then((search) => {
         if (!cancelled) {
@@ -303,5 +430,15 @@ export default function CandidatesScreen() {
     );
   }
 
-  return <Ready postId={postId} search={state.search} />;
+  return (
+    <Ready
+      postId={postId}
+      search={state.search}
+      proposed={proposed}
+      busy={busy}
+      note={note}
+      error={error}
+      onRecommend={recommend}
+    />
+  );
 }

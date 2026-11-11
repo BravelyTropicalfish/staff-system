@@ -11,10 +11,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Projects. Only the coordinator creates one, a lead only ever sees its own, and ending is the one
- * terminal act: it closes the project, cancels every post, voids the pending recommendations with
- * `post cancelled` (each with its notice), deletes every allocation and releases every assignment —
- * all in one transaction, so a failure leaves the project untouched.
+ * Projects. A lead creates a project of their own and the coordinator creates one for any lead; a
+ * lead only ever sees its own, and ending is the one terminal act: it closes the project, cancels
+ * every post, voids the pending recommendations with `post cancelled` (each with its notice),
+ * deletes every allocation and releases every assignment — all in one transaction, so a failure
+ * leaves the project untouched.
  */
 @Service
 public class ProjectService {
@@ -51,8 +52,18 @@ public class ProjectService {
     return view(project);
   }
 
+  /**
+   * A lead opens a project of their own; the coordinator opens it for any lead. Naming someone else
+   * as the lead is therefore the coordinator's alone, and the refusal is the server's answer rather
+   * than only the screen's.
+   */
   @Transactional
-  public ProjectView create(String name, String leadUsername, LocalDate start, LocalDate end) {
+  public ProjectView create(
+      String name, String leadUsername, LocalDate start, LocalDate end, AuthenticatedUser actor) {
+    AppUserRepository.UserRow lead = leadOf(leadUsername);
+    if (!actor.isCoordinator() && !lead.username().equals(actor.username())) {
+      throw new AccessDeniedException("a lead creates only a project of their own");
+    }
     if (name == null || name.isBlank()) {
       throw invalid("the project needs a name");
     }
@@ -62,7 +73,6 @@ public class ProjectService {
     if (end.isBefore(start)) {
       throw invalid("the end date cannot precede the start date");
     }
-    AppUserRepository.UserRow lead = leadOf(leadUsername);
     long id = projects.insert(name.trim(), lead.id(), start, end);
     return view(projects.findById(id).orElseThrow());
   }

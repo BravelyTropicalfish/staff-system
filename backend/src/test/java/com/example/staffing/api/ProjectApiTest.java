@@ -18,10 +18,10 @@ import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.test.annotation.DirtiesContext;
 
 /**
- * T13, projects: the coordinator creates one, a lead only ever sees its own (in the list and in
- * the detail, which the project screen reads), and ending is one terminal transaction — posts
- * cancelled, pending recommendations voided with their notice,
- * allocations deleted, assignments released, the project closed for good.
+ * T13, projects: a lead creates a project of their own and the coordinator creates one for any lead,
+ * a lead only ever sees its own (in the list and in the detail, which the project screen reads), and
+ * ending is one terminal transaction — posts cancelled, pending recommendations voided with their
+ * notice, allocations deleted, assignments released, the project closed for good.
  *
  * <p>Each test starts from a dropped and rebuilt schema; the context is discarded after the class
  * so no other class inherits this database.
@@ -47,13 +47,18 @@ class ProjectApiTest {
   }
 
   @Test
-  void aLeadCannotCreateAProject() {
+  void aLeadCreatesAProjectOfTheirOwnOnly() {
     ApiSession lead = ApiSession.signIn(rest, "lead.one");
 
-    ResponseEntity<Map> response = lead.post("/api/projects", project("Atlas", "lead.one"), Map.class);
+    ResponseEntity<Map> own = lead.post("/api/projects", project("Atlas", "lead.one"), Map.class);
+    ResponseEntity<Map> forAnotherLead =
+        lead.post("/api/projects", project("Borealis", "lead.two"), Map.class);
 
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-    assertThat(count("SELECT COUNT(*) FROM project")).isZero();
+    assertThat(own.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    assertThat(body(own)).containsEntry("lead", "lead.one").containsEntry("status", "OPEN");
+    assertThat(forAnotherLead.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+    assertThat(body(forAnotherLead)).containsEntry("code", "forbidden");
+    assertThat(count("SELECT COUNT(*) FROM project")).isEqualTo(1);
   }
 
   @Test

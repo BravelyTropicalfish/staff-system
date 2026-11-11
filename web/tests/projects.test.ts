@@ -10,11 +10,18 @@ import {
   projectState,
 } from '../src/lib/projects.ts';
 import type { Project } from '../src/lib/projects.ts';
+import {
+  emptyProject,
+  leadLocked,
+  projectDraft,
+  projectProblem,
+} from '../src/lib/projectForm.ts';
 
 /**
  * T17, the project screens' own readings. The gap numbers are sums of the rows the server sent, the
  * end is offered to the project's own lead alone while the project is open, and the confirmation
  * says the whole consequence — how many posts and how many confirmed people — before it is sent.
+ * T33 adds the create form: a lead opens a project of their own, the coordinator names any lead.
  */
 
 const atlas: Project = {
@@ -74,4 +81,54 @@ test('the confirmation names the project, its posts and the people it releases',
     'Ending Atlas cancels its 1 post and releases 2 confirmed people. It cannot be undone.',
   );
   assert.ok(endConfirmation(atlas, seats).includes('cannot be undone'));
+});
+
+test('a lead opens a project of their own; the coordinator names the lead', () => {
+  const lead = { username: 'lead.one', role: 'LEAD' };
+  const coordinator = { username: 'coordinator', role: 'COORDINATOR' };
+
+  assert.deepEqual(emptyProject(lead), {
+    name: '',
+    lead: 'lead.one',
+    startDate: '',
+    endDate: '',
+  });
+  assert.deepEqual(emptyProject(coordinator), {
+    name: '',
+    lead: '',
+    startDate: '',
+    endDate: '',
+  });
+  assert.equal(leadLocked(lead), true);
+  assert.equal(leadLocked(coordinator), false);
+});
+
+test('the draft trims the two names and keeps the dates it was given', () => {
+  assert.deepEqual(
+    projectDraft({
+      name: '  Atlas  ',
+      lead: '  lead.one ',
+      startDate: '2027-01-01',
+      endDate: '2027-12-31',
+    }),
+    { name: 'Atlas', lead: 'lead.one', startDate: '2027-01-01', endDate: '2027-12-31' },
+  );
+});
+
+test('the form names its own refusals before anything is sent', () => {
+  const filled = {
+    name: 'Atlas',
+    lead: 'lead.one',
+    startDate: '2027-01-01',
+    endDate: '2027-12-31',
+  };
+
+  assert.equal(projectProblem(filled), null);
+  assert.equal(projectProblem({ ...filled, name: '   ' }), 'Give the project a name.');
+  assert.equal(projectProblem({ ...filled, lead: ' ' }), 'Name the project lead.');
+  assert.equal(projectProblem({ ...filled, startDate: '' }), 'Set the start and the end date.');
+  assert.equal(
+    projectProblem({ ...filled, endDate: '2026-12-31' }),
+    'The end date cannot precede the start date.',
+  );
 });

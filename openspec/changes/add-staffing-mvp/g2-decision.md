@@ -140,3 +140,47 @@ level.
 **Risks updated.** R7 (new): the overview at `/` shows three descriptive cards rather than numeric
 KPI tiles, and the breadcrumb names the area (`Delivery / Project`) instead of the entity
 (`Projects / Atlas`) — both cosmetic, both open.
+
+## Addendum 3 — 2026-11-11, a project manager could not open a project
+
+**What prompted it.** The product owner walked the application and described the flow the product
+exists for: a project manager raises the requirement and opens a project, states the posts it is
+short of, the coordinator reads the pool to see who qualifies and recommends them, and the project
+manager decides whether to take each person. Three of those steps had no screen and one had the
+wrong owner.
+
+**What the walkthrough found, in the order the flow runs.**
+
+1. `/projects` listed projects but offered no way to open one, and the rule said it should not be a
+   lead's to open: `allocation/spec.md` read "The coordinator SHALL be able to create and edit a
+   project; a lead SHALL NOT create a project", and `ProjectController.create` called
+   `Auth.coordinator`. The chain therefore began nowhere for the role the product starts with.
+2. `/posts/{id}/candidates` listed who qualifies and offered no way to recommend them. T27 had
+   already recorded this as a product hole ("no screen posts a recommendation") when it seeded that
+   step through the route; it was left open then and is closed now.
+
+**What changed.** T33 moved the rule itself, not just the screen: REQ-001 rev 12 and the
+`allocation` delta spec now say a lead opens a project of their own and the coordinator opens one
+for any lead, recorded as **G1 rev 12** (Pass, IO = raylen, SA = kyrie) because `spec-gates` rule 5
+forbids rewriting an agreed delta without a new record. `ProjectService.create` takes the signed-in
+account, resolves the named lead first, and refuses a lead who names somebody else with `a lead
+creates only a project of their own`; the coordinator's path is unchanged. T34 added the two
+screens: `New project` on `/projects` (lead prefilled and locked for a lead) and a `Recommend`
+button on every suitable and cross-role row that posts the same route the fixtures use, then
+disables itself as `Proposed`.
+
+**Re-verification.** `mvnw verify` 281 tests with "All coverage checks have been met." — the new
+guard is covered at both branches (`ProjectApiTest` 11/11 with
+`aLeadCreatesAProjectOfTheirOwnOnly`, `ProjectServiceTest` 5/5). `npm test` 49/49, `npx playwright
+test` 19/19 (J1 now recommends on the screen; the new J3 drives the whole chain through screens
+only), `npm run lint` 0 problems, `npx tsc --noEmit` clean, `npm run build` green. The same path was
+then walked in the running application against the seeded accounts.
+
+**Decision: unchanged — Pass.** The gate's own scope is why: G2 verifies that the delta the G1
+record approved is implemented and proven. The delta changed, so the change re-entered P2 for a
+recorded G1 rev 12, and the implementation of that delta is what this addendum re-verifies.
+
+**Risks updated.** R8 (new): editing a project still has no route or screen although the
+requirement says the coordinator may edit one — carried as a follow-up, not implied to work. R6's
+follow-on ("the candidate screen still cannot post a recommendation") is closed. R7 stands. The
+open items D1–D8 are untouched.

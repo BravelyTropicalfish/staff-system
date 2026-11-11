@@ -1,8 +1,8 @@
 # G1 decision — add-staffing-mvp
 
-> This file holds two records: the **rev 8** decision from 2026-11-10 (below, unchanged) and the
-> **rev 11** decision from 2026-11-11 (at the end). The header block and every section down to
-> rev 8's `## Next` belong to rev 8 only.
+> This file holds three records: the **rev 8** decision from 2026-11-10 (below, unchanged), the
+> **rev 11** decision from 2026-11-11, and the **rev 12** decision from 2026-11-11 (both at the
+> end). The header block and every section down to rev 8's `## Next` belong to rev 8 only.
 
 - **Gate:** G1 (Align)
 - **Change id:** `add-staffing-mvp`
@@ -172,3 +172,84 @@ None. The decision is Pass, so no remediation is owed at this gate.
 
 P3 — ATDD design and task planning (`design.md`, `tasks.md`). The rev 11 delta specs are the
 agreed contract and are not to be rewritten without a new G1 record.
+
+---
+
+## G1 record — rev 12 (2026-11-11)
+
+- **Gate:** G1 (Align)
+- **Change id:** `add-staffing-mvp`
+- **Revision under decision:** REQ-001 **rev 12** — project creation moves from "the coordinator's
+  alone" to "a lead opens a project of their own, the coordinator opens one for any lead"
+- **Decision:** **Pass**
+- **Approvers:** IO = raylen; SA = kyrie
+- **Timestamp:** 2026-11-11
+
+The decision belongs to the two named approvers; the agent recorded it on their instruction and
+issues no approval of its own. The rev 8 and rev 11 records above are left unchanged and still
+cover their own revisions only.
+
+### Why the delta is rewritten again
+
+`spec-gates` rule 5: an agreed delta spec is not rewritten without a new record saying why, and
+the rev 11 record closes with the same sentence. The product owner walked the running application
+and reported that a project manager cannot open a project, so the chain the MVP is bought for —
+the lead states the posts a project is short of, the coordinator recommends from the pool, the
+lead decides — has no place to start. The rev 11 rule is exactly what the code enforced, so this
+is a requirement change and not a defect fix.
+
+### Input artifacts
+
+| Artifact | Path | Result |
+|---|---|---|
+| Proposal (English / Chinese) | `proposal.md`, `proposal.zh.md` | What-Changes step 3 and assumption 10 now read "opened by its own lead, or by the coordinator on that lead's behalf"; D1–D8 unchanged |
+| Delta spec — `allocation` | `specs/staffing/allocation/spec.md` + `spec.zh.md` | 5 requirements / 11 scenarios, unchanged counts: the rev 11 scenario `A lead cannot create a project` became `A lead opens a project of their own`, one row for one row |
+| Delta spec — the other five | `specs/staffing/*/spec.md` + `spec.zh.md` | untouched (35 requirements / 79 scenarios) |
+| Design | `design.md` §4 + `design.zh.md` | `POST /api/projects` documented as answering both roles, with the 403 a lead gets for naming another lead |
+| ATDD design / tasks | `atdd-design.md`, `tasks.md` + `tasks.zh.md` | T33 (the rule and the server guard) and T34 (the two screens) recorded in the apply-progress table |
+| Scenario traceability | `traceability.md` | allocation row 16 renamed to `ProjectApiTest#aLeadCreatesAProjectOfTheirOwnOnly` with the new J3 journey as its companion |
+| Source requirement | `requirement-workspace/requirements/REQ-001-staffing-mvp.md` (rev 12) | §2 actor table, §3 bullets and §8 project-list row updated; scenario **S41** added for the same rule |
+| Review aid | `prototype/` | unchanged; it draws no `New project` action at all, which is why the screens follow its shell and cards rather than its action set |
+
+Totals recounted immediately before this record: **40 requirements / 90 scenarios** in each
+language, 40/40 `**Traces:**` lines, 90/90 scenarios carrying GIVEN, WHEN and THEN, and 90
+distinct scenario titles — the same totals rev 11 was signed against, because the change replaced
+one scenario instead of adding one.
+
+### Findings
+
+- **Scope.** One capability changed, in one requirement and one scenario; no new capability and no
+  `MODIFIED` section, because `openspec/specs/` is still empty. The six capabilities still map one
+  to one onto the six "New capabilities" rows.
+- **Ambiguity.** REQ-001 §11 B1–B19 stay resolved and D1–D8 stay as they were. The new rule needs
+  no new open item: "a lead may open a project whose lead is themselves" leaves exactly one
+  question — who may name somebody else — and the requirement answers it (the coordinator only).
+- **Conflict.** The rev 11 requirement said the coordinator creates and a lead does not; REQ-001 §2,
+  §3, `proposal.md` step 3 and assumption 10 said the same. All five now say the lead opens their
+  own and the coordinator opens for any lead, so no artifact contradicts another. Ending a project
+  is untouched: still the owning lead's alone and still terminal.
+- **Traceability.** S41 was added to REQ-001 and mapped to the renamed scenario; the union of the
+  trace lists now covers S1–S41.
+
+### Conditions + owners
+
+None. The decision is Pass, so no remediation is owed at this gate.
+
+### Open risks accepted with this decision
+
+1. **The project list now opens for both roles with an empty database.** A lead who opens `/projects`
+   for the first time sees `No project has been created yet` and the create action; the rev 11
+   wording would have hidden the action entirely.
+2. **Editing a project stays unimplemented.** The requirement has said "the coordinator … edit a
+   project" since rev 8 and no route or screen offers it (`PATCH /api/projects/{id}` answers 405).
+   This record does not close that gap; it is carried as a follow-up rather than implied to work.
+3. **The prototype still has no create-project action.** The reviewer's mock has a "new post" button
+   but no "new project" one, so the screen is the app's own composition of the prototype's shell,
+   cards and form classes rather than a traced drawing.
+4. **A lead can hold several open projects at once.** Nothing caps the number a lead may open, by
+   the same reasoning that caps nothing else a lead creates.
+
+### Next
+
+P4 continues with T33 and T34 (already applied in the same change), then `/sdd:local-verify-report`
+and the G2 addendum recorded in `g2-decision.md`.

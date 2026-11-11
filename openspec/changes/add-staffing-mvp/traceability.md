@@ -13,7 +13,7 @@ people-pool 17, post-requirement 14, staffing-confirmation 18.
 
 | Scenario | Layer | Test id | Companion |
 |---|---|---|---|
-| A lead cannot create a project | API | `ProjectApiTest#aLeadCannotCreateAProject` | — |
+| A lead opens a project of their own | API | `ProjectApiTest#aLeadCreatesAProjectOfTheirOwnOnly` | `journeys.spec.ts` — J3 opens a project, states its post, is recommended a person and confirms her |
 | Inverted dates are refused | API | `ProjectApiTest#invertedDatesAreRefusedAndNothingIsStored` | — |
 | The end releases everyone and cancels the posts | E2E | `scenarios.spec.ts` — The end releases everyone and cancels the posts | `ProjectApiTest#endingReleasesEveryoneAndCancelsThePosts` |
 | Only the project's lead may end it | API | `ProjectApiTest#onlyTheProjectsLeadMayEndIt` | — |

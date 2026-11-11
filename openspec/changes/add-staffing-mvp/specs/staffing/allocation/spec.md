@@ -4,19 +4,21 @@ Scope: projects and allocation records — the person × project date range that
 
 ## ADDED Requirements
 
-### Requirement: Projects are maintained by the coordinator
+### Requirement: A project is opened by its lead or on their behalf
 
-The system SHALL store a project with name, lead, start date and end date, where the lead is
-one identified user. The coordinator SHALL be able to create and edit a project; a lead SHALL
-NOT create a project. A project whose end date precedes its start date SHALL be refused.
+The system SHALL store a project with name, lead, start date and end date, where the lead is one
+identified lead account. A lead SHALL be able to open a project of their own and SHALL NOT open one
+whose lead is somebody else; the coordinator SHALL be able to open a project for any lead and to
+edit a project. A project whose end date precedes its start date SHALL be refused.
 
 **Traces:** proposal step 3; REQ-001 §3, §5; S1, S39.
 
-#### Scenario: A lead cannot create a project
+#### Scenario: A lead opens a project of their own
 
 - **GIVEN** a user holding only the lead role
-- **WHEN** the project list is opened
-- **THEN** no create action is offered and a create request is refused
+- **WHEN** they save a project naming themselves as the lead
+- **THEN** the project is stored `open` with that lead
+- **AND** a project naming another lead is refused and nothing is stored
 
 #### Scenario: Inverted dates are refused
 
